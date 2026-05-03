@@ -63,19 +63,21 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border/60 bg-background/90 px-4 backdrop-blur-md md:hidden">
-        <Link to="/home" className="flex items-center gap-2 font-display text-lg font-semibold">
-          <PawPrint className="h-5 w-5 text-accent" /> PetPal
+      <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border/60 glass px-4 md:hidden">
+        <Link to="/home" className="flex items-center gap-2 font-display text-lg font-semibold tracking-tight">
+          <PawPrint className="h-5 w-5 text-accent animate-pulse" /> PetPal
         </Link>
-        <Link to="/reminders" className="rounded-full p-2 text-muted-foreground hover:text-foreground">
+        <Link to="/reminders" className="relative rounded-full p-2 text-muted-foreground hover:text-foreground">
           <Bell className="h-5 w-5" />
+          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-accent" />
         </Link>
       </header>
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-24 pt-6 md:px-6 md:pb-12">
-        <div className="grid gap-8 md:grid-cols-[200px_1fr]">
+        <div className="grid gap-8 md:grid-cols-[220px_1fr]">
           <aside className="hidden md:block">
-            <nav className="sticky top-24 flex flex-col gap-1">
+            <nav className="sticky top-24 flex flex-col gap-1.5">
+              <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Management</p>
               {sideExtra.map((n) => {
                 const Icon = n.icon;
                 return (
@@ -83,24 +85,24 @@ export function AppShell({ children }: { children: ReactNode }) {
                     key={n.to}
                     to={n.to}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                      "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-300",
                       isActive(n.to)
-                        ? "bg-secondary text-foreground"
-                        : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+                        ? "bg-foreground text-background shadow-lg shadow-foreground/10"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     )}
                   >
-                    <Icon className="h-4 w-4" /> {n.label}
+                    <Icon className={cn("h-4 w-4 transition-transform group-hover:scale-110", isActive(n.to) && "text-accent")} /> {n.label}
                   </Link>
                 );
               })}
             </nav>
           </aside>
-          <div className="min-w-0">{children}</div>
+          <div className="min-w-0 transition-all duration-500 animate-in fade-in slide-in-from-bottom-2">{children}</div>
         </div>
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 backdrop-blur-md md:hidden">
+      <nav className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-white/10 glass shadow-2xl md:hidden">
         <div className="grid grid-cols-5">
           {ownerNav.map((n) => {
             const Icon = n.icon;
@@ -110,12 +112,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={n.to}
                 to={n.to}
                 className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 text-xs",
-                  active ? "text-foreground" : "text-muted-foreground"
+                  "flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-all duration-300",
+                  active ? "text-foreground" : "text-muted-foreground/80"
                 )}
               >
-                <Icon className={cn("h-5 w-5", active && "text-accent")} />
-                {n.label}
+                <Icon className={cn("h-5 w-5 transition-transform", active ? "text-accent scale-110" : "group-hover:scale-105")} />
+                <span className={cn("transition-opacity", active ? "opacity-100" : "opacity-70")}>{n.label}</span>
               </Link>
             );
           })}

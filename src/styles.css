@@ -96,6 +96,10 @@
   --sidebar-accent-foreground: oklch(0.20 0.015 250);
   --sidebar-border: oklch(0.92 0.005 250);
   --sidebar-ring: oklch(0.74 0.16 55);
+
+  /* Custom: Mesh gradient spots */
+  --mesh-1: oklch(0.92 0.04 150 / 20%);
+  --mesh-2: oklch(0.85 0.12 55 / 15%);
 }
 
 .dark {
@@ -118,6 +122,9 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.78 0.15 55);
+
+  --mesh-1: oklch(0.20 0.05 150 / 10%);
+  --mesh-2: oklch(0.25 0.10 55 / 8%);
 }
 
 @layer base {
@@ -126,6 +133,10 @@
   }
   html, body {
     background-color: var(--color-background);
+    background-image: 
+      radial-gradient(at 0% 0%, var(--mesh-1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, var(--mesh-2) 0px, transparent 50%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -133,5 +144,17 @@
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-background/60 backdrop-blur-xl border border-white/10 dark:border-white/5;
+  }
+  .glass-card {
+    @apply bg-card/40 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-sm;
+  }
+  .text-glow {
+    text-shadow: 0 0 20px var(--color-accent);
   }
 }
