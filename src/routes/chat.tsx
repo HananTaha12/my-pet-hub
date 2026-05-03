@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Send } from "lucide-react";
+import { Send, Sparkles } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/chat")({
   head: () => ({ meta: [{ title: "AI Pet Assistant — PetPal" }] }),
@@ -56,29 +57,65 @@ function Chat() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] max-w-3xl flex-col">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h1 className="font-display text-3xl font-semibold tracking-tight">AI Assistant</h1>
+    <div className="flex h-[calc(100vh-14rem)] max-w-4xl flex-col transition-all duration-700 animate-in fade-in slide-in-from-bottom-4">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">AI Assistant</h1>
+          <p className="text-sm text-muted-foreground">Expert advice for your pet's well-being</p>
+        </div>
         {pets.length > 0 && (
-          <Select value={petId} onValueChange={setPetId}>
-            <SelectTrigger className="w-48"><SelectValue placeholder="Active pet" /></SelectTrigger>
-            <SelectContent>{pets.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Chatting about</span>
+            <Select value={petId} onValueChange={setPetId}>
+              <SelectTrigger className="w-40 rounded-xl bg-secondary/50 border-none focus:ring-accent"><SelectValue placeholder="Active pet" /></SelectTrigger>
+              <SelectContent className="rounded-xl border-none shadow-2xl">{pets.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
         )}
       </div>
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-border bg-card p-4">
-        {msgs.map((m, i) => (
-          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-foreground text-background" : "bg-secondary"}`}>
+      
+      <div ref={scrollRef} className="flex-1 space-y-6 overflow-y-auto rounded-[2.5rem] glass-card p-6 no-scrollbar">
+        {msgs.map((m: Msg, i: number) => (
+          <div key={i} className={cn("flex w-full animate-in fade-in duration-500", m.role === "user" ? "justify-end" : "justify-start")}>
+            <div className={cn(
+              "relative max-w-[85%] whitespace-pre-wrap px-5 py-3.5 text-sm leading-relaxed shadow-sm",
+              m.role === "user" 
+                ? "rounded-[2rem] rounded-tr-none bg-foreground text-background" 
+                : "rounded-[2rem] rounded-tl-none bg-secondary/80 text-foreground border border-white/5"
+            )}>
               {m.content}
+              {m.role === "assistant" && (
+                <div className="absolute -left-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg">
+                  <Sparkles className="h-3 w-3" />
+                </div>
+              )}
             </div>
           </div>
         ))}
-        {busy && <div className="text-sm text-muted-foreground">Thinking…</div>}
+        {busy && (
+          <div className="flex justify-start animate-pulse">
+            <div className="rounded-[2rem] rounded-tl-none bg-secondary/40 px-5 py-3 text-xs font-medium text-muted-foreground">
+              Processing insights…
+            </div>
+          </div>
+        )}
       </div>
-      <form onSubmit={send} className="mt-3 flex gap-2">
-        <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about food, behaviour, health…" />
-        <Button type="submit" disabled={busy}><Send className="h-4 w-4" /></Button>
+
+      <form onSubmit={send} className="mt-6 relative flex items-center">
+        <Input 
+          value={input} 
+          onChange={(e) => setInput(e.target.value)} 
+          placeholder="Ask about health, behavior, or nutrition…" 
+          className="h-14 rounded-full border-none bg-secondary/50 pl-6 pr-16 text-sm focus-visible:ring-accent shadow-inner"
+        />
+        <Button 
+          type="submit" 
+          disabled={busy} 
+          size="icon"
+          className="absolute right-1.5 h-11 w-11 rounded-full bg-foreground hover:scale-105 active:scale-95 transition-all shadow-lg"
+        >
+          <Send className="h-5 w-5" />
+        </Button>
       </form>
     </div>
   );

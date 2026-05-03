@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, Plus } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/shop")({
   head: () => ({ meta: [{ title: "Shop — PetPal" }] }),
@@ -36,7 +37,7 @@ function Shop() {
     })();
   }, []);
 
-  const filtered = products.filter((p) =>
+  const filtered = products.filter((p: Product) =>
     (!selectedCat || p.category_id === selectedCat) &&
     (!q || p.name.toLowerCase().includes(q.toLowerCase()))
   );
@@ -48,28 +49,84 @@ function Shop() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 transition-all duration-700 animate-in fade-in slide-in-from-bottom-4">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="font-display text-3xl font-semibold tracking-tight">Shop</h1>
-        <Link to="/cart"><Button variant="outline" size="sm"><ShoppingCart className="mr-1 h-4 w-4" /> Cart</Button></Link>
+        <div>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">Shop</h1>
+          <p className="text-sm text-muted-foreground">Premium supplies for your companions</p>
+        </div>
+        <Link to="/cart">
+          <Button variant="outline" size="lg" className="rounded-2xl border-none bg-secondary/50 hover:bg-foreground hover:text-background transition-all duration-300">
+            <ShoppingCart className="mr-2 h-5 w-5" /> 
+            <span className="font-semibold">Cart</span>
+          </Button>
+        </Link>
       </div>
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search products" className="pl-9" />
+
+      <div className="relative group">
+        <div className="absolute inset-0 -z-10 rounded-full bg-accent/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+        <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-accent" />
+        <Input 
+          value={q} 
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQ(e.target.value)} 
+          placeholder="Search for food, toys, accessories…" 
+          className="h-14 rounded-full border-none bg-secondary/50 pl-12 text-sm focus-visible:ring-accent shadow-inner" 
+        />
       </div>
-      <div className="flex flex-wrap gap-2">
-        <button onClick={() => setSelectedCat(null)} className={`rounded-full border px-3 py-1.5 text-sm ${!selectedCat ? "border-foreground bg-foreground text-background" : "border-border hover:bg-secondary"}`}>All</button>
-        {cats.map((c) => (
-          <button key={c.id} onClick={() => setSelectedCat(c.id)} className={`rounded-full border px-3 py-1.5 text-sm ${selectedCat === c.id ? "border-foreground bg-foreground text-background" : "border-border hover:bg-secondary"}`}>{c.name}</button>
+
+      <div className="flex flex-wrap gap-2 pb-2">
+        <button 
+          onClick={() => setSelectedCat(null)} 
+          className={cn(
+            "rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300",
+            !selectedCat ? "bg-foreground text-background shadow-lg" : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+          )}
+        >
+          All
+        </button>
+        {cats.map((c: Cat) => (
+          <button 
+            key={c.id} 
+            onClick={() => setSelectedCat(c.id)} 
+            className={cn(
+              "rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300",
+              selectedCat === c.id ? "bg-foreground text-background shadow-lg" : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+            )}
+          >
+            {c.name}
+          </button>
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {filtered.map((p) => (
-          <div key={p.id} className="rounded-2xl border border-border bg-card p-3">
-            {p.image_url && <img src={p.image_url} alt={p.name} loading="lazy" width={400} height={400} className="aspect-square w-full rounded-xl object-cover" />}
-            <p className="mt-3 line-clamp-1 text-sm font-medium">{p.name}</p>
-            <p className="text-sm text-muted-foreground">${Number(p.price).toFixed(2)}</p>
-            <Button size="sm" className="mt-2 w-full" onClick={() => add(p.id)}>Add to cart</Button>
+
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        {filtered.map((p: Product) => (
+          <div key={p.id} className="group relative rounded-[2.5rem] glass-card p-4 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
+            <div className="relative overflow-hidden rounded-[1.8rem]">
+              {p.image_url && (
+                <img 
+                  src={p.image_url} 
+                  alt={p.name} 
+                  loading="lazy" 
+                  width={400} 
+                  height={400} 
+                  className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <button 
+                onClick={() => add(p.id)}
+                className="absolute bottom-4 right-4 h-10 w-10 rounded-full bg-white text-black shadow-xl opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 hover:scale-110 active:scale-90"
+              >
+                <Plus className="m-auto h-5 w-5" />
+              </button>
+            </div>
+            <div className="mt-4 px-1">
+              <p className="line-clamp-1 text-sm font-bold tracking-tight">{p.name}</p>
+              <div className="mt-1 flex items-center justify-between">
+                <p className="text-sm font-bold text-accent">${Number(p.price).toFixed(2)}</p>
+                <span className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground/60">{p.species === 'all' ? 'Universal' : p.species}</span>
+              </div>
+            </div>
           </div>
         ))}
       </div>
