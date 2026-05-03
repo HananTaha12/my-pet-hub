@@ -11,25 +11,20 @@ export const Route = createFileRoute("/staff")({
   component: () => (<RequireAuth staffOnly><AppShell><Staff /></AppShell></RequireAuth>),
 });
 
-interface Appt { id: string; scheduled_at: string; status: string; special_instructions: string | null; services: { name: string } | null; pets: { name: string } | null; profiles: { full_name: string | null } | null }
+interface Appt { id: string; scheduled_at: string; status: string; special_instructions: string | null; services: { name: string } | null; pets: { name: string } | null }
+type ApptStatus = "pending" | "confirmed" | "in_progress" | "done" | "cancelled";
 
 function Staff() {
   const [items, setItems] = useState<Appt[]>([]);
   const load = async () => {
     const start = new Date(); start.setHours(0, 0, 0, 0);
     const end = new Date(); end.setDate(end.getDate() + 7);
-    const { data } = await supabase.from("appointments").select("id, scheduled_at, status, special_instructions, services(name), pets(name), profiles!appointments_owner_id_fkey(full_name)").gte("scheduled_at", start.toISOString()).lte("scheduled_at", end.toISOString()).order("scheduled_at");
-    // profiles join may not be set — fall back to plain query
-    if (!data) {
-      const { data: d2 } = await supabase.from("appointments").select("id, scheduled_at, status, special_instructions, services(name), pets(name)").gte("scheduled_at", start.toISOString()).lte("scheduled_at", end.toISOString()).order("scheduled_at");
-      setItems((d2 ?? []) as unknown as Appt[]);
-    } else {
-      setItems(data as unknown as Appt[]);
-    }
+    const { data } = await supabase.from("appointments").select("id, scheduled_at, status, special_instructions, services(name), pets(name)").gte("scheduled_at", start.toISOString()).lte("scheduled_at", end.toISOString()).order("scheduled_at");
+    setItems((data ?? []) as unknown as Appt[]);
   };
   useEffect(() => { load(); }, []);
 
-  const setStatus = async (id: string, status: string) => {
+  const setStatus = async (id: string, status: ApptStatus) => {
     const { error } = await supabase.from("appointments").update({ status }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Updated");
