@@ -128,18 +128,43 @@ function HomePage() {
             <h2 className="font-display text-2xl font-semibold tracking-tight text-glow">Recommended for {activePet.name}</h2>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {recs.map((p: Product) => (
-              <Link key={p.id} to="/shop" className="group rounded-[2rem] glass-card p-4 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
-                <div className="relative overflow-hidden rounded-[1.5rem]">
-                  {p.image_url && <img src={p.image_url} alt={p.name} loading="lazy" width={400} height={400} className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110" />}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                </div>
-                <div className="px-1">
-                  <p className="mt-4 line-clamp-1 text-sm font-semibold tracking-tight">{p.name}</p>
-                  <p className="text-sm font-bold text-accent">${Number(p.price).toFixed(2)}</p>
-                </div>
-              </Link>
-            ))}
+            {recs.map((p: Product) => {
+              // Fallback images based on product name
+              let displayImage = p.image_url;
+              if (!displayImage) {
+                const name = p.name.toLowerCase();
+                if (name.includes("dog food")) displayImage = "/products/dog-food.png";
+                else if (name.includes("cat food")) displayImage = "/products/cat-food.png";
+                else if (name.includes("bed")) displayImage = "/products/bed.png";
+                else if (name.includes("shampoo")) displayImage = "/products/shampoo.png";
+                else if (name.includes("biscuit")) displayImage = "/products/dog-food.png"; // reusing dog food as biscuit placeholder
+                else if (name.includes("collar") || name.includes("scratching") || name.includes("ball")) displayImage = "/products/bed.png"; // general placeholders
+              }
+
+              return (
+                <Link key={p.id} to="/shop" className="group rounded-[2rem] glass-card p-4 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
+                  <div className="relative overflow-hidden rounded-[1.5rem] bg-secondary/50">
+                    {displayImage ? (
+                      <img 
+                        src={displayImage} 
+                        alt={p.name} 
+                        loading="lazy" 
+                        className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                      />
+                    ) : (
+                      <div className="flex aspect-square w-full items-center justify-center">
+                        <ShoppingBag className="h-8 w-8 text-muted-foreground/20" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  </div>
+                  <div className="px-1">
+                    <p className="mt-4 line-clamp-1 text-sm font-semibold tracking-tight">{p.name}</p>
+                    <p className="text-sm font-bold text-accent">${Number(p.price).toFixed(2)}</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}
