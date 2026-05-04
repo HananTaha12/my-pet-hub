@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "mobile:build": "vite build --config vite.config.mobile.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
