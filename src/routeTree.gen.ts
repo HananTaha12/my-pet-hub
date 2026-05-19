@@ -12,17 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PetsRouteImport } from './routes/pets'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as AppointmentsRouteImport } from './routes/appointments'
 import { Route as IndexRouteImport } from './routes/index'
@@ -41,6 +44,11 @@ const SignupRoute = SignupRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RemindersRoute = RemindersRouteImport.update({
@@ -66,6 +74,11 @@ const OrdersRoute = OrdersRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -98,6 +111,11 @@ const CartRoute = CartRouteImport.update({
   path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BookRoute = BookRouteImport.update({
   id: '/book',
   path: '/book',
@@ -124,17 +142,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsRoute
   '/book': typeof BookRoute
+  '/calendar': typeof CalendarRoute
   '/cart': typeof CartRoute
   '/chat': typeof ChatRoute
   '/checkout': typeof CheckoutRoute
   '/favorites': typeof FavoritesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/onboarding': typeof OnboardingRoute
   '/orders': typeof OrdersRoute
   '/pets': typeof PetsRoute
   '/profile': typeof ProfileRoute
   '/reminders': typeof RemindersRoute
+  '/rewards': typeof RewardsRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/staff': typeof StaffRoute
@@ -144,17 +165,20 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsRoute
   '/book': typeof BookRoute
+  '/calendar': typeof CalendarRoute
   '/cart': typeof CartRoute
   '/chat': typeof ChatRoute
   '/checkout': typeof CheckoutRoute
   '/favorites': typeof FavoritesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/onboarding': typeof OnboardingRoute
   '/orders': typeof OrdersRoute
   '/pets': typeof PetsRoute
   '/profile': typeof ProfileRoute
   '/reminders': typeof RemindersRoute
+  '/rewards': typeof RewardsRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/staff': typeof StaffRoute
@@ -165,17 +189,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/appointments': typeof AppointmentsRoute
   '/book': typeof BookRoute
+  '/calendar': typeof CalendarRoute
   '/cart': typeof CartRoute
   '/chat': typeof ChatRoute
   '/checkout': typeof CheckoutRoute
   '/favorites': typeof FavoritesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/onboarding': typeof OnboardingRoute
   '/orders': typeof OrdersRoute
   '/pets': typeof PetsRoute
   '/profile': typeof ProfileRoute
   '/reminders': typeof RemindersRoute
+  '/rewards': typeof RewardsRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/staff': typeof StaffRoute
@@ -187,17 +214,20 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/book'
+    | '/calendar'
     | '/cart'
     | '/chat'
     | '/checkout'
     | '/favorites'
     | '/home'
     | '/login'
+    | '/map'
     | '/onboarding'
     | '/orders'
     | '/pets'
     | '/profile'
     | '/reminders'
+    | '/rewards'
     | '/shop'
     | '/signup'
     | '/staff'
@@ -207,17 +237,20 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/book'
+    | '/calendar'
     | '/cart'
     | '/chat'
     | '/checkout'
     | '/favorites'
     | '/home'
     | '/login'
+    | '/map'
     | '/onboarding'
     | '/orders'
     | '/pets'
     | '/profile'
     | '/reminders'
+    | '/rewards'
     | '/shop'
     | '/signup'
     | '/staff'
@@ -227,17 +260,20 @@ export interface FileRouteTypes {
     | '/'
     | '/appointments'
     | '/book'
+    | '/calendar'
     | '/cart'
     | '/chat'
     | '/checkout'
     | '/favorites'
     | '/home'
     | '/login'
+    | '/map'
     | '/onboarding'
     | '/orders'
     | '/pets'
     | '/profile'
     | '/reminders'
+    | '/rewards'
     | '/shop'
     | '/signup'
     | '/staff'
@@ -248,17 +284,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppointmentsRoute: typeof AppointmentsRoute
   BookRoute: typeof BookRoute
+  CalendarRoute: typeof CalendarRoute
   CartRoute: typeof CartRoute
   ChatRoute: typeof ChatRoute
   CheckoutRoute: typeof CheckoutRoute
   FavoritesRoute: typeof FavoritesRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  MapRoute: typeof MapRoute
   OnboardingRoute: typeof OnboardingRoute
   OrdersRoute: typeof OrdersRoute
   PetsRoute: typeof PetsRoute
   ProfileRoute: typeof ProfileRoute
   RemindersRoute: typeof RemindersRoute
+  RewardsRoute: typeof RewardsRoute
   ShopRoute: typeof ShopRoute
   SignupRoute: typeof SignupRoute
   StaffRoute: typeof StaffRoute
@@ -286,6 +325,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reminders': {
@@ -321,6 +367,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -365,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/book': {
       id: '/book'
       path: '/book'
@@ -400,17 +460,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppointmentsRoute: AppointmentsRoute,
   BookRoute: BookRoute,
+  CalendarRoute: CalendarRoute,
   CartRoute: CartRoute,
   ChatRoute: ChatRoute,
   CheckoutRoute: CheckoutRoute,
   FavoritesRoute: FavoritesRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  MapRoute: MapRoute,
   OnboardingRoute: OnboardingRoute,
   OrdersRoute: OrdersRoute,
   PetsRoute: PetsRoute,
   ProfileRoute: ProfileRoute,
   RemindersRoute: RemindersRoute,
+  RewardsRoute: RewardsRoute,
   ShopRoute: ShopRoute,
   SignupRoute: SignupRoute,
   StaffRoute: StaffRoute,
