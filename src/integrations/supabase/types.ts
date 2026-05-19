@@ -840,6 +840,33 @@ export type Database = {
           },
         ]
       }
+      weight_records: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          pet_id: string
+          recorded_on: string
+          weight_kg: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pet_id: string
+          recorded_on?: string
+          weight_kg: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          pet_id?: string
+          recorded_on?: string
+          weight_kg?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -901,6 +928,8 @@ export type Database = {
         | "treatment"
         | "food_restock"
         | "appointment"
+        | "medication"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1051,6 +1080,8 @@ export const Constants = {
         "treatment",
         "food_restock",
         "appointment",
+        "medication",
+        "other",
       ],
     },
   },
