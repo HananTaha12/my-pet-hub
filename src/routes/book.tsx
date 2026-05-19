@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { createNotification } from "@/lib/notify";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/book")({
@@ -70,6 +71,15 @@ function Book() {
       owner_id: user.id, pet_id: petId, service_id: serviceId, scheduled_at: slot, special_instructions: notes || null,
     });
     if (error) return toast.error(error.message);
+    const svc = services.find((s) => s.id === serviceId);
+    const pet = pets.find((p) => p.id === petId);
+    await createNotification({
+      userId: user.id,
+      title: "Appointment booked",
+      body: `${svc?.name ?? "Service"} for ${pet?.name ?? "your pet"} on ${new Date(slot).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}.`,
+      type: "appointment",
+      link: "/appointments",
+    });
     toast.success("Appointment booked!");
     navigate({ to: "/appointments" });
   };
