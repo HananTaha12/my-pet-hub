@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { fetchCart, type CartLine } from "@/lib/cart";
 import { createNotification } from "@/lib/notify";
+import { awardPoints } from "@/lib/loyalty";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
@@ -41,13 +42,19 @@ function Checkout() {
     const items = lines.map((l) => ({ order_id: order.id, product_id: l.product_id, product_name: l.name, unit_price: l.unit_price, quantity: l.quantity }));
     await supabase.from("order_items").insert(items);
     await supabase.from("cart_items").delete().eq("user_id", user.id);
-    await createNotification({
-      userId: user.id,
-      title: "Order confirmed",
-      body: `Your order of $${total.toFixed(2)} is being prepared.`,
-      type: "order",
-      link: "/orders",
-    });
+    const earned = Math.floor(total);
+    await Promise.all([
+      createNotification({
+        userId: user.id,
+        title: "Order confirmed",
+        body: `Your order of $${total.toFixed(2)} is being prepared. +${earned} pts earned!`,
+        type: "order",
+        link: "/orders",
+      }),
+      earned > 0
+        ? awardPoints({ userId: user.id, points: earned, reason: `Order #${order.id.slice(0, 8)}`, orderId: order.id })
+        : Promise.resolve(),
+    ]);
     setLoading(false);
     toast.success("Order placed!");
     navigate({ to: "/orders" });
