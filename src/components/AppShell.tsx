@@ -1,7 +1,9 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut } from "lucide-react";
+import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut, Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationsBell } from "@/components/NotificationsBell";
 import type { ReactNode } from "react";
 
 const ownerNav = [
@@ -16,6 +18,7 @@ const sideExtra = [
   { to: "/pets", label: "My Pets", icon: PawPrint },
   { to: "/appointments", label: "Appointments", icon: Calendar },
   { to: "/orders", label: "Orders", icon: ShoppingBag },
+  { to: "/favorites", label: "Favorites", icon: Heart },
   { to: "/reminders", label: "Reminders", icon: Bell },
 ] as const;
 
