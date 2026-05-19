@@ -125,7 +125,7 @@ function Staff() {
     load();
   };
 
-  const setOrderStatus = async (id: string, status: string) => {
+  const setOrderStatus = async (id: string, status: "confirmed" | "processing" | "shipped" | "delivered" | "cancelled") => {
     const { error } = await supabase.from("orders").update({ status }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Order updated");
