@@ -22,11 +22,14 @@ function Favorites() {
 
   const load = async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("favorites")
-      .select("product:product_id(id, name, price, image_url, species)")
-      .eq("user_id", user.id);
-    setItems((data ?? []).map((r: { product: Product | null }) => r.product).filter(Boolean) as Product[]);
+    const { data: favs } = await supabase.from("favorites").select("product_id").eq("user_id", user.id);
+    const ids = (favs ?? []).map((f) => f.product_id);
+    if (ids.length === 0) { setItems([]); return; }
+    const { data: prods } = await supabase
+      .from("products")
+      .select("id, name, price, image_url, species")
+      .in("id", ids);
+    setItems((prods ?? []) as Product[]);
   };
 
   useEffect(() => { load(); }, [user]);
