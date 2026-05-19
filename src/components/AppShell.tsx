@@ -1,7 +1,9 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut } from "lucide-react";
+import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut, Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationsBell } from "@/components/NotificationsBell";
 import type { ReactNode } from "react";
 
 const ownerNav = [
@@ -16,6 +18,7 @@ const sideExtra = [
   { to: "/pets", label: "My Pets", icon: PawPrint },
   { to: "/appointments", label: "Appointments", icon: Calendar },
   { to: "/orders", label: "Orders", icon: ShoppingBag },
+  { to: "/favorites", label: "Favorites", icon: Heart },
   { to: "/reminders", label: "Reminders", icon: Bell },
 ] as const;
 
@@ -62,7 +65,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </Link>
               )}
             </div>
-            <button 
+            <NotificationsBell />
+            <ThemeToggle />
+            <button
               onClick={() => signOut()}
               className="flex items-center gap-2 rounded-full border border-border/50 px-4 py-2 text-sm font-bold tracking-wide text-muted-foreground transition-all hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
             >
@@ -78,11 +83,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           <PawPrint className="h-5 w-5 text-accent animate-pulse" /> PetPal
         </Link>
         <div className="flex items-center gap-1">
-          <Link to="/reminders" className="relative rounded-full p-2 text-muted-foreground hover:text-foreground">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-accent" />
-          </Link>
-          <button 
+          <NotificationsBell />
+          <ThemeToggle />
+          <button
             onClick={() => signOut()}
             className="rounded-full p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
           >

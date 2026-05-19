@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { fetchCart, type CartLine } from "@/lib/cart";
+import { createNotification } from "@/lib/notify";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
@@ -40,6 +41,13 @@ function Checkout() {
     const items = lines.map((l) => ({ order_id: order.id, product_id: l.product_id, product_name: l.name, unit_price: l.unit_price, quantity: l.quantity }));
     await supabase.from("order_items").insert(items);
     await supabase.from("cart_items").delete().eq("user_id", user.id);
+    await createNotification({
+      userId: user.id,
+      title: "Order confirmed",
+      body: `Your order of $${total.toFixed(2)} is being prepared.`,
+      type: "order",
+      link: "/orders",
+    });
     setLoading(false);
     toast.success("Order placed!");
     navigate({ to: "/orders" });
