@@ -3,6 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { PawPrint, Plus, Trash2, Syringe, Pill } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
+import { WeightSection } from "@/components/WeightSection";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -81,6 +82,7 @@ function Pets() {
 
       {selected && (
         <div className="space-y-6">
+          <WeightSection petId={selected} petName={pets.find((p) => p.id === selected)?.name ?? "pet"} />
           <RecordsSection title="Vaccinations" icon={Syringe} petId={selected} userId={user!.id} table="vaccination_records" nameField="vaccine_name" records={vaccs} reload={() => loadRecords(selected)} />
           <RecordsSection title="Treatments (flea, tick, deworming)" icon={Pill} petId={selected} userId={user!.id} table="treatment_records" nameField="treatment_type" records={treats} reload={() => loadRecords(selected)} />
         </div>
