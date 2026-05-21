@@ -44,7 +44,7 @@ function HomePage() {
               .from("products")
               .select("id, name, price, image_url, species")
               .eq("active", true)
-              .ilike("species", sp)
+              .or(`species.ilike.${sp},species.ilike.all`)
               .limit(8);
             map[sp] = (prods ?? []) as Product[];
           }),
