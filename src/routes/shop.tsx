@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import heroImg from "@/assets/hero.jpg";
 import { Search, ShoppingCart, Plus, Heart } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
@@ -32,6 +33,7 @@ function Shop() {
   const [favs, setFavs] = useState<Set<string>>(new Set());
   const [ratings, setRatings] = useState<Map<string, RatingAgg>>(new Map());
   const [reviewing, setReviewing] = useState<Product | null>(null);
+  const [petSpecies, setPetSpecies] = useState<string[]>([]);
 
   const loadRatings = async () => {
     const { data } = await supabase.from("product_reviews").select("product_id, rating");
@@ -58,14 +60,26 @@ function Shop() {
     })();
   }, []);
 
+  // Fetch user's pets and their species
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data: pets } = await supabase.from("pets").select("species").eq("owner_id", user.id);
+      setPetSpecies((pets ?? []).map((p: any) => p.species?.toLowerCase()).filter(Boolean));
+    })();
+  }, [user]);
+
   useEffect(() => {
     if (user) listFavoriteIds(user.id).then(setFavs);
   }, [user]);
 
-  const filtered = products.filter((p) =>
-    (!selectedCat || p.category_id === selectedCat) &&
-    (!q || p.name.toLowerCase().includes(q.toLowerCase()))
-  );
+  // Filter products by selected category, search, and user's pet species
+  const filtered = products.filter((p) => {
+    const matchesCat = !selectedCat || p.category_id === selectedCat;
+    const matchesSearch = !q || p.name.toLowerCase().includes(q.toLowerCase());
+    const matchesSpecies = petSpecies.length === 0 || (p.species && petSpecies.includes(p.species.toLowerCase()));
+    return matchesCat && matchesSearch && matchesSpecies;
+  });
 
   const add = async (id: string) => {
     if (!user) return;
@@ -153,14 +167,33 @@ function Shop() {
                 <Heart className={cn("h-4 w-4 transition-colors", isFav ? "fill-destructive text-destructive" : "text-muted-foreground")} />
               </button>
               <div className="relative overflow-hidden rounded-[1.8rem]">
-                <img
-                  src={p.image_url || require("@/assets/hero.jpg")}
-                  alt={p.name}
-                  loading="lazy"
-                  width={400}
-                  height={400}
-                  className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
+                {p.image_url ? (
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    loading="lazy"
+                    width={400}
+                    height={400}
+                    className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="flex aspect-square w-full h-full items-center justify-center bg-secondary/50 text-7xl">
+                    {(() => {
+                      const name = p.name.toLowerCase();
+                      if (name.includes("cat")) return "🐱";
+                      if (name.includes("dog")) return "🐶";
+                      if (name.includes("bird")) return "🐦";
+                      if (name.includes("rabbit")) return "🐰";
+                      if (name.includes("fish")) return "🐟";
+                      if (name.includes("reptile")) return "🦎";
+                      if (name.includes("hamster")) return "🐹";
+                      if (name.includes("bedding")) return "🛏️";
+                      if (name.includes("food")) return "🍽️";
+                      if (name.includes("toy")) return "🧸";
+                      return <img src={heroImg} alt="product" className="w-2/3 h-2/3 object-contain opacity-60" />;
+                    })()}
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <button
                   onClick={() => add(p.id)}
