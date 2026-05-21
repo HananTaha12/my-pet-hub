@@ -24,7 +24,7 @@ interface Reminder { id: string; title: string; due_at: string; type: string }
 function HomePage() {
   const { user } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
-  const [recs, setRecs] = useState<Product[]>([]);
+  const [recsBySpecies, setRecsBySpecies] = useState<Record<string, Product[]>>({});
   const [appts, setAppts] = useState<Appt[]>([]);
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
@@ -32,15 +32,26 @@ function HomePage() {
     if (!user) return;
     (async () => {
       const { data: p } = await supabase.from("pets").select("id, name, species, breed").eq("owner_id", user.id);
-      setPets((p ?? []) as Pet[]);
-      const speciesList = (p ?? []).map((x) => x.species);
-      const { data: prods } = await supabase
-        .from("products")
-        .select("id, name, price, image_url, species, featured")
-        .eq("active", true)
-        .or(speciesList.length ? `species.in.(${speciesList.join(",")}),species.eq.all,featured.eq.true` : "featured.eq.true")
-        .limit(8);
-      setRecs((prods ?? []) as Product[]);
+      const petsData = (p ?? []) as Pet[];
+      setPets(petsData);
+
+      const speciesSet = Array.from(new Set(petsData.map((x) => x.species.toLowerCase())));
+      if (speciesSet.length) {
+        const map: Record<string, Product[]> = {};
+        await Promise.all(
+          speciesSet.map(async (sp) => {
+            const { data: prods } = await supabase
+              .from("products")
+              .select("id, name, price, image_url, species")
+              .eq("active", true)
+              .ilike("species", sp)
+              .limit(8);
+            map[sp] = (prods ?? []) as Product[];
+          }),
+        );
+        setRecsBySpecies(map);
+      }
+
       const { data: a } = await supabase
         .from("appointments")
         .select("id, scheduled_at, services(name), pets(name)")
@@ -61,6 +72,13 @@ function HomePage() {
   }, [user]);
 
   const activePet = pets[0];
+  const seenSpecies = new Set<string>();
+  const petsForRecs = pets.filter((p) => {
+    const sp = p.species.toLowerCase();
+    if (seenSpecies.has(sp)) return false;
+    seenSpecies.add(sp);
+    return true;
+  });
 
   return (    <div className="space-y-10 transition-all duration-700 animate-in fade-in zoom-in-95">
       <section className="relative overflow-hidden rounded-3xl bg-foreground p-8 text-background shadow-2xl">
