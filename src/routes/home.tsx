@@ -72,6 +72,34 @@ function HomePage() {
   const [activePetIndex, setActivePetIndex] = useState(0);
   const [showEmergencyDialog, setShowEmergencyDialog] = useState(false);
 
+  // Animated Health Score counter states
+  const [healthScore, setHealthScore] = useState(0);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const scoreTimer = setTimeout(() => setHealthScore(98), 300);
+
+    let start = 0;
+    const end = 98;
+    const duration = 1200;
+    const stepTime = Math.abs(Math.floor(duration / end));
+    
+    const countTimer = setInterval(() => {
+      start += 1;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(countTimer);
+      } else {
+        setCount(start);
+      }
+    }, stepTime);
+
+    return () => {
+      clearTimeout(scoreTimer);
+      clearInterval(countTimer);
+    };
+  }, []);
+
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -167,151 +195,126 @@ function HomePage() {
   return (
     <div className="space-y-10 transition-all duration-700 animate-in fade-in zoom-in-95">
       
+      {/* 0. WELCOME HEADER */}
+      <div className="bg-card/45 backdrop-blur-md rounded-[2rem] border border-border/40 p-6 flex flex-col md:flex-row items-center justify-between gap-4 hover-lift text-left">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-foreground font-display text-xl font-bold">
+            <span>🐾 Welcome Back, {user?.email ? user.email.split("@")[0] : "Taqwamrowat"}</span>
+          </div>
+          <p className="text-xs text-muted-foreground font-semibold">Your Pet's Health Companion</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-wider text-primary">
+          <span>Track Health</span>
+          <span>•</span>
+          <span>AI Diagnosis</span>
+          <span>•</span>
+          <span>Emergency Support</span>
+        </div>
+      </div>
+
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#1E1145] via-[#10072B] to-[#090214] p-6 md:p-8 text-white shadow-2xl min-h-[350px] flex flex-col justify-between">
-        
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-card/65 backdrop-blur-md border border-border/40 p-6 md:p-8 text-foreground shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8 hover-lift">
         {/* Decorative ambient lights */}
-        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl animate-pulse" />
-        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
+        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl animate-pulse pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
         
-        {/* Top Header & Content Grid */}
-        <div className="relative z-10 flex flex-col lg:flex-row justify-between gap-8 w-full">
+        <div className="relative z-10 grid gap-8 lg:grid-cols-12 w-full items-center">
           
-          {/* Left Column: Greeting, Badge, Grid Widgets, Actions */}
-          <div className="flex-1 space-y-6">
-            
-            {/* Widescreen dashboard badge */}
-            <div className="space-y-1.5">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-md">
-                <Sparkles className="h-3 w-3 text-yellow-300 animate-spin" style={{ animationDuration: "4s" }} /> Widescreen Dashboard
+          {/* Left Column: Pet Image */}
+          <div className="lg:col-span-3 flex justify-center lg:justify-start">
+            <div className="relative group">
+              <div className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-primary to-accent opacity-25 blur-lg group-hover:opacity-40 transition-opacity" />
+              <img 
+                src={petPhoto} 
+                alt={petName} 
+                className="relative w-48 h-48 rounded-[2.2rem] object-cover border-4 border-card shadow-2xl transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1 text-[9px] font-black uppercase tracking-wider text-white shadow-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" /> Active Profile
               </div>
-              <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight">
-                Keep {petName} Healthy & Happy! 🐾
-              </h1>
-              <p className="text-white/60 text-[10px] font-semibold uppercase tracking-widest">
-                {new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" }).toUpperCase()}
+            </div>
+          </div>
+
+          {/* Center Column: Pet Name, Health Ring, Checkup logs */}
+          <div className="lg:col-span-5 text-center lg:text-left space-y-6">
+            <div className="space-y-1">
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground tracking-tight">
+                🐕 {petName}
+              </h2>
+              <p className="text-xs text-muted-foreground font-extrabold uppercase tracking-widest">
+                {petBreed} · {petAge}
               </p>
             </div>
 
-            {/* Sub-widgets Grid */}
-            <div className="grid grid-cols-2 gap-4 max-w-xl">
-              
-              {/* Widget 1: Health Score */}
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-3.5 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 block">Health Score</span>
-                  <span className="text-sm font-bold text-emerald-400 block mt-1">96% Score</span>
-                </div>
-                <span className="text-[10px] text-white/40 mt-1.5 block leading-tight">Daily vitals stable</span>
+            {/* Live Animated Health Score Circle */}
+            <div className="flex flex-col sm:flex-row items-center gap-5 justify-center lg:justify-start">
+              <div className="relative flex items-center justify-center h-20 w-20 shrink-0 bg-primary/10 rounded-full border border-primary/20 p-2 shadow-inner">
+                <svg className="h-full w-full transform -rotate-90">
+                  <circle cx="32" cy="32" r="26" className="stroke-primary/15 fill-none" strokeWidth="4.5" />
+                  <circle 
+                    cx="32" 
+                    cy="32" 
+                    r="26" 
+                    className="stroke-primary fill-none transition-all duration-1000 ease-out" 
+                    strokeWidth="4.5" 
+                    strokeDasharray="163.3" 
+                    strokeDashoffset={163.3 - (163.3 * healthScore) / 100} 
+                    strokeLinecap="round" 
+                  />
+                </svg>
+                <span className="absolute text-sm font-black text-foreground">{count}%</span>
               </div>
-
-              {/* Widget 2: Next Vet Visit */}
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-3.5 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 block">Next Vet Visit</span>
-                  <span className="text-sm font-bold text-primary block mt-1">June 10</span>
-                </div>
-                <span className="text-[10px] text-white/40 mt-1.5 block leading-tight">Clinical checkup scheduled</span>
+              <div className="text-left space-y-0.5">
+                <p className="text-xs font-black text-foreground flex items-center gap-1">
+                  ❤️ Health Score Index
+                </p>
+                <p className="text-[10px] text-muted-foreground font-semibold leading-relaxed">
+                  Vitals & daily wellness tracking stable. Next vaccine due soon.
+                </p>
               </div>
-
-              {/* Widget 3: Food Stock */}
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-3.5 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 block">Food Stock</span>
-                  <span className="text-sm font-bold text-amber-400 block mt-1">30% remaining</span>
-                </div>
-                <span className="text-[10px] text-white/40 mt-1.5 block leading-tight">Salmon & chicken recipe</span>
-              </div>
-
-              {/* Widget 4: Vaccination Status */}
-              <div className="rounded-2xl bg-white/5 border border-white/10 p-3.5 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-white/50 block">Vaccination Status</span>
-                  <span className="text-sm font-bold text-rose-400 block mt-1">Rabies (5d left)</span>
-                </div>
-                <span className="text-[10px] text-white/40 mt-1.5 block leading-tight">Booster notification active</span>
-              </div>
-
             </div>
 
-            {/* Quick Actions Buttons */}
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Button variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/15 rounded-full px-5 py-5 text-xs font-bold flex items-center gap-2" asChild>
-                <Link to="/book">
-                  <Calendar className="h-4 w-4" /> Book Appointment
-                </Link>
-              </Button>
-              <Button variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/15 rounded-full px-5 py-5 text-xs font-bold flex items-center gap-2" asChild>
-                <Link to="/chat">
-                  <MessageCircle className="h-4 w-4" /> Consult AI Assistant
-                </Link>
-              </Button>
-              <Button variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/15 rounded-full px-5 py-5 text-xs font-bold flex items-center gap-2" asChild>
-                <Link to="/pets">
-                  <FileText className="h-4 w-4" /> Medical History
-                </Link>
-              </Button>
+            {/* Checkup Details */}
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/30 max-w-sm mx-auto lg:mx-0">
+              <div className="text-left">
+                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Last Checkup</span>
+                <span className="text-xs font-bold text-foreground block mt-0.5">2 days ago</span>
+              </div>
+              <div className="text-left">
+                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Vaccinations</span>
+                <span className="text-xs font-bold text-emerald-500 block mt-0.5">Up To Date</span>
+              </div>
+              <div className="text-left">
+                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Active Weight</span>
+                <span className="text-xs font-bold text-foreground block mt-0.5">{petWeight}</span>
+              </div>
+              <div className="text-left">
+                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Age Index</span>
+                <span className="text-xs font-bold text-foreground block mt-0.5">{petAge}</span>
+              </div>
             </div>
-
           </div>
 
-          {/* Right Column: Floating glassmorphic active pet profile card */}
-          <div className="flex items-center justify-center lg:justify-end w-full lg:w-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/15 flex flex-col gap-4 w-full sm:w-[380px] shadow-2xl relative">
-              <div className="flex items-center gap-4 border-b border-white/10 pb-4">
-                <img 
-                  src={petPhoto} 
-                  alt={petName} 
-                  className="w-24 h-24 rounded-2xl object-cover border border-white/20 shadow-md flex-shrink-0"
-                />
-                <div>
-                  <h3 className="font-display text-2xl font-bold text-white leading-none">{petName}</h3>
-                  <p className="text-[10px] text-white/60 font-semibold uppercase mt-1.5 tracking-wider">{petBreed}</p>
-                  <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> Active Profile
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress Ring and Health details */}
-              <div className="flex items-center gap-4">
-                <div className="relative flex items-center justify-center h-14 w-14 shrink-0">
-                  <svg className="h-full w-full transform -rotate-90">
-                    <circle cx="28" cy="28" r="24" className="stroke-white/10 fill-none" strokeWidth="4" />
-                    <circle cx="28" cy="28" r="24" className="stroke-primary fill-none" strokeWidth="4" strokeDasharray="150" strokeDashoffset="3" strokeLinecap="round" />
-                  </svg>
-                  <span className="absolute text-[10px] font-black text-white">98%</span>
-                </div>
-                <div>
-                  <p className="text-[11px] font-bold text-white">Health Score Index</p>
-                  <p className="text-[9px] text-white/60">Excellent physiological status</p>
-                </div>
-              </div>
-
-              {/* Vital Statistics Details List */}
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 border-t border-white/10 pt-4 text-[10px] font-bold text-white/90">
-                <div className="flex justify-between border-b border-white/5 pb-1">
-                  <span className="text-white/45 font-semibold">AGE</span>
-                  <span>{petAge}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
-                  <span className="text-white/45 font-semibold">WEIGHT</span>
-                  <span>{petWeight}</span>
-                </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
-                  <span className="text-white/45 font-semibold">VACCINES</span>
-                  <span className="text-emerald-400 font-extrabold">UP TO DATE</span>
-                </div>
-                <div className="flex justify-between border-b border-white/5 pb-1">
-                  <span className="text-white/45 font-semibold">CHECKUP</span>
-                  <span>2 days ago</span>
-                </div>
-              </div>
-            </div>
+          {/* Right Column: Quick Action Stack */}
+          <div className="lg:col-span-4 flex flex-col gap-3 w-full sm:max-w-xs mx-auto lg:ml-auto">
+            <Button className="w-full bg-primary hover:bg-primary/95 text-white rounded-full py-6 font-bold shadow-lg shadow-primary/10 hover-lift flex items-center justify-center gap-2" asChild>
+              <Link to="/chat">
+                <MessageCircle className="h-4.5 w-4.5" /> Consult AI Vet
+              </Link>
+            </Button>
+            <Button variant="outline" className="w-full border-border/70 bg-card hover:bg-secondary/20 rounded-full py-6 font-bold hover-lift flex items-center justify-center gap-2 text-foreground" asChild>
+              <Link to="/book">
+                <Calendar className="h-4.5 w-4.5 text-primary" /> Book Appointment
+              </Link>
+            </Button>
+            <Button variant="outline" className="w-full border-border/70 bg-card hover:bg-secondary/20 rounded-full py-6 font-bold hover-lift flex items-center justify-center gap-2 text-foreground" asChild>
+              <Link to={`/pets?id=${activePet.id}`}>
+                <FileText className="h-4.5 w-4.5 text-accent" /> Medical Passport
+              </Link>
+            </Button>
           </div>
 
         </div>
-
       </section>
 
       {/* 2. ECOSYSTEM STATISTICS SECTION */}

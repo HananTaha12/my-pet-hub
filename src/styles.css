@@ -145,14 +145,7 @@
     position: fixed;
     inset: 0;
     z-index: -10;
-    background-color: var(--color-background);
-    background-image: 
-      radial-gradient(at 0% 0%, var(--mesh-1) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, var(--mesh-2) 0px, transparent 50%),
-      radial-gradient(at 50% 50%, var(--mesh-3) 0px, transparent 70%);
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-size: auto, auto, auto;
-    opacity: 0.85;
+    background: linear-gradient(180deg, #F5D6E4, #EBC4D8, #F7E7EE);
     pointer-events: none;
   }
   body::after {
@@ -160,10 +153,10 @@
     position: fixed;
     inset: 0;
     z-index: -9;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Ctext x='15' y='35' font-size='22' opacity='0.04'%3E🐾%3C/text%3E%3Ctext x='85' y='95' font-size='20' opacity='0.04'%3E🦴%3C/text%3E%3Ctext x='125' y='30' font-size='18' opacity='0.04'%3E❤️%3C/text%3E%3Ctext x='35' y='115' font-size='22' opacity='0.03'%3E🐾%3C/text%3E%3Ctext x='105' y='145' font-size='20' opacity='0.03'%3E🦴%3C/text%3E%3Ctext x='15' y='145' font-size='16' opacity='0.03'%3E❤️%3C/text%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Ctext x='30' y='60' font-size='44' opacity='0.08'%3E🐾%3C/text%3E%3Ctext x='140' y='140' font-size='38' opacity='0.08'%3E🦴%3C/text%3E%3Ctext x='170' y='50' font-size='32' opacity='0.08'%3E❤️%3C/text%3E%3Ctext x='60' y='170' font-size='42' opacity='0.07'%3E🐾%3C/text%3E%3C/svg%3E");
     background-repeat: repeat;
-    background-size: 160px 160px;
-    opacity: 1; /* Subtle background texture with 3-4% opacity inside the SVG */
+    background-size: 220px 220px;
+    opacity: 1;
     pointer-events: none;
   }
   h1, h2, h3, .font-display {
