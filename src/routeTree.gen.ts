@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -22,6 +23,7 @@ import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as FavoritesRouteImport } from './routes/favorites'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CartRouteImport } from './routes/cart'
@@ -44,6 +46,11 @@ const SignupRoute = SignupRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RewardsRoute = RewardsRouteImport.update({
@@ -96,6 +103,11 @@ const FavoritesRoute = FavoritesRouteImport.update({
   path: '/favorites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -146,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/chat': typeof ChatRoute
   '/checkout': typeof CheckoutRoute
+  '/community': typeof CommunityRoute
   '/favorites': typeof FavoritesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -156,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reminders': typeof RemindersRoute
   '/rewards': typeof RewardsRoute
+  '/settings': typeof SettingsRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/staff': typeof StaffRoute
@@ -169,6 +183,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/chat': typeof ChatRoute
   '/checkout': typeof CheckoutRoute
+  '/community': typeof CommunityRoute
   '/favorites': typeof FavoritesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -179,6 +194,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reminders': typeof RemindersRoute
   '/rewards': typeof RewardsRoute
+  '/settings': typeof SettingsRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/staff': typeof StaffRoute
@@ -193,6 +209,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/chat': typeof ChatRoute
   '/checkout': typeof CheckoutRoute
+  '/community': typeof CommunityRoute
   '/favorites': typeof FavoritesRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
@@ -203,6 +220,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reminders': typeof RemindersRoute
   '/rewards': typeof RewardsRoute
+  '/settings': typeof SettingsRoute
   '/shop': typeof ShopRoute
   '/signup': typeof SignupRoute
   '/staff': typeof StaffRoute
@@ -218,6 +236,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/chat'
     | '/checkout'
+    | '/community'
     | '/favorites'
     | '/home'
     | '/login'
@@ -228,6 +247,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reminders'
     | '/rewards'
+    | '/settings'
     | '/shop'
     | '/signup'
     | '/staff'
@@ -241,6 +261,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/chat'
     | '/checkout'
+    | '/community'
     | '/favorites'
     | '/home'
     | '/login'
@@ -251,6 +272,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reminders'
     | '/rewards'
+    | '/settings'
     | '/shop'
     | '/signup'
     | '/staff'
@@ -264,6 +286,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/chat'
     | '/checkout'
+    | '/community'
     | '/favorites'
     | '/home'
     | '/login'
@@ -274,6 +297,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reminders'
     | '/rewards'
+    | '/settings'
     | '/shop'
     | '/signup'
     | '/staff'
@@ -288,6 +312,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   ChatRoute: typeof ChatRoute
   CheckoutRoute: typeof CheckoutRoute
+  CommunityRoute: typeof CommunityRoute
   FavoritesRoute: typeof FavoritesRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
@@ -298,6 +323,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   RemindersRoute: typeof RemindersRoute
   RewardsRoute: typeof RewardsRoute
+  SettingsRoute: typeof SettingsRoute
   ShopRoute: typeof ShopRoute
   SignupRoute: typeof SignupRoute
   StaffRoute: typeof StaffRoute
@@ -325,6 +351,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rewards': {
@@ -397,6 +430,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
@@ -464,6 +504,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   ChatRoute: ChatRoute,
   CheckoutRoute: CheckoutRoute,
+  CommunityRoute: CommunityRoute,
   FavoritesRoute: FavoritesRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
@@ -474,6 +515,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   RemindersRoute: RemindersRoute,
   RewardsRoute: RewardsRoute,
+  SettingsRoute: SettingsRoute,
   ShopRoute: ShopRoute,
   SignupRoute: SignupRoute,
   StaffRoute: StaffRoute,

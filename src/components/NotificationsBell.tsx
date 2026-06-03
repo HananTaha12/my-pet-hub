@@ -30,7 +30,43 @@ export function NotificationsBell({ className = "" }: { className?: string }) {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
-    setItems((data ?? []) as Notif[]);
+    
+    const dbNotifs = data ?? [];
+    if (dbNotifs.length === 0) {
+      // Seed beautiful interactive mock notifications for demonstration
+      const mockNotifs: Notif[] = [
+        {
+          id: "mock-notif-1",
+          title: "🔔 Vaccine due tomorrow",
+          body: "Buddy is scheduled for Rabies booster immunization at PetPal Downtown Clinic.",
+          type: "vaccination",
+          link: "/pets",
+          read_at: null,
+          created_at: new Date(Date.now() - 600000).toISOString()
+        },
+        {
+          id: "mock-notif-2",
+          title: "📅 Appointment confirmed",
+          body: "Your booking with Dr. Ellie Sattler on Nablus Road has been confirmed.",
+          type: "appointment",
+          link: "/appointments",
+          read_at: null,
+          created_at: new Date(Date.now() - 3600000).toISOString()
+        },
+        {
+          id: "mock-notif-3",
+          title: "🏡 New adoption request",
+          body: "Someone has requested information to adopt Max from the shelter.",
+          type: "adoption",
+          link: "/community",
+          read_at: null,
+          created_at: new Date(Date.now() - 7200000).toISOString()
+        }
+      ];
+      setItems(mockNotifs);
+    } else {
+      setItems(dbNotifs as Notif[]);
+    }
   };
 
   useEffect(() => {

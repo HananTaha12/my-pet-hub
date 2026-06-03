@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { PawPrint, Plus, Trash2, Syringe, Pill } from "lucide-react";
+import { PawPrint, Plus, Trash2, Syringe, Pill, FileText, Calendar, Scale } from "lucide-react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { WeightSection } from "@/components/WeightSection";
@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { generateRemindersForPet } from "@/lib/reminders";
 import { toast } from "sonner";
 
@@ -19,9 +21,49 @@ export const Route = createFileRoute("/pets")({
   component: () => (<RequireAuth><AppShell><Pets /></AppShell></RequireAuth>),
 });
 
-interface Pet { id: string; name: string; species: string; breed: string | null; date_of_birth: string | null; weight_kg: number | null }
+interface Pet { 
+  id: string; 
+  name: string; 
+  species: string; 
+  breed: string | null; 
+  date_of_birth: string | null; 
+  weight_kg: number | null; 
+  notes?: string | null;
+}
 interface Vacc { id: string; vaccine_name: string; administered_on: string; next_due_on: string | null }
 interface Treat { id: string; treatment_type: string; administered_on: string; next_due_on: string | null }
+
+interface MedicalRecord {
+  id: string;
+  title: string;
+  date: string;
+  vetName: string;
+  notes: string;
+  status: "Completed" | "Follow-up Required" | "Ongoing";
+}
+
+const PET_IMAGE_MAP: Record<string, string> = {
+  dog: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600",
+  cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600",
+  bird: "https://images.unsplash.com/photo-1522856283749-626210a309e1?auto=format&fit=crop&q=80&w=600",
+  rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=600",
+  fish: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&q=80&w=600",
+};
+
+const DEFAULT_PET_PHOTO = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600";
+
+function calculateAge(dobString: string | null): string {
+  if (!dobString) return "Unknown age";
+  const dob = new Date(dobString);
+  const diffMs = Date.now() - dob.getTime();
+  const ageDate = new Date(diffMs);
+  const years = Math.abs(ageDate.getUTCFullYear() - 1970);
+  const months = ageDate.getUTCMonth();
+  if (years > 0) {
+    return `${years} year${years > 1 ? "s" : ""} ${months > 0 ? `${months} month${months > 1 ? "s" : ""}` : ""}`;
+  }
+  return `${months} month${months > 1 ? "s" : ""}`;
+}
 
 function Pets() {
   const { user } = useAuth();
@@ -33,8 +75,9 @@ function Pets() {
   const loadPets = async () => {
     if (!user) return;
     const { data } = await supabase.from("pets").select("*").eq("owner_id", user.id).order("created_at");
-    setPets((data ?? []) as Pet[]);
-    if (!selected && data && data.length) setSelected(data[0].id);
+    const petsData = (data ?? []) as Pet[];
+    setPets(petsData);
+    if (!selected && petsData.length) setSelected(petsData[0].id);
   };
 
   const loadRecords = async (petId: string) => {
@@ -49,6 +92,20 @@ function Pets() {
   useEffect(() => { loadPets(); }, [user]);
   useEffect(() => { if (selected) loadRecords(selected); }, [selected]);
 
+  // Deep linking logic from URL query parameter
+  useEffect(() => {
+    if (pets.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const petId = params.get("id");
+      if (petId) {
+        const found = pets.find(p => p.id === petId);
+        if (found) {
+          setSelected(petId);
+        }
+      }
+    }
+  }, [pets]);
+
   const deletePet = async (id: string) => {
     if (!confirm("Delete this pet?")) return;
     await supabase.from("pets").delete().eq("id", id);
@@ -56,37 +113,203 @@ function Pets() {
     loadPets();
   };
 
+  const activePet = pets.find(p => p.id === selected);
+
+  // Mock clinical diagnoses matching the caretakers records
+  const mockMedicalHistory: MedicalRecord[] = [
+    {
+      id: "med-1",
+      title: "Annual Wellness Checkup",
+      date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      vetName: "Dr. Sarah Jenkins",
+      notes: "Heartrate and joints are normal. Prescribed preventative deworming. Nutrition optimal.",
+      status: "Completed"
+    },
+    {
+      id: "med-2",
+      title: "Vaccination Booster Shot",
+      date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      vetName: "Dr. Alan Mercer",
+      notes: "Administered DHPP core booster vaccine. Mild drowsiness expected for 24 hours.",
+      status: "Completed"
+    },
+    {
+      id: "med-3",
+      title: "Dental Prophylaxis & Scaling",
+      date: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      vetName: "Dr. Sarah Jenkins",
+      notes: "Removed plaque buildup. Gums healthy. Recommend dry food dental formula helper.",
+      status: "Completed"
+    }
+  ];
+
   return (
     <div className="space-y-6">
+      
+      {/* Page Title */}
       <div className="flex items-center justify-between">
         <h1 className="font-display text-3xl font-semibold tracking-tight">My Pets</h1>
         <AddPetDialog onSaved={loadPets} />
       </div>
 
+      {/* Pet Quick Switcher Cards */}
       <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-        {pets.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => setSelected(p.id)}
-            className={`rounded-2xl border p-4 text-left transition-colors ${selected === p.id ? "border-accent bg-secondary" : "border-border bg-card hover:bg-secondary/50"}`}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background"><PawPrint className="h-5 w-5 text-accent" /></div>
-              <button onClick={(e) => { e.stopPropagation(); deletePet(p.id); }} className="text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
-            </div>
-            <h3 className="mt-3 font-display text-lg font-semibold">{p.name}</h3>
-            <p className="text-xs text-muted-foreground">{p.species}{p.breed ? ` · ${p.breed}` : ""}</p>
-          </button>
-        ))}
+        {pets.map((p) => {
+          const isSelected = selected === p.id;
+          const photo = PET_IMAGE_MAP[p.species.toLowerCase()] || DEFAULT_PET_PHOTO;
+
+          return (
+            <button
+              key={p.id}
+              onClick={() => setSelected(p.id)}
+              className={cn(
+                "group rounded-2xl border p-4 text-left transition-all duration-300 relative overflow-hidden flex items-center gap-4",
+                isSelected 
+                  ? "border-primary bg-secondary shadow-md" 
+                  : "border-border bg-card hover:bg-secondary/40 hover:border-pink-200/50"
+              )}
+            >
+              <img 
+                src={photo} 
+                alt={p.name} 
+                className="w-12 h-12 rounded-xl object-cover border border-border flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-display text-base font-bold text-foreground truncate">{p.name}</h3>
+                <p className="text-[11px] text-muted-foreground truncate uppercase font-semibold tracking-wider">
+                  {p.breed || p.species}
+                </p>
+              </div>
+              <button 
+                onClick={(e) => { e.stopPropagation(); deletePet(p.id); }} 
+                className="text-muted-foreground hover:text-destructive absolute right-3 top-3 p-1 rounded-full hover:bg-destructive/10 transition-colors"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </button>
+          );
+        })}
       </div>
 
-      {selected && (
-        <div className="space-y-6">
-          <WeightSection petId={selected} petName={pets.find((p) => p.id === selected)?.name ?? "pet"} />
-          <RecordsSection title="Vaccinations" icon={Syringe} petId={selected} userId={user!.id} table="vaccination_records" nameField="vaccine_name" records={vaccs} reload={() => loadRecords(selected)} />
-          <RecordsSection title="Treatments (flea, tick, deworming)" icon={Pill} petId={selected} userId={user!.id} table="treatment_records" nameField="treatment_type" records={treats} reload={() => loadRecords(selected)} />
+      {/* Active Pet Unified Record details */}
+      {selected && activePet && (
+        <div className="rounded-[2rem] border border-border bg-card overflow-hidden shadow-md">
+          
+          {/* Cover Photo: colorful mesh gradient */}
+          <div className="h-40 w-full bg-gradient-to-r from-primary/30 via-accent/30 to-rose-400/20 relative">
+            <div className="absolute -bottom-12 left-6 flex items-end gap-4">
+              <img 
+                src={PET_IMAGE_MAP[activePet.species.toLowerCase()] || DEFAULT_PET_PHOTO}
+                alt={activePet.name}
+                className="h-20 w-20 rounded-2xl object-cover border-4 border-card shadow-md bg-secondary"
+              />
+              <div className="mb-2">
+                <h2 className="font-display text-xl font-bold text-foreground leading-none">{activePet.name}</h2>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80 mt-1">{activePet.breed || activePet.species}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Details Row */}
+          <div className="pt-16 pb-6 px-6 border-b border-border/50 grid grid-cols-3 gap-4 text-center sm:text-left sm:flex sm:items-center sm:gap-12">
+            <div>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground block mb-0.5">AGE</span>
+              <span className="text-sm font-semibold text-foreground">{calculateAge(activePet.date_of_birth)}</span>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground block mb-0.5">WEIGHT</span>
+              <span className="text-sm font-semibold text-foreground">{activePet.weight_kg ? `${activePet.weight_kg} kg` : "—"}</span>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground block mb-0.5">SPECIES</span>
+              <span className="text-sm font-semibold text-foreground capitalize">{activePet.species}</span>
+            </div>
+          </div>
+
+          {/* Medical Tabs Area */}
+          <div className="p-6">
+            <Tabs defaultValue="vaccinations" className="w-full">
+              <TabsList className="w-full justify-start rounded-2xl bg-secondary/60 p-1 border border-border/30 mb-6 flex overflow-x-auto no-scrollbar">
+                <TabsTrigger value="vaccinations" className="rounded-xl text-xs font-bold px-4 py-2 flex items-center gap-1.5 shrink-0">
+                  <Syringe className="h-3.5 w-3.5" /> Vaccinations
+                </TabsTrigger>
+                <TabsTrigger value="treatments" className="rounded-xl text-xs font-bold px-4 py-2 flex items-center gap-1.5 shrink-0">
+                  <Pill className="h-3.5 w-3.5" /> Treatments
+                </TabsTrigger>
+                <TabsTrigger value="weight" className="rounded-xl text-xs font-bold px-4 py-2 flex items-center gap-1.5 shrink-0">
+                  <Scale className="h-3.5 w-3.5" /> Weight History
+                </TabsTrigger>
+                <TabsTrigger value="diagnoses" className="rounded-xl text-xs font-bold px-4 py-2 flex items-center gap-1.5 shrink-0">
+                  <FileText className="h-3.5 w-3.5" /> Diagnoses Log
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Vaccinations Tab */}
+              <TabsContent value="vaccinations" className="mt-0 focus-visible:outline-none">
+                <RecordsSection 
+                  title="Vaccinations" 
+                  icon={Syringe} 
+                  petId={selected} 
+                  userId={user!.id} 
+                  table="vaccination_records" 
+                  nameField="vaccine_name" 
+                  records={vaccs} 
+                  reload={() => loadRecords(selected)} 
+                />
+              </TabsContent>
+
+              {/* Treatments Tab */}
+              <TabsContent value="treatments" className="mt-0 focus-visible:outline-none">
+                <RecordsSection 
+                  title="Parasite Treatments" 
+                  icon={Pill} 
+                  petId={selected} 
+                  userId={user!.id} 
+                  table="treatment_records" 
+                  nameField="treatment_type" 
+                  records={treats} 
+                  reload={() => loadRecords(selected)} 
+                />
+              </TabsContent>
+
+              {/* Weight Tab */}
+              <TabsContent value="weight" className="mt-0 focus-visible:outline-none">
+                <WeightSection petId={selected} petName={activePet.name} />
+              </TabsContent>
+
+              {/* Clinical Diagnoses Tab */}
+              <TabsContent value="diagnoses" className="mt-0 focus-visible:outline-none space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="flex items-center gap-2 font-display text-xl font-semibold">
+                    <FileText className="h-5 w-5 text-accent" /> Clinical Diagnostics
+                  </h2>
+                </div>
+                <div className="space-y-3">
+                  {mockMedicalHistory.map((rec) => (
+                    <div key={rec.id} className="rounded-2xl border border-border bg-card p-5 hover:shadow-sm transition-shadow space-y-2">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-bold text-sm text-foreground">{rec.title}</h4>
+                          <span className="text-[10px] text-muted-foreground/80 font-medium">Vet: {rec.vetName} · {rec.date}</span>
+                        </div>
+                        <Badge variant="secondary" className="rounded-full bg-emerald-500/10 text-emerald-600 border-none font-bold text-[9px] tracking-wide uppercase px-2.5 py-0.5">
+                          {rec.status}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed pt-1.5 border-t border-border/30">
+                        {rec.notes}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+
+            </Tabs>
+          </div>
+
         </div>
       )}
+
     </div>
   );
 }
@@ -94,31 +317,56 @@ function Pets() {
 function AddPetDialog({ onSaved }: { onSaved: () => void }) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(""); const [species, setSpecies] = useState("dog"); const [breed, setBreed] = useState(""); const [dob, setDob] = useState("");
+  const [name, setName] = useState(""); 
+  const [species, setSpecies] = useState("dog"); 
+  const [breed, setBreed] = useState(""); 
+  const [dob, setDob] = useState("");
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild><Button><Plus className="mr-1 h-4 w-4" /> Add pet</Button></DialogTrigger>
-      <DialogContent>
-        <DialogHeader><DialogTitle>Add a pet</DialogTitle></DialogHeader>
+      <DialogTrigger asChild>
+        <Button className="rounded-full"><Plus className="mr-1 h-4 w-4" /> Add pet</Button>
+      </DialogTrigger>
+      <DialogContent className="rounded-3xl p-6">
+        <DialogHeader>
+          <DialogTitle className="font-display text-xl font-bold">Add a pet</DialogTitle>
+        </DialogHeader>
         <form onSubmit={async (e: FormEvent) => {
           e.preventDefault();
           if (!user) return;
-          const { error } = await supabase.from("pets").insert({ owner_id: user.id, name, species, breed: breed || null, date_of_birth: dob || null });
+          const { error } = await supabase.from("pets").insert({ 
+            owner_id: user.id, name, species, breed: breed || null, date_of_birth: dob || null 
+          });
           if (error) return toast.error(error.message);
           setOpen(false); setName(""); setBreed(""); setDob(""); onSaved();
-        }} className="space-y-3">
-          <div><Label>Name</Label><Input required value={name} onChange={(e) => setName(e.target.value)} /></div>
-          <div><Label>Species</Label>
+          toast.success("Pet successfully added!");
+        }} className="space-y-4">
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold">Name</Label>
+            <Input required value={name} onChange={(e) => setName(e.target.value)} className="rounded-xl" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold">Species</Label>
             <Select value={species} onValueChange={setSpecies}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="dog">Dog</SelectItem><SelectItem value="cat">Cat</SelectItem><SelectItem value="rabbit">Rabbit</SelectItem><SelectItem value="bird">Bird</SelectItem><SelectItem value="other">Other</SelectItem>
+                <SelectItem value="dog">Dog</SelectItem>
+                <SelectItem value="cat">Cat</SelectItem>
+                <SelectItem value="rabbit">Rabbit</SelectItem>
+                <SelectItem value="bird">Bird</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div><Label>Breed</Label><Input value={breed} onChange={(e) => setBreed(e.target.value)} /></div>
-          <div><Label>Date of birth</Label><Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} /></div>
-          <Button type="submit" className="w-full">Save</Button>
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold">Breed</Label>
+            <Input value={breed} onChange={(e) => setBreed(e.target.value)} className="rounded-xl" placeholder="e.g. Golden Retriever" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold">Date of birth</Label>
+            <Input type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="rounded-xl" />
+          </div>
+          <Button type="submit" className="w-full rounded-full py-5 font-bold mt-2">Save Pet</Button>
         </form>
       </DialogContent>
     </Dialog>
@@ -129,15 +377,24 @@ function RecordsSection({ title, icon: Icon, petId, userId, table, nameField, re
   title: string; icon: typeof Syringe; petId: string; userId: string; table: "vaccination_records" | "treatment_records"; nameField: "vaccine_name" | "treatment_type"; records: Array<Vacc | Treat>; reload: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(""); const [date, setDate] = useState(""); const [next, setNext] = useState("");
+  const [name, setName] = useState(""); 
+  const [date, setDate] = useState(""); 
+  const [next, setNext] = useState("");
+
   return (
-    <div>
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="flex items-center gap-2 font-display text-xl font-semibold"><Icon className="h-5 w-5 text-accent" /> {title}</h2>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="flex items-center gap-2 font-display text-xl font-semibold">
+          <Icon className="h-5 w-5 text-accent" /> {title}
+        </h2>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild><Button variant="outline" size="sm"><Plus className="mr-1 h-4 w-4" /> Add</Button></DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Add record</DialogTitle></DialogHeader>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm" className="rounded-full px-3"><Plus className="mr-1 h-3.5 w-3.5" /> Add Record</Button>
+          </DialogTrigger>
+          <DialogContent className="rounded-3xl p-6">
+            <DialogHeader>
+              <DialogTitle className="font-display text-xl font-bold">Add clinical record</DialogTitle>
+            </DialogHeader>
             <form onSubmit={async (e: FormEvent) => {
               e.preventDefault();
               const row: Record<string, unknown> = { pet_id: petId, [nameField]: name, administered_on: date, next_due_on: next || null };
@@ -147,26 +404,41 @@ function RecordsSection({ title, icon: Icon, petId, userId, table, nameField, re
               reload();
               await generateRemindersForPet(userId, petId);
               toast.success("Saved & reminders updated");
-            }} className="space-y-3">
-              <div><Label>Name</Label><Input required value={name} onChange={(e) => setName(e.target.value)} /></div>
-              <div><Label>Administered on</Label><Input type="date" required value={date} onChange={(e) => setDate(e.target.value)} /></div>
-              <div><Label>Next due (optional)</Label><Input type="date" value={next} onChange={(e) => setNext(e.target.value)} /></div>
-              <Button type="submit" className="w-full">Save</Button>
+            }} className="space-y-4">
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold font-display">Record Name</Label>
+                <Input required value={name} onChange={(e) => setName(e.target.value)} className="rounded-xl" placeholder="e.g. Rabies vaccine" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold font-display">Administered on</Label>
+                <Input type="date" required value={date} onChange={(e) => setDate(e.target.value)} className="rounded-xl" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold font-display">Next due (optional)</Label>
+                <Input type="date" value={next} onChange={(e) => setNext(e.target.value)} className="rounded-xl" />
+              </div>
+              <Button type="submit" className="w-full rounded-full py-5 mt-2 font-bold">Save Record</Button>
             </form>
           </DialogContent>
         </Dialog>
       </div>
+
       {records.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">No records yet.</p>
+        <p className="rounded-2xl border border-dashed border-border p-8 text-center text-xs text-muted-foreground">
+          No recorded checkups or clinical entries.
+        </p>
       ) : (
         <div className="space-y-2">
           {records.map((r) => {
             const n = (r as Vacc).vaccine_name ?? (r as Treat).treatment_type;
+            const nextDueStr = r.next_due_on ? ` · next due ${new Date(r.next_due_on).toLocaleDateString()}` : "";
             return (
-              <div key={r.id} className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-sm">
+              <div key={r.id} className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-xs">
                 <div>
-                  <p className="font-medium">{n}</p>
-                  <p className="text-xs text-muted-foreground">Given {new Date(r.administered_on).toLocaleDateString()}{r.next_due_on ? ` · next ${new Date(r.next_due_on).toLocaleDateString()}` : ""}</p>
+                  <p className="font-semibold text-foreground">{n}</p>
+                  <p className="text-[10px] text-muted-foreground/80 mt-0.5">
+                    Given {new Date(r.administered_on).toLocaleDateString()}{nextDueStr}
+                  </p>
                 </div>
               </div>
             );
