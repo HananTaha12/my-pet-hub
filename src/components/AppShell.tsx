@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut, Heart, MapPin, Sparkles, Users, Settings as SettingsIcon } from "lucide-react";
+import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut, Heart, MapPin, Sparkles, Users, Settings as SettingsIcon, Search, BookOpen, Activity } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -40,14 +40,33 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Desktop top bar */}
-      <header className="sticky top-0 z-40 hidden border-b border-border/60 bg-background/80 backdrop-blur-md md:block">
+      <header className="sticky top-0 z-40 hidden border-b border-white/10 bg-[#4E1B33] text-[#FFF5F9] md:block shadow-md">
         <div className="mx-auto flex h-16 max-w-[1600px] w-[95%] items-center justify-between px-6">
-          <Link to="/home" className="flex items-center gap-2 font-display text-xl font-semibold tracking-tight">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent p-1.5 shadow-lg shadow-accent/20">
-              <PawPrint className="h-full w-full text-accent-foreground" />
+          <div className="flex items-center gap-4">
+            <Link to="/home" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-white hover:opacity-95 transition-opacity">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent p-1.5 shadow-lg shadow-accent/20 animate-pulse">
+                <PawPrint className="h-full w-full text-accent-foreground" />
+              </div>
+              PetPal
+            </Link>
+            
+            {/* Campus Portal Badge */}
+            <div className="hidden xl:flex items-center gap-1.5 rounded-full bg-[#3D1426] border border-white/10 px-3 py-1 text-[10px] font-bold text-[#EBC4D8]">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-ping" />
+              Campus Portal
             </div>
-            PetPal
-          </Link>
+          </div>
+
+          {/* Search bar matching mockup */}
+          <div className="relative hidden lg:block w-72">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full bg-[#3D1426] text-white placeholder-white/40 border border-white/10 rounded-full py-1.5 pl-4 pr-10 text-xs focus:outline-none focus:border-white/20"
+            />
+            <Search className="absolute right-3.5 top-2.5 h-3.5 w-3.5 text-white/40" />
+          </div>
+
           <nav className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               {ownerNav.map((n) => (
@@ -56,7 +75,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                   to={n.to}
                   className={cn(
                     "rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
-                    isActive(n.to) ? "bg-foreground text-background shadow-lg" : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                    isActive(n.to) 
+                      ? "bg-[#FFF5F9] text-[#4E1B33] font-bold shadow-lg" 
+                      : "text-[#FFF5F9]/80 hover:text-white hover:bg-white/10"
                   )}
                 >
                   {n.label}
@@ -66,25 +87,27 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Link
                   to="/staff"
                   className={cn(
-                    "ml-2 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 text-sm font-medium",
-                    isActive("/staff") && "bg-foreground text-background shadow-lg"
+                    "ml-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-all duration-300",
+                    isActive("/staff") 
+                      ? "bg-[#FFF5F9] text-[#4E1B33] font-bold shadow-lg border-transparent" 
+                      : "text-[#FFF5F9]/80 border-white/20 hover:text-white hover:bg-white/10"
                   )}
                 >
                   <ShieldCheck className="h-4 w-4" /> Staff
                 </Link>
               )}
             </div>
-            <NotificationsBell />
-            <ThemeToggle />
+            <NotificationsBell className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
+            <ThemeToggle className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
             <button
               onClick={() => setEmergencyOpen(true)}
-              className="flex items-center gap-1 rounded-full bg-destructive/10 border border-destructive/20 px-3.5 py-1.5 text-xs font-bold tracking-wide text-destructive hover:bg-destructive hover:text-white transition-all shadow-sm animate-pulse"
+              className="flex items-center gap-1 rounded-full bg-red-500/25 border border-red-500/30 px-3.5 py-1.5 text-xs font-bold tracking-wide text-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm animate-pulse"
             >
               🚨 Emergency
             </button>
             <button
               onClick={() => signOut()}
-              className="flex items-center gap-2 rounded-full border border-border/50 px-4 py-2 text-sm font-bold tracking-wide text-muted-foreground transition-all hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
+              className="flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm font-bold tracking-wide text-[#EBC4D8] transition-all hover:bg-red-500/20 hover:text-red-200 hover:border-red-500/30"
             >
               <LogOut className="h-4 w-4" /> Logout
             </button>
@@ -93,22 +116,22 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border/60 glass px-4 md:hidden">
-        <Link to="/home" className="flex items-center gap-2 font-display text-lg font-semibold tracking-tight">
+      <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-white/10 bg-[#4E1B33] text-[#FFF5F9] px-4 md:hidden">
+        <Link to="/home" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-white hover:opacity-95 transition-opacity">
           <PawPrint className="h-5 w-5 text-accent animate-pulse" /> PetPal
         </Link>
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setEmergencyOpen(true)}
-            className="flex items-center h-8 rounded-full bg-destructive/10 border border-destructive/20 px-2.5 text-[10px] font-black text-destructive hover:bg-destructive hover:text-white transition-all shadow-sm"
+            className="flex items-center h-8 rounded-full bg-red-500/25 border border-red-500/30 px-2.5 text-[10px] font-black text-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm"
           >
             🚨 Emergency
           </button>
-          <NotificationsBell />
-          <ThemeToggle />
+          <NotificationsBell className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
+          <ThemeToggle className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
           <button
             onClick={() => signOut()}
-            className="rounded-full p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            className="rounded-full p-2 text-[#FFF5F9]/80 hover:text-white hover:bg-white/10"
           >
             <LogOut className="h-5 w-5" />
           </button>
@@ -116,28 +139,78 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       <main className="mx-auto w-full max-w-[1600px] w-[95%] px-4 pb-24 pt-6 md:px-6 md:pb-12 flex-1">
-        <div className="grid gap-8 md:grid-cols-[220px_1fr]">
+        <div className="grid gap-8 md:grid-cols-[280px_1fr]">
           <aside className="hidden md:block">
-            <nav className="sticky top-24 flex flex-col gap-1.5">
-              <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Management</p>
-              {sideExtra.map((n) => {
-                const Icon = n.icon;
-                return (
-                  <Link
-                    key={n.to}
-                    to={n.to}
-                    className={cn(
-                      "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-300",
-                      isActive(n.to)
-                        ? "bg-foreground text-background shadow-lg shadow-foreground/10"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    )}
-                  >
-                    <Icon className={cn("h-4 w-4 transition-transform group-hover:scale-110", isActive(n.to) && "text-accent")} /> {n.label}
-                  </Link>
-                );
-              })}
-            </nav>
+            <div className="sticky top-24 flex gap-3 h-[calc(100vh-120px)] overflow-y-auto no-scrollbar">
+              
+              {/* Left Mini-Icon Strip matching mockup */}
+              <div className="flex flex-col gap-5 items-center bg-[#3D1426] border border-white/5 rounded-2xl py-6 px-1.5 w-16 shrink-0 shadow-xl">
+                <Link 
+                  to="/home" 
+                  className={cn(
+                    "flex flex-col items-center gap-1.5 transition-all duration-300 w-12 py-2 rounded-xl",
+                    isActive("/home") 
+                      ? "bg-[#FFF5F9] text-[#4E1B33] shadow-md" 
+                      : "text-[#EBC4D8] hover:bg-[#6E2A4A] hover:text-white"
+                  )}
+                >
+                  <BookOpen className="h-5 w-5" />
+                  <span className="text-[7.5px] font-black uppercase tracking-wider text-center scale-90">Aconitum</span>
+                </Link>
+                
+                <Link 
+                  to="/pets" 
+                  className={cn(
+                    "flex flex-col items-center gap-1.5 transition-all duration-300 w-12 py-2 rounded-xl",
+                    isActive("/pets") 
+                      ? "bg-[#FFF5F9] text-[#4E1B33] shadow-md" 
+                      : "text-[#EBC4D8] hover:bg-[#6E2A4A] hover:text-white"
+                  )}
+                >
+                  <Activity className="h-5 w-5" />
+                  <span className="text-[7.5px] font-black uppercase tracking-wider text-center scale-90">Vitals</span>
+                </Link>
+
+                <Link 
+                  to="/community" 
+                  className={cn(
+                    "flex flex-col items-center gap-1.5 transition-all duration-300 w-12 py-2 rounded-xl",
+                    isActive("/community") 
+                      ? "bg-[#FFF5F9] text-[#4E1B33] shadow-md" 
+                      : "text-[#EBC4D8] hover:bg-[#6E2A4A] hover:text-white"
+                  )}
+                >
+                  <Users className="h-5 w-5" />
+                  <span className="text-[7.5px] font-black uppercase tracking-wider text-center scale-90">Clients</span>
+                </Link>
+              </div>
+
+              {/* Right Menu List */}
+              <div className="flex-1 bg-[#4E1B33] text-white p-4 rounded-2xl border border-white/10 shadow-2xl">
+                <nav className="flex flex-col gap-1.5">
+                  <p className="px-2 mb-2 text-[9px] font-bold uppercase tracking-widest text-[#EBC4D8]/60">Management</p>
+                  {sideExtra.map((n) => {
+                    const Icon = n.icon;
+                    return (
+                      <Link
+                        key={n.to}
+                        to={n.to}
+                        className={cn(
+                          "group flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs transition-all duration-300 font-medium",
+                          isActive(n.to)
+                            ? "bg-[#FFF5F9] text-[#4E1B33] font-bold shadow-md"
+                            : "text-[#EBC4D8] hover:bg-[#6E2A4A] hover:text-[#FFF5F9]"
+                        )}
+                      >
+                        <Icon className={cn("h-3.5 w-3.5 transition-transform group-hover:scale-110", isActive(n.to) ? "text-[#4E1B33]" : "text-[#EBC4D8]")} /> 
+                        <span>{n.label}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+
+            </div>
           </aside>
           <div className="min-w-0 transition-all duration-500 animate-in fade-in slide-in-from-bottom-2">{children}</div>
         </div>
@@ -189,7 +262,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </footer>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-white/10 glass shadow-2xl md:hidden">
+      <nav className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-white/10 bg-[#4E1B33]/95 text-white backdrop-blur-md shadow-2xl md:hidden">
         <div className="grid grid-cols-5">
           {ownerNav.map((n) => {
             const Icon = n.icon;
@@ -200,10 +273,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                 to={n.to}
                 className={cn(
                   "flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-all duration-300",
-                  active ? "text-foreground" : "text-muted-foreground/80"
+                  active ? "text-white" : "text-[#EBC4D8]/85"
                 )}
               >
-                <Icon className={cn("h-5 w-5 transition-transform", active ? "text-accent scale-110" : "group-hover:scale-105")} />
+                <Icon className={cn("h-5 w-5 transition-transform", active ? "text-[#FFF5F9] scale-110" : "group-hover:scale-105")} />
                 <span className={cn("transition-opacity", active ? "opacity-100" : "opacity-70")}>{n.label}</span>
               </Link>
             );

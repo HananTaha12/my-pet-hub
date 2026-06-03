@@ -55,46 +55,46 @@
   --radius: 0.875rem;
 
   /* Luxury dusty rose + white + light beige */
-  --background: #F5E1EC;                      /* Soft dusty rose pink */
-  --foreground: #8B3A62;                      /* Dark Accent for premium text contrast */
+  --background: #FFF5F9;                      /* Soft, lighter pink background */
+  --foreground: #4E1B33;                      /* Dark berry/plum for text contrast */
 
-  --card: rgba(255, 255, 255, 0.85);                            /* Semi-transparent cards */
-  --card-foreground: #8B3A62;
+  --card: rgba(255, 255, 255, 0.9);                            /* Semi-transparent cards */
+  --card-foreground: #4E1B33;
   --popover: #FFFFFF;
-  --popover-foreground: #8B3A62;
+  --popover-foreground: #4E1B33;
 
   --primary: #D98CB3;                         /* Accent rose pink */
   --primary-foreground: #FFFFFF;
 
-  --secondary: #EBC4D8;                       /* Secondary dusty rose */
-  --secondary-foreground: #8B3A62;
+  --secondary: #FFF0F6;                       /* Secondary light pink */
+  --secondary-foreground: #4E1B33;
 
-  --muted: #EBC4D8;
-  --muted-foreground: #A78B90;                /* Muted dusty rose */
+  --muted: #FFF0F6;
+  --muted-foreground: #B593A1;                /* Muted text color */
 
   --accent: #D98CB3;                          /* Accent rose pink */
-  --accent-foreground: #8B3A62;
+  --accent-foreground: #4E1B33;
 
   --destructive: #FDA4AF;                     /* Soft warm pink-rose danger */
   --destructive-foreground: #FFFFFF;
 
-  --border: rgba(217, 140, 179, 0.25);       /* Gentle rose pink border */
-  --input: rgba(217, 140, 179, 0.25);
+  --border: rgba(78, 27, 51, 0.15);           /* Gentle dark berry border */
+  --input: rgba(78, 27, 51, 0.15);
   --ring: #D98CB3;
 
   --chart-1: #D98CB3;                         /* Accent Pink */
   --chart-2: #EBC4D8;                         /* Secondary Pink */
-  --chart-3: #F5E1EC;                         /* Light Pink */
-  --chart-4: #8B3A62;                         /* Dark Rose */
+  --chart-3: #FFF0F6;                         /* Light Pink */
+  --chart-4: #4E1B33;                         /* Dark Berry */
   --chart-5: #93C5FD;                         /* Soft Blue */
 
-  --sidebar: #FFF4FA;                         /* Elegant white-pink sidebar */
-  --sidebar-foreground: #8B3A62;
+  --sidebar: #4E1B33;                         /* Dark berry sidebar background */
+  --sidebar-foreground: #FFF5F9;              /* Creamy white/light pink text */
   --sidebar-primary: #D98CB3;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EBC4D8;
-  --sidebar-accent-foreground: #8B3A62;
-  --sidebar-border: rgba(217, 140, 179, 0.2);
+  --sidebar-accent: #6E2A4A;                  /* Hover background */
+  --sidebar-accent-foreground: #FFF5F9;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #D98CB3;
 
   --mesh-1: rgba(217, 140, 179, 0.25);
@@ -145,7 +145,7 @@
     position: fixed;
     inset: 0;
     z-index: -10;
-    background: linear-gradient(180deg, #F5D6E4, #EBC4D8, #F7E7EE);
+    background: linear-gradient(180deg, #FFF5F9, #FCE8F3, #FFF9FC);
     pointer-events: none;
   }
   body::after {
@@ -153,7 +153,7 @@
     position: fixed;
     inset: 0;
     z-index: -9;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Ctext x='30' y='70' font-size='50' fill='%23b45b87' opacity='0.16'%3E🐾%3C/text%3E%3Ctext x='140' y='140' font-size='42' fill='%23b45b87' opacity='0.16'%3E🦴%3C/text%3E%3Ctext x='170' y='60' font-size='34' fill='%23b45b87' opacity='0.16'%3E❤️%3C/text%3E%3Ctext x='50' y='170' font-size='46' fill='%23b45b87' opacity='0.13'%3E🐾%3C/text%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Ctext x='30' y='70' font-size='50' fill='%23D98CB3' opacity='0.18'%3E🐾%3C/text%3E%3Ctext x='140' y='140' font-size='42' fill='%23D98CB3' opacity='0.18'%3E🦴%3C/text%3E%3Ctext x='170' y='60' font-size='34' fill='%23D98CB3' opacity='0.18'%3E❤️%3C/text%3E%3Ctext x='50' y='170' font-size='46' fill='%23D98CB3' opacity='0.15'%3E🐾%3C/text%3E%3C/svg%3E");
     background-repeat: repeat;
     background-size: 220px 220px;
     opacity: 1;
