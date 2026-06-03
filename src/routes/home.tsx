@@ -492,104 +492,172 @@ function HomePage() {
           Interactive Services
         </h2>
 
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           
           {/* Service 1: Clinical Scheduler */}
-          <Link to="/book" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-pink-500/30">
-            <div className="space-y-4">
-              <div className="rounded-2xl p-3 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                <Calendar className="h-6 w-6" />
+          <Link to="/book" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-pink-500/30 overflow-hidden min-h-[170px] text-left">
+            <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="rounded-full p-2 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
+                  <Calendar className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">Clinical Scheduler</h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Book vaccine shots, clinical checkups, or wellness reviews at certified animal hospitals.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-display text-lg font-bold text-foreground">Clinical Scheduler</h3>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Book vaccine shots, clinical checkups, or wellness reviews at certified animal hospitals.</p>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-500 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>Open Schedule</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-1 text-[11px] font-bold text-pink-500 opacity-80 group-hover:opacity-100">
-              Open Schedule <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <div className="w-[38%] shrink-0 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=300" 
+                alt="Scheduler" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           </Link>
 
           {/* Service 2: Supplies Shop */}
-          <Link to="/shop" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-rose-400/30">
-            <div className="space-y-4">
-              <div className="rounded-2xl p-3 bg-rose-400/10 text-rose-400 w-fit group-hover:rotate-12 transition-transform duration-500">
-                <ShoppingBag className="h-6 w-6" />
+          <Link to="/shop" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-rose-400/30 overflow-hidden min-h-[170px] text-left">
+            <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="rounded-full p-2 bg-rose-400/10 text-rose-400 w-fit group-hover:rotate-12 transition-transform duration-500">
+                  <ShoppingBag className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">Supplies Shop</h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Order health food formulas, vitamin boosters, scratching posts, and accessories.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-display text-lg font-bold text-foreground">Supplies Shop</h3>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Order health food formulas, vitamin boosters, scratching posts, and accessories.</p>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-rose-400 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>Browse Supplies</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-1 text-[11px] font-bold text-rose-400 opacity-80 group-hover:opacity-100">
-              Browse Supplies <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <div className="w-[38%] shrink-0 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=300" 
+                alt="Shop" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           </Link>
 
-          {/* Service 3: AI Diagnostics */}
-          <Link to="/chat" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-pink-500/30">
-            <div className="space-y-4">
-              <div className="rounded-2xl p-3 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                <MessageCircle className="h-6 w-6" />
+          {/* Service 3: AI Chatbot */}
+          <Link to="/chat" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-pink-500/30 overflow-hidden min-h-[170px] text-left">
+            <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="rounded-full p-2 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
+                  <MessageCircle className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">AI Chatbot</h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Consult our smart clinical AI agent regarding symptom charts or daily behaviors.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-display text-lg font-bold text-foreground">AI Diagnostics</h3>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Consult our smart clinical AI agent regarding symptom charts or daily behaviors.</p>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-500 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>Ask Chatbot</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-1 text-[11px] font-bold text-pink-500 opacity-80 group-hover:opacity-100">
-              Start AI Chat <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            {/* Interactive HTML/CSS Mockup Chat widget */}
+            <div className="w-[40%] shrink-0 bg-secondary/30 relative p-3 flex flex-col justify-between overflow-hidden border-l border-border/10">
+              <div className="space-y-2">
+                <div className="flex items-center gap-1 justify-end">
+                  <div className="bg-[#FFF5F9] text-[7.5px] p-1.5 rounded-lg rounded-tr-none text-foreground font-bold shadow-sm scale-90 origin-right max-w-[80%] truncate">
+                    Healthy dog?
+                  </div>
+                  <div className="h-3.5 w-3.5 rounded-full bg-accent/20 flex items-center justify-center text-[7px] font-bold">👤</div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="h-3.5 w-3.5 rounded-full bg-emerald-500/20 flex items-center justify-center text-[7px]">🤖</div>
+                  <div className="bg-emerald-500/10 text-[7.5px] p-1.5 rounded-lg rounded-tl-none text-emerald-800 dark:text-emerald-300 font-bold scale-90 origin-left max-w-[80%] truncate">
+                    Vitals stable!
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white/90 dark:bg-card px-1.5 py-0.5 rounded-md text-[6.5px] font-bold shadow-sm flex items-center justify-between mt-1">
+                <span>AI Agent</span>
+                <span className="text-amber-500">★★★★★</span>
+              </div>
             </div>
           </Link>
 
           {/* Service 4: Social Board */}
-          <Link to="/community" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-amber-400/30">
-            <div className="space-y-4">
-              <div className="rounded-2xl p-3 bg-amber-400/10 text-amber-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                <MessageSquare className="h-6 w-6" />
+          <Link to="/community" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-amber-400/30 overflow-hidden min-h-[170px] text-left">
+            <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="rounded-full p-2 bg-amber-400/10 text-amber-500 w-fit group-hover:rotate-12 transition-transform duration-500">
+                  <MessageSquare className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">Social Board</h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Engage with pet parents, swap healthy diet reviews, and share funny stories.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-display text-lg font-bold text-foreground">Social Board</h3>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Engage with pet parents, swap healthy diet reviews, and share funny stories.</p>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-amber-500 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>Visit Community</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-1 text-[11px] font-bold text-amber-500 opacity-80 group-hover:opacity-100">
-              Visit Community <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <div className="w-[38%] shrink-0 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=300" 
+                alt="Social" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           </Link>
 
           {/* Service 5: Medical Records */}
-          <Link to="/pets" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-pink-500/30">
-            <div className="space-y-4">
-              <div className="rounded-2xl p-3 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                <FileText className="h-6 w-6" />
+          <Link to="/pets" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-pink-500/30 overflow-hidden min-h-[170px] text-left">
+            <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="rounded-full p-2 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
+                  <FileText className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">Medical Records</h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Access full digital files of past checkups, clinical weights, and veterinary hospital.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-display text-lg font-bold text-foreground">Medical Records</h3>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Access full digital files of past checkups, clinical weights, and veterinary hospital.</p>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-500 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>Review Records</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-1 text-[11px] font-bold text-pink-500 opacity-80 group-hover:opacity-100">
-              Review Records <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <div className="w-[38%] shrink-0 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&q=80&w=300" 
+                alt="Records" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           </Link>
 
           {/* Service 6: Emergency Support */}
           <button 
             onClick={() => setShowEmergencyDialog(true)}
-            className="group flex flex-col justify-between text-left rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-rose-500/30 w-full"
+            className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-rose-500/30 overflow-hidden min-h-[170px] text-left w-full cursor-pointer"
           >
-            <div className="space-y-4">
-              <div className="rounded-2xl p-3 bg-rose-500/10 text-rose-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                <PhoneCall className="h-6 w-6" />
+            <div className="flex-1 p-5 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="rounded-full p-2 bg-rose-500/10 text-rose-500 w-fit group-hover:rotate-12 transition-transform duration-500">
+                  <PhoneCall className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground">Emergency Support</h3>
+                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Instant 24/7 access details to local trauma centers and veterinary hospitals.</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-display text-lg font-bold text-foreground">Emergency Support</h3>
-                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">Instant 24/7 access details to local trauma centers and veterinary hospitals.</p>
+              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-rose-500 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>Get Urgent Info</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
-            <div className="mt-6 flex items-center gap-1 text-[11px] font-bold text-rose-500 opacity-80 group-hover:opacity-100">
-              Get Urgent Info <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <div className="w-[38%] shrink-0 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1527362950785-f487a7c1fe48?auto=format&fit=crop&q=80&w=300" 
+                alt="Emergency" 
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
           </button>
 
