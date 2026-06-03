@@ -18,6 +18,13 @@ export const Route = createFileRoute("/community")({
   component: () => (<RequireAuth><AppShell><Community /></AppShell></RequireAuth>),
 });
 
+interface PostComment {
+  id: string;
+  authorName: string;
+  content: string;
+  timestamp: string;
+}
+
 interface Post {
   id: string;
   authorName: string;
@@ -28,6 +35,7 @@ interface Post {
   likedByUser: boolean;
   image?: string;
   timestamp: string;
+  comments?: PostComment[];
 }
 
 interface LostFoundPet {
@@ -65,7 +73,11 @@ const SEED_POSTS: Post[] = [
     likes: 42,
     likedByUser: false,
     image: "/products/cat-food.png",
-    timestamp: "2 hours ago"
+    timestamp: "2 hours ago",
+    comments: [
+      { id: "c1", authorName: "Dr. Sarah Connor", content: "That salmon kibble has excellent omega-3 ratios! 🐟", timestamp: "1 hour ago" },
+      { id: "c2", authorName: "Tareq Jibril", content: "Will buy some for my retriever! Hope he likes it.", timestamp: "30 mins ago" }
+    ]
   },
   {
     id: "post-2",
@@ -75,7 +87,10 @@ const SEED_POSTS: Post[] = [
     content: "Took Buddy for his annual vaccination checkup at PetPal clinic today. The booking process was super smooth, and our vet was extremely gentle. Buddy even got a treats reward! 💉🐶",
     likes: 18,
     likedByUser: false,
-    timestamp: "5 hours ago"
+    timestamp: "5 hours ago",
+    comments: [
+      { id: "c3", authorName: "Hanan Taha", content: "So brave, Buddy! ❤️🐾", timestamp: "4 hours ago" }
+    ]
   }
 ];
 
@@ -154,6 +169,36 @@ function Community() {
   
   // Interactive Map Active Pet Selection
   const [selectedLfId, setSelectedLfId] = useState<string | null>("lf-1");
+
+  // Comments state
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
+  const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
+
+  const handleAddComment = (postId: string) => {
+    const content = commentInputs[postId]?.trim();
+    if (!content) return;
+    
+    const userName = user?.email ? user.email.split("@")[0] : "anonymous";
+    const newComment = {
+      id: "c-" + Date.now(),
+      authorName: userName,
+      content,
+      timestamp: "Just now"
+    };
+
+    setPosts(prev => prev.map(p => {
+      if (p.id === postId) {
+        return {
+          ...p,
+          comments: [...(p.comments || []), newComment]
+        };
+      }
+      return p;
+    }));
+
+    setCommentInputs(prev => ({ ...prev, [postId]: "" }));
+    toast.success("Comment added! 💬");
+  };
 
   // State arrays persisted in localStorage
   const [posts, setPosts] = useState<Post[]>(() => {
@@ -261,7 +306,8 @@ function Community() {
         likes: 0,
         likedByUser: false,
         image: storyImage || undefined,
-        timestamp: "Just now"
+        timestamp: "Just now",
+        comments: []
       };
       setPosts([newStory, ...posts]);
       setStoryContent("");
@@ -530,6 +576,15 @@ function Community() {
                       <Heart className={`h-4.5 w-4.5 transition-transform ${p.likedByUser ? "fill-current scale-110" : ""}`} />
                       <span>{p.likes} Likes</span>
                     </button>
+                    
+                    <button 
+                      onClick={() => setExpandedComments(prev => ({ ...prev, [p.id]: !prev[p.id] }))}
+                      className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <MessageSquare className="h-4.5 w-4.5" />
+                      <span>{(p.comments || []).length} Comments</span>
+                    </button>
+
                     <button 
                       onClick={() => handleShare(p.content)}
                       className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
@@ -538,6 +593,45 @@ function Community() {
                       <span>Share</span>
                     </button>
                   </div>
+
+                  {expandedComments[p.id] && (
+                    <div className="mt-4 border-t border-border/20 pt-4 space-y-4 animate-in fade-in duration-300">
+                      <div className="space-y-2">
+                        {(p.comments || []).map((c) => (
+                          <div key={c.id} className="bg-secondary/10 rounded-2xl p-3 text-left border border-border/10">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-xs text-foreground/90">{c.authorName}</span>
+                              <span className="text-[9px] text-muted-foreground">{c.timestamp}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground/90 mt-1">{c.content}</p>
+                          </div>
+                        ))}
+                        {(p.comments || []).length === 0 && (
+                          <p className="text-xs text-muted-foreground/60 italic text-center py-2">No comments yet. Write the first one! 💬</p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input 
+                          placeholder="Write a comment..." 
+                          value={commentInputs[p.id] || ""}
+                          onChange={(e) => setCommentInputs(prev => ({ ...prev, [p.id]: e.target.value }))}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleAddComment(p.id);
+                            }
+                          }}
+                          className="rounded-xl h-9 text-xs"
+                        />
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleAddComment(p.id)}
+                          className="rounded-xl h-9 text-xs px-3 bg-primary text-primary-foreground shrink-0 animate-pulse hover:animate-none"
+                        >
+                          Post
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

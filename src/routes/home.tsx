@@ -257,30 +257,54 @@ function HomePage() {
 
           {/* Right Column: Floating glassmorphic active pet profile card */}
           <div className="flex items-center justify-center lg:justify-end w-full lg:w-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/15 flex flex-col sm:flex-row items-center gap-5 w-full sm:w-[350px] shadow-2xl relative">
-              <img 
-                src={petPhoto} 
-                alt={petName} 
-                className="w-20 h-20 rounded-2xl object-cover border border-white/20 shadow-md flex-shrink-0"
-              />
-              <div className="flex-1 space-y-3 text-center sm:text-left">
+            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/15 flex flex-col gap-4 w-full sm:w-[380px] shadow-2xl relative">
+              <div className="flex items-center gap-4 border-b border-white/10 pb-4">
+                <img 
+                  src={petPhoto} 
+                  alt={petName} 
+                  className="w-24 h-24 rounded-2xl object-cover border border-white/20 shadow-md flex-shrink-0"
+                />
                 <div>
                   <h3 className="font-display text-2xl font-bold text-white leading-none">{petName}</h3>
-                  <p className="text-[10px] text-white/60 font-semibold uppercase mt-1 tracking-wider">{petBreed}</p>
+                  <p className="text-[10px] text-white/60 font-semibold uppercase mt-1.5 tracking-wider">{petBreed}</p>
+                  <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> Active Profile
+                  </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-2.5 text-[10px] font-bold text-white/90">
-                  <div>
-                    <span className="text-[8px] uppercase tracking-wider text-white/45 block mb-0.5">AGE</span>
-                    {petAge}
-                  </div>
-                  <div>
-                    <span className="text-[8px] uppercase tracking-wider text-white/45 block mb-0.5">WEIGHT</span>
-                    {petWeight}
-                  </div>
-                  <div>
-                    <span className="text-[8px] uppercase tracking-wider text-white/45 block mb-0.5">STATUS</span>
-                    <span className="text-emerald-400 font-extrabold animate-pulse">ACTIVE</span>
-                  </div>
+              </div>
+
+              {/* Progress Ring and Health details */}
+              <div className="flex items-center gap-4">
+                <div className="relative flex items-center justify-center h-14 w-14 shrink-0">
+                  <svg className="h-full w-full transform -rotate-90">
+                    <circle cx="28" cy="28" r="24" className="stroke-white/10 fill-none" strokeWidth="4" />
+                    <circle cx="28" cy="28" r="24" className="stroke-primary fill-none" strokeWidth="4" strokeDasharray="150" strokeDashoffset="3" strokeLinecap="round" />
+                  </svg>
+                  <span className="absolute text-[10px] font-black text-white">98%</span>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-white">Health Score Index</p>
+                  <p className="text-[9px] text-white/60">Excellent physiological status</p>
+                </div>
+              </div>
+
+              {/* Vital Statistics Details List */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 border-t border-white/10 pt-4 text-[10px] font-bold text-white/90">
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-white/45 font-semibold">AGE</span>
+                  <span>{petAge}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-white/45 font-semibold">WEIGHT</span>
+                  <span>{petWeight}</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-white/45 font-semibold">VACCINES</span>
+                  <span className="text-emerald-400 font-extrabold">UP TO DATE</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-white/45 font-semibold">CHECKUP</span>
+                  <span>2 days ago</span>
                 </div>
               </div>
             </div>
@@ -310,7 +334,7 @@ function HomePage() {
             <Link 
               key={idx} 
               to={stat.to} 
-              className={cn("group rounded-[1.8rem] bg-card border border-border/80 p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg flex flex-col justify-between min-h-[140px]", stat.bg)}
+              className={cn("group rounded-[1.8rem] bg-card border border-border/80 p-5 hover-lift flex flex-col justify-between min-h-[140px]", stat.bg)}
             >
               <div>
                 <span className="text-[9px] uppercase font-bold tracking-wider text-muted-foreground/80 block">{stat.label}</span>
@@ -341,7 +365,7 @@ function HomePage() {
         <div className="grid gap-4 md:grid-cols-3">
           
           {/* Card 1: Health Status Assessment */}
-          <div className="rounded-[1.8rem] border border-emerald-200/50 bg-emerald-500/5 p-6 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-[1.8rem] border border-emerald-200/50 bg-emerald-500/5 p-6 flex flex-col justify-between space-y-4 hover-lift">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="rounded-xl p-2 bg-emerald-500/10 text-emerald-600"><CheckCircle className="h-4.5 w-4.5" /></div>
@@ -357,7 +381,7 @@ function HomePage() {
           </div>
 
           {/* Card 2: Care Recommendation */}
-          <div className="rounded-[1.8rem] border border-amber-200/50 bg-amber-500/5 p-6 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-[1.8rem] border border-amber-200/50 bg-amber-500/5 p-6 flex flex-col justify-between space-y-4 hover-lift">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="rounded-xl p-2 bg-amber-500/10 text-amber-600"><Activity className="h-4.5 w-4.5" /></div>
@@ -373,7 +397,7 @@ function HomePage() {
           </div>
 
           {/* Card 3: Action Required Alert */}
-          <div className="rounded-[1.8rem] border border-rose-200/50 bg-rose-500/5 p-6 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-[1.8rem] border border-rose-200/50 bg-rose-500/5 p-6 flex flex-col justify-between space-y-4 hover-lift">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="rounded-xl p-2 bg-rose-500/10 text-rose-600"><ShieldAlert className="h-4.5 w-4.5" /></div>
@@ -468,7 +492,7 @@ function HomePage() {
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
           
           {/* Service 1: Clinical Scheduler */}
-          <Link to="/book" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 transition-all duration-500 hover:scale-[1.03] hover:shadow-lg hover:border-pink-500/30">
+          <Link to="/book" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-pink-500/30">
             <div className="space-y-4">
               <div className="rounded-2xl p-3 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
                 <Calendar className="h-6 w-6" />
@@ -484,7 +508,7 @@ function HomePage() {
           </Link>
 
           {/* Service 2: Supplies Shop */}
-          <Link to="/shop" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 transition-all duration-500 hover:scale-[1.03] hover:shadow-lg hover:border-rose-400/30">
+          <Link to="/shop" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-rose-400/30">
             <div className="space-y-4">
               <div className="rounded-2xl p-3 bg-rose-400/10 text-rose-400 w-fit group-hover:rotate-12 transition-transform duration-500">
                 <ShoppingBag className="h-6 w-6" />
@@ -500,7 +524,7 @@ function HomePage() {
           </Link>
 
           {/* Service 3: AI Diagnostics */}
-          <Link to="/chat" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 transition-all duration-500 hover:scale-[1.03] hover:shadow-lg hover:border-pink-500/30">
+          <Link to="/chat" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-pink-500/30">
             <div className="space-y-4">
               <div className="rounded-2xl p-3 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
                 <MessageCircle className="h-6 w-6" />
@@ -516,7 +540,7 @@ function HomePage() {
           </Link>
 
           {/* Service 4: Social Board */}
-          <Link to="/community" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 transition-all duration-500 hover:scale-[1.03] hover:shadow-lg hover:border-amber-400/30">
+          <Link to="/community" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-amber-400/30">
             <div className="space-y-4">
               <div className="rounded-2xl p-3 bg-amber-400/10 text-amber-500 w-fit group-hover:rotate-12 transition-transform duration-500">
                 <MessageSquare className="h-6 w-6" />
@@ -532,7 +556,7 @@ function HomePage() {
           </Link>
 
           {/* Service 5: Medical Records */}
-          <Link to="/pets" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 transition-all duration-500 hover:scale-[1.03] hover:shadow-lg hover:border-pink-500/30">
+          <Link to="/pets" className="group flex flex-col justify-between rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-pink-500/30">
             <div className="space-y-4">
               <div className="rounded-2xl p-3 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
                 <FileText className="h-6 w-6" />
@@ -550,7 +574,7 @@ function HomePage() {
           {/* Service 6: Emergency Support */}
           <button 
             onClick={() => setShowEmergencyDialog(true)}
-            className="group flex flex-col justify-between text-left rounded-[2rem] bg-card border border-border p-6 transition-all duration-500 hover:scale-[1.03] hover:shadow-lg hover:border-rose-500/30 w-full"
+            className="group flex flex-col justify-between text-left rounded-[2rem] bg-card border border-border p-6 hover-lift hover:border-rose-500/30 w-full"
           >
             <div className="space-y-4">
               <div className="rounded-2xl p-3 bg-rose-500/10 text-rose-500 w-fit group-hover:rotate-12 transition-transform duration-500">
@@ -615,7 +639,7 @@ function HomePage() {
             { title: "AI Health Scholar", medal: "SILVER MEDAL", desc: "Addressed 5+ distinct preventative checkups or dietary consultations with AI diagnostics.", color: "text-slate-400 bg-slate-400/10" },
             { title: "VIP Sponsor Patron", medal: "BRONZE MEDAL", desc: "Purchased 3+ premium supply formulas or grooming bundles from the official shop.", color: "text-amber-600 bg-amber-600/10" }
           ].map((ach, idx) => (
-            <div key={idx} className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between min-h-[160px] hover:shadow-md transition-shadow">
+            <div key={idx} className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between min-h-[160px] hover-lift">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className={cn("rounded-xl p-2 shrink-0", ach.color)}>

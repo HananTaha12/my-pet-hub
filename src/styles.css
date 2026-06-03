@@ -54,52 +54,52 @@
 :root {
   --radius: 0.875rem;
 
-  /* Pastel pink + white + light beige */
-  --background: #FCF6F6;                      /* Very light soft pinkish cream */
-  --foreground: #4D2C34;                      /* Warm deep cocoa/rose for high text contrast */
+  /* Luxury dusty rose + white + light beige */
+  --background: #F5E1EC;                      /* Soft dusty rose pink */
+  --foreground: #8B3A62;                      /* Dark Accent for premium text contrast */
 
   --card: #FFFFFF;                            /* Pure white cards */
-  --card-foreground: #4D2C34;
+  --card-foreground: #8B3A62;
   --popover: #FFFFFF;
-  --popover-foreground: #4D2C34;
+  --popover-foreground: #8B3A62;
 
-  --primary: #F472B6;                         /* Soft pastel pink */
+  --primary: #D98CB3;                         /* Accent rose pink */
   --primary-foreground: #FFFFFF;
 
-  --secondary: #FAF2ED;                       /* Soft warm light beige */
-  --secondary-foreground: #4D2C34;
+  --secondary: #EBC4D8;                       /* Secondary dusty rose */
+  --secondary-foreground: #8B3A62;
 
-  --muted: #FAF2ED;
+  --muted: #EBC4D8;
   --muted-foreground: #A78B90;                /* Muted dusty rose */
 
-  --accent: #FBCFE8;                          /* Soft pink lavender accent */
-  --accent-foreground: #4D2C34;
+  --accent: #D98CB3;                          /* Accent rose pink */
+  --accent-foreground: #8B3A62;
 
   --destructive: #FDA4AF;                     /* Soft warm pink-rose danger */
   --destructive-foreground: #FFFFFF;
 
-  --border: rgba(244, 114, 182, 0.15);       /* Gentle pink border */
-  --input: rgba(244, 114, 182, 0.15);
-  --ring: #F472B6;
+  --border: rgba(217, 140, 179, 0.25);       /* Gentle rose pink border */
+  --input: rgba(217, 140, 179, 0.25);
+  --ring: #D98CB3;
 
-  --chart-1: #F472B6;                         /* Pink */
-  --chart-2: #FBCFE8;                         /* Light Pink */
-  --chart-3: #FCD34D;                         /* Pastel Gold/Beige */
-  --chart-4: #FDA4AF;                         /* Rose Red */
-  --chart-5: #93C5FD;                         /* Pastel Blue */
+  --chart-1: #D98CB3;                         /* Accent Pink */
+  --chart-2: #EBC4D8;                         /* Secondary Pink */
+  --chart-3: #F5E1EC;                         /* Light Pink */
+  --chart-4: #8B3A62;                         /* Dark Rose */
+  --chart-5: #93C5FD;                         /* Soft Blue */
 
-  --sidebar: #FFF9F9;                         /* Elegant white-pink sidebar */
-  --sidebar-foreground: #4D2C34;
-  --sidebar-primary: #F472B6;
+  --sidebar: #FFF4FA;                         /* Elegant white-pink sidebar */
+  --sidebar-foreground: #8B3A62;
+  --sidebar-primary: #D98CB3;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #FAF2ED;
-  --sidebar-accent-foreground: #4D2C34;
-  --sidebar-border: rgba(244, 114, 182, 0.12);
-  --sidebar-ring: #F472B6;
+  --sidebar-accent: #EBC4D8;
+  --sidebar-accent-foreground: #8B3A62;
+  --sidebar-border: rgba(217, 140, 179, 0.2);
+  --sidebar-ring: #D98CB3;
 
-  --mesh-1: rgba(251, 207, 232, 0.4);        /* Pastel Pink glow */
-  --mesh-2: rgba(254, 243, 199, 0.35);       /* Light Beige glow */
-  --mesh-3: rgba(255, 255, 255, 0.7);
+  --mesh-1: rgba(217, 140, 179, 0.25);
+  --mesh-2: rgba(235, 196, 216, 0.25);
+  --mesh-3: rgba(255, 255, 255, 0.6);
 }
 
 .dark {
@@ -160,10 +160,10 @@
     position: fixed;
     inset: 0;
     z-index: -9;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ctext x='15' y='35' font-size='22' opacity='0.12'%3E🐾%3C/text%3E%3Ctext x='75' y='85' font-size='20' opacity='0.12'%3E🦴%3C/text%3E%3Ctext x='85' y='25' font-size='18' opacity='0.10'%3E🐾%3C/text%3E%3Ctext x='25' y='95' font-size='22' opacity='0.10'%3E🦴%3C/text%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Ctext x='15' y='35' font-size='22' opacity='0.04'%3E🐾%3C/text%3E%3Ctext x='85' y='95' font-size='20' opacity='0.04'%3E🦴%3C/text%3E%3Ctext x='125' y='30' font-size='18' opacity='0.04'%3E❤️%3C/text%3E%3Ctext x='35' y='115' font-size='22' opacity='0.03'%3E🐾%3C/text%3E%3Ctext x='105' y='145' font-size='20' opacity='0.03'%3E🦴%3C/text%3E%3Ctext x='15' y='145' font-size='16' opacity='0.03'%3E❤️%3C/text%3E%3C/svg%3E");
     background-repeat: repeat;
-    background-size: 120px 120px;
-    opacity: 0.35; /* Subtle background texture */
+    background-size: 160px 160px;
+    opacity: 1; /* Subtle background texture with 3-4% opacity inside the SVG */
     pointer-events: none;
   }
   h1, h2, h3, .font-display {
@@ -202,5 +202,12 @@
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-20px); }
+  }
+  .hover-lift {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -5px rgba(139, 58, 98, 0.12), 0 5px 15px -3px rgba(139, 58, 98, 0.04);
   }
 }

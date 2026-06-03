@@ -1,16 +1,39 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowRight, Calendar, Bell, ShoppingBag, MessageCircle, PawPrint, Sparkles, Star, Shield, ShieldAlert, Award, Phone, Users, Check, Send, Download } from "lucide-react";
+import { 
+  ArrowRight, 
+  Calendar, 
+  Bell, 
+  ShoppingBag, 
+  MessageCircle, 
+  PawPrint, 
+  Sparkles, 
+  Star, 
+  Shield, 
+  ShieldAlert, 
+  Award, 
+  Phone, 
+  Users, 
+  Check, 
+  Send, 
+  Download, 
+  Activity, 
+  Heart, 
+  Brain, 
+  PhoneCall 
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
-import heroImg from "@/assets/hero.jpg";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "PetPal — Smart pet care, all in one place" },
-      { name: "description", content: "Book grooming and vet visits, shop premium supplies, get smart reminders, and chat with an AI pet assistant." },
+      { name: "description", content: "Because every pet deserves exceptional care. Book visits, track health, consult AI diagnostics, and get emergency support." },
     ],
   }),
   component: Landing,
@@ -42,12 +65,31 @@ function Landing() {
     setContactMsg("");
   };
 
+  const bentoImages = [
+    {
+      url: "https://images.openai.com/static-rsc-4/7JJfQnKjP0k3p6RegJgYCOrDbVF-MdA9xdJDsBunKaiaTsdazFN7wpUxrJ3jLkR5U2PLJFaao5bVsOpkkJghG4TvDjHIJOhog1pp0lRgltm6UEKKyfc_gmgdUkQ6MmLHahPmhR8f5FW6_yujOB7dnFRe1DWibyfS2kM1acP-8aCRwAxtckl9FKz_P0gWLv4L?purpose=fullsize",
+      title: "Cozy Companions",
+      tag: "Wellness"
+    },
+    {
+      url: "https://images.openai.com/static-rsc-4/fFGXIBWTg5zZV-s05oJizCC-xrxJmLKJ_dknB3kAddFbv0yINhkcliTi-qzy4TgQMce7z4QpRXSPkyVqLNqpc9fhdAwKU06m0uUJBJzj9UYrLzibsSDZ82J6_LZqcaVwIXch1T5H44MfH_QAbNCA0VgZlxKOqjoG0SbhkFBHLGn1BodGwhYM72oiarP5Mqo5?purpose=fullsize",
+      title: "Active Playtime",
+      tag: "Exercise"
+    },
+    {
+      url: "https://images.openai.com/static-rsc-4/jCTRA8ep0i0VStPjxBZBbpgk2O2fzE3FDDun5QQn2a20Qjbbl37o7vikJp8rWbq9adrYoZQl61kFSWSiTfQqWK1mcj3b0PSff22He8Gbu7AQf0I754E_OWPY-XojW6a1BksVXbHL2kuJfXnQyIqHcEuu57Qf_PDe2kveDFPDOexIuOqhm0an1Bpgt4dLpbPG?purpose=fullsize",
+      title: "Nutrition Guides",
+      tag: "Health"
+    },
+    {
+      url: "https://images.openai.com/static-rsc-4/qj6KemkTRch6D4T0gd46O1cd47AkRdSAh56PHmmqn6efX-y-4T6u8EKHdNmWDaoQAKWj2Zu-4vFGi1Cnttd_VxN4jgGOVZuJlGihlH3PCAQ6n9-5Y-rY7ZYcRJqrmF6Jq2u-vFcH9wAdYVPDRCLlwTKHw2ihQF9A1fQuN3yxgRWHulC9oM8pH8oFvQTkSIBz?purpose=fullsize",
+      title: "Expert Clinical Care",
+      tag: "Veterinarian"
+    }
+  ];
+
   return (
-    <div className="relative min-h-screen bg-background overflow-x-hidden selection:bg-accent selection:text-accent-foreground font-sans">
-      
-      {/* Decorative background glows */}
-      <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
-      <div className="absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full bg-accent/10 blur-[130px] pointer-events-none" />
+    <div className="relative min-h-screen overflow-x-hidden selection:bg-accent selection:text-accent-foreground font-sans">
       
       {/* Top Navbar */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -56,7 +98,7 @@ function Landing() {
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary p-2 shadow-lg shadow-primary/25">
               <PawPrint className="h-full w-full text-primary-foreground" />
             </div>
-            PetPal
+            <span className="text-foreground">PetPal</span>
           </Link>
           
           <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-muted-foreground">
@@ -87,24 +129,46 @@ function Landing() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-16 pb-20 lg:pt-24 lg:pb-32 grid gap-12 lg:grid-cols-2 items-center">
-        <div className="space-y-6 text-center lg:text-left">
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-16 pb-20 lg:pt-24 lg:pb-32 grid gap-12 lg:grid-cols-12 items-center">
+        <div className="space-y-8 text-center lg:text-left lg:col-span-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">
             <Sparkles className="h-3.5 w-3.5 animate-pulse" /> Smart pet care, simplified
           </div>
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[0.95] tracking-tighter text-foreground">
-            Everything your pet needs, <span className="text-primary">in one calm place.</span>
+          
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tighter text-foreground">
+            Because Every Pet <span className="block text-primary">Deserves Exceptional Care ❤️</span>
           </h1>
+          
           <p className="max-w-xl mx-auto lg:mx-0 text-base sm:text-lg font-medium leading-relaxed text-muted-foreground/90">
-            Scheduler vet visits, restock premium food and toys, track medical alerts, and consult our AI diagnostics assistant — all within a single unified workspace.
+            A comprehensive, luxury pet healthcare platform. Track your companion's vitals, book veterinarian appointments, chat with our advanced AI diagnostic assistant, and access instant emergency support.
           </p>
+
+          {/* Quick Stats list requested */}
+          <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto lg:mx-0 pt-2">
+            {[
+              { label: "Track Health", icon: Activity, desc: "Interactive charts & timeline Logs" },
+              { label: "Book Appointments", icon: Calendar, desc: "Easy schedule & direct invoice" },
+              { label: "AI Diagnostics", icon: Brain, desc: "Symptom checker chat wizard" },
+              { label: "Emergency Support", icon: ShieldAlert, desc: "24/7 clinics finder map & triage" }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-3 p-3.5 rounded-2xl glass-card border border-border/40 hover-lift">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                  <item.icon className="h-5 w-5" />
+                </div>
+                <div className="text-left">
+                  <h4 className="text-xs font-black text-foreground">{item.label}</h4>
+                  <p className="text-[10px] text-muted-foreground font-medium leading-tight">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
           
           <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-2">
-            <Link to="/signup" className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-primary px-8 py-4.5 text-sm font-black tracking-wide text-primary-foreground transition-all hover:shadow-2xl hover:shadow-primary/20 hover:scale-[1.03] active:scale-95">
+            <Link to="/signup" className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-primary px-8 py-4 text-sm font-black tracking-wide text-primary-foreground transition-all hover:shadow-2xl hover:shadow-primary/20 hover:scale-[1.03] active:scale-95">
               <span>Start Free Trial</span>
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link to="/login" className="inline-flex items-center justify-center rounded-full border-2 border-border/70 bg-card/65 backdrop-blur-sm px-8 py-4.5 text-sm font-bold tracking-wide transition-all hover:bg-background/80 hover:border-foreground/35 hover:scale-[1.03] active:scale-95">
+            <Link to="/login" className="inline-flex items-center justify-center rounded-full border-2 border-border/70 bg-card/65 backdrop-blur-sm px-8 py-4 text-sm font-bold tracking-wide transition-all hover:bg-background/80 hover:border-foreground/35 hover:scale-[1.03] active:scale-95">
               Sign In to Account
             </Link>
           </div>
@@ -124,23 +188,66 @@ function Landing() {
           </div>
         </div>
 
-        <div className="relative mx-auto lg:mr-0 max-w-lg lg:max-w-none w-full">
-          <div className="absolute -inset-4 rounded-[3.5rem] bg-primary/5 blur-2xl pointer-events-none" />
-          <div className="relative aspect-video lg:aspect-square overflow-hidden rounded-[2.5rem] border border-white/20 shadow-2xl bg-card">
-            <img
-              src={heroImg}
-              alt="Happy dog and kitten"
-              className="h-full w-full object-cover object-center transition-transform duration-1000 hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent" />
-            
-            <div className="absolute bottom-6 left-6 right-6 rounded-3xl glass-card p-5 text-left border border-white/30 flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-md">
-                <Shield className="h-5 w-5" />
+        {/* Bento Grid / Multi-image Premium Gallery requested */}
+        <div className="lg:col-span-5 grid grid-cols-2 gap-4 relative">
+          <div className="absolute -inset-4 rounded-[3.5rem] bg-primary/5 blur-3xl pointer-events-none" />
+          
+          {/* Column 1 */}
+          <div className="space-y-4">
+            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-[4/5]">
+              <img
+                src={bentoImages[0].url}
+                alt={bentoImages[0].title}
+                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
+                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
+                  {bentoImages[0].tag}
+                </span>
+                <h4 className="text-xs font-black text-white">{bentoImages[0].title}</h4>
               </div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-wider text-primary">Fully Certified Care</p>
-                <p className="text-[10px] text-foreground/80 font-medium">All our clinics and veterinarians are board-licensed professionals.</p>
+            </div>
+            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-square">
+              <img
+                src={bentoImages[1].url}
+                alt={bentoImages[1].title}
+                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
+                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
+                  {bentoImages[1].tag}
+                </span>
+                <h4 className="text-xs font-black text-white">{bentoImages[1].title}</h4>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 2 */}
+          <div className="space-y-4 pt-8">
+            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-square">
+              <img
+                src={bentoImages[2].url}
+                alt={bentoImages[2].title}
+                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
+                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
+                  {bentoImages[2].tag}
+                </span>
+                <h4 className="text-xs font-black text-white">{bentoImages[2].title}</h4>
+              </div>
+            </div>
+            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-[4/5]">
+              <img
+                src={bentoImages[3].url}
+                alt={bentoImages[3].title}
+                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
+                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
+                  {bentoImages[3].tag}
+                </span>
+                <h4 className="text-xs font-black text-white">{bentoImages[3].title}</h4>
               </div>
             </div>
           </div>
@@ -162,14 +269,14 @@ function Landing() {
             {[
               { title: "Vet Scheduling Wizard", desc: "4-step wizard checkout supporting specialist profiles, time slots, and invoice billing receipts.", icon: Calendar, color: "bg-pink-500/10 text-pink-500 border-pink-500/10" },
               { title: "Premium Supplies Shop", desc: "Instantly buy food, treats, scratching posts, and cozy orthopedic beds with dynamic category filtering.", icon: ShoppingBag, color: "bg-rose-400/10 text-rose-400 border-rose-400/10" },
-              { title: "AI Veterinarian Chat", desc: "Graceful rule-based local parser analyzing skin concerns, indigestion, and activity levels offline.", icon: MessageCircle, color: "bg-amber-500/10 text-amber-500 border-amber-500/10" },
+              { title: "AI Veterinarian Chat", desc: "Guided diagnostic wizard wizard query details and recommending supplement formulas.", icon: MessageCircle, color: "bg-amber-500/10 text-amber-500 border-amber-500/10" },
               { title: "Lost & Found Board", desc: "Help reuniting lost companions using interactive OSM maps marking last seen locations.", icon: ShieldAlert, color: "bg-pink-600/10 text-pink-600 border-pink-600/10" },
               { title: "Gamification & Loyalty", desc: "Earn achievement badges like 🏆 First Vaccination, stack points, and unlock cash-back supplies.", icon: Award, color: "bg-rose-500/10 text-rose-500 border-rose-500/10" },
               { title: "Unified Health Records", desc: "Log immunization cycles, treatment dosages, bodyweight progressions, and clinic diagnoses.", icon: Bell, color: "bg-amber-600/10 text-amber-600 border-amber-600/10" }
             ].map((f, i) => {
               const I = f.icon;
               return (
-                <div key={i} className="group relative rounded-3xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div key={i} className="group relative rounded-3xl border border-border bg-card p-6 hover-lift">
                   <div className={cn("inline-flex rounded-2xl p-3.5 mb-4 transition-transform duration-500 group-hover:rotate-6", f.color)}>
                     <I className="h-6 w-6" />
                   </div>
@@ -197,7 +304,7 @@ function Landing() {
               { name: "Dr. Sarah Connor", role: "Veterinarian Doctor", rating: 5, quote: "As a clinician, PetPal's health records make consulting patients a breeze. Owners have vaccination schedules logged, making checkups safe and quick." },
               { name: "Tareq Jibril", role: "Retriever Owner", rating: 5, quote: "The 4-step Vet scheduler is incredibly smooth. I book slots, verify the pricing, and simulate checkouts with receipts instantly. Truly graduation-level project!" }
             ].map((t, i) => (
-              <div key={i} className="rounded-3xl border border-border bg-card/60 p-6 space-y-4">
+              <div key={i} className="rounded-3xl border border-border bg-card/60 p-6 space-y-4 hover-lift">
                 <div className="flex text-amber-400 gap-0.5">
                   {Array.from({ length: t.rating }).map((_, r) => (
                     <Star key={r} className="h-4 w-4 fill-current" />
@@ -230,7 +337,7 @@ function Landing() {
 
           <div className="grid gap-6 md:grid-cols-3 items-stretch">
             {/* Free plan */}
-            <div className="rounded-3xl border border-border bg-card p-6 flex flex-col justify-between">
+            <div className="rounded-3xl border border-border bg-card p-6 flex flex-col justify-between hover-lift">
               <div className="space-y-4">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Standard Care</span>
                 <h3 className="font-display text-2xl font-bold">Free Basic</h3>
@@ -250,7 +357,7 @@ function Landing() {
             </div>
 
             {/* Plus plan */}
-            <div className="rounded-3xl border-2 border-primary bg-card p-6 flex flex-col justify-between relative shadow-xl transform scale-[1.03]">
+            <div className="rounded-3xl border-2 border-primary bg-card p-6 flex flex-col justify-between relative shadow-xl transform scale-[1.03] hover-lift">
               <div className="absolute top-0 right-6 -translate-y-1/2 rounded-full bg-primary px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-primary-foreground">
                 Popular
               </div>
@@ -274,7 +381,7 @@ function Landing() {
             </div>
 
             {/* Premium plan */}
-            <div className="rounded-3xl border border-border bg-card p-6 flex flex-col justify-between">
+            <div className="rounded-3xl border border-border bg-card p-6 flex flex-col justify-between hover-lift">
               <div className="space-y-4">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ultimate Security</span>
                 <h3 className="font-display text-2xl font-bold">Premium Hospital</h3>
@@ -305,7 +412,7 @@ function Landing() {
             <div className="rounded-full bg-primary/10 p-3"><Download className="h-6 w-6 text-primary" /></div>
           </div>
           <h2 className="font-display text-4xl font-extrabold tracking-tight">PetPal in your pocket</h2>
-          <p className="max-w-xl mx-auto text-xs sm:text-sm text-muted-foreground">
+          <p className="max-w-xl mx-auto text-xs sm:text-sm text-muted-foreground animate-pulse">
             Get instant push notifications for vaccines, chat with vet AI on-the-go, and purchase products from our mobile-optimized app. Available for iOS and Android.
           </p>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
@@ -352,19 +459,72 @@ function Landing() {
         </form>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/30 bg-card/20 py-12 text-center text-xs text-muted-foreground">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 font-display text-lg font-bold text-foreground/80">
-            <PawPrint className="h-5 w-5 text-primary" /> PetPal Inc.
+      {/* Startup Footer (10. Footer عالمي + 11. Footer pages) */}
+      <footer className="border-t border-border/30 bg-card/30 py-16 text-xs text-muted-foreground">
+        <div className="mx-auto max-w-7xl px-6 grid gap-10 sm:grid-cols-2 md:grid-cols-5">
+          
+          {/* Logo Column */}
+          <div className="sm:col-span-2 space-y-4 text-left">
+            <div className="flex items-center gap-2 font-display text-xl font-bold text-foreground">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary p-1.5 text-primary-foreground shadow-md">
+                <PawPrint className="h-full w-full" />
+              </div>
+              <span>PetPal</span>
+            </div>
+            <p className="text-[11px] leading-relaxed max-w-xs text-muted-foreground/80 font-medium">
+              Because every companion deserves exceptional care. A high-end ecosystem offering smart veterinary records, local diagnostics, and priority scheduling.
+            </p>
+            <p className="text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-wider pt-2">
+              Designed for happy, healthy pets 🐾
+            </p>
           </div>
-          <div className="flex gap-5 font-semibold">
-            <a href="#" className="hover:underline">About</a>
-            <a href="#" className="hover:underline">Clinics</a>
-            <a href="#" className="hover:underline">Privacy</a>
-            <a href="#" className="hover:underline">Terms</a>
+
+          {/* Platform Column */}
+          <div className="space-y-3 text-left">
+            <h4 className="text-[11px] font-black uppercase tracking-wider text-foreground">Platform</h4>
+            <ul className="space-y-2 font-semibold">
+              <li><Link to="/signup" className="hover:text-primary transition-colors">Track Health</Link></li>
+              <li><Link to="/signup" className="hover:text-primary transition-colors">Book Appointments</Link></li>
+              <li><Link to="/signup" className="hover:text-primary transition-colors">AI Diagnostics</Link></li>
+              <li><Link to="/signup" className="hover:text-primary transition-colors">Emergency Support</Link></li>
+              <li><Link to="/signup" className="hover:text-primary transition-colors">Premium Supplies</Link></li>
+            </ul>
           </div>
-          <p className="text-[11px] font-medium tracking-wider uppercase">© {new Date().getFullYear()} — Designed for happy companions 🐾</p>
+
+          {/* Company Column */}
+          <div className="space-y-3 text-left">
+            <h4 className="text-[11px] font-black uppercase tracking-wider text-foreground">Company</h4>
+            <ul className="space-y-2 font-semibold">
+              <li><a href="#features" className="hover:text-primary transition-colors">About Us</a></li>
+              <li><a href="#testimonials" className="hover:text-primary transition-colors">Reviews & Press</a></li>
+              <li><a href="#pricing" className="hover:text-primary transition-colors">Pricing Plans</a></li>
+              <li><a href="#download" className="hover:text-primary transition-colors">Careers (We're hiring!)</a></li>
+            </ul>
+          </div>
+
+          {/* Resources & Support Column */}
+          <div className="space-y-3 text-left">
+            <h4 className="text-[11px] font-black uppercase tracking-wider text-foreground">Support & Legal</h4>
+            <ul className="space-y-2 font-semibold">
+              <li><a href="#contact" className="hover:text-primary transition-colors">Help Center</a></li>
+              <li><a href="#contact" className="hover:text-primary transition-colors">Contact Support</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        {/* Bottom Banner */}
+        <div className="mx-auto max-w-7xl px-6 mt-12 pt-8 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-4 font-semibold">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground/75">
+            © {new Date().getFullYear()} PetPal Healthcare Inc. All rights reserved.
+          </p>
+          <div className="flex gap-4 text-[10px] uppercase tracking-widest text-muted-foreground/75">
+            <a href="#" className="hover:underline">Security Security</a>
+            <span>•</span>
+            <a href="#" className="hover:underline">System Status</a>
+          </div>
         </div>
       </footer>
 
