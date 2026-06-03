@@ -20,7 +20,9 @@ import {
   Activity, 
   Heart, 
   Brain, 
-  PhoneCall 
+  PhoneCall,
+  MessageSquare,
+  BookOpen
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -43,11 +45,52 @@ function Landing() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Contact form state
+  // Carousel & Contact states
+  const [slide, setSlide] = useState(0);
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactMsg, setContactMsg] = useState("");
   const [sending, setSending] = useState(false);
+
+  const SLIDES = [
+    {
+      badge: "Healthcare 🩺",
+      title: "Track Your Pet's Health",
+      subtitle: "All-in-one digital medical passport, automatic vaccine cycle notifications, and active weight tracking.",
+      img: "https://images.unsplash.com/photo-1581888227599-779811939961?w=1200&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "Diagnostics 🤖",
+      title: "AI Veterinary Assistant",
+      subtitle: "Consult our advanced guided symptom checker wizard regarding active physiological wellness levels instantly.",
+      img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1200&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "Emergency 🚨",
+      title: "Emergency Care 24/7",
+      subtitle: "Locate near clinics, verify open hours, check distances, and review acute trauma protocols.",
+      img: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "Community ❤️",
+      title: "Recent Pet Adoptions",
+      subtitle: "Browse local shelter profiles and adopt a new companion directly through verified channels.",
+      img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "Premium ✨",
+      title: "Grooming & Supplies Shop",
+      subtitle: "Buy organic salmon recipe foods, interactive chewing toys, and cozy orthopedic beds.",
+      img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=1200&auto=format&fit=crop&q=80"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlide(prev => (prev + 1) % 5);
+    }, 5500);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     if (!loading && user) navigate({ to: "/home" });
@@ -64,29 +107,6 @@ function Landing() {
     setContactEmail("");
     setContactMsg("");
   };
-
-  const bentoImages = [
-    {
-      url: "https://images.openai.com/static-rsc-4/7JJfQnKjP0k3p6RegJgYCOrDbVF-MdA9xdJDsBunKaiaTsdazFN7wpUxrJ3jLkR5U2PLJFaao5bVsOpkkJghG4TvDjHIJOhog1pp0lRgltm6UEKKyfc_gmgdUkQ6MmLHahPmhR8f5FW6_yujOB7dnFRe1DWibyfS2kM1acP-8aCRwAxtckl9FKz_P0gWLv4L?purpose=fullsize",
-      title: "Cozy Companions",
-      tag: "Wellness"
-    },
-    {
-      url: "https://images.openai.com/static-rsc-4/fFGXIBWTg5zZV-s05oJizCC-xrxJmLKJ_dknB3kAddFbv0yINhkcliTi-qzy4TgQMce7z4QpRXSPkyVqLNqpc9fhdAwKU06m0uUJBJzj9UYrLzibsSDZ82J6_LZqcaVwIXch1T5H44MfH_QAbNCA0VgZlxKOqjoG0SbhkFBHLGn1BodGwhYM72oiarP5Mqo5?purpose=fullsize",
-      title: "Active Playtime",
-      tag: "Exercise"
-    },
-    {
-      url: "https://images.openai.com/static-rsc-4/jCTRA8ep0i0VStPjxBZBbpgk2O2fzE3FDDun5QQn2a20Qjbbl37o7vikJp8rWbq9adrYoZQl61kFSWSiTfQqWK1mcj3b0PSff22He8Gbu7AQf0I754E_OWPY-XojW6a1BksVXbHL2kuJfXnQyIqHcEuu57Qf_PDe2kveDFPDOexIuOqhm0an1Bpgt4dLpbPG?purpose=fullsize",
-      title: "Nutrition Guides",
-      tag: "Health"
-    },
-    {
-      url: "https://images.openai.com/static-rsc-4/qj6KemkTRch6D4T0gd46O1cd47AkRdSAh56PHmmqn6efX-y-4T6u8EKHdNmWDaoQAKWj2Zu-4vFGi1Cnttd_VxN4jgGOVZuJlGihlH3PCAQ6n9-5Y-rY7ZYcRJqrmF6Jq2u-vFcH9wAdYVPDRCLlwTKHw2ihQF9A1fQuN3yxgRWHulC9oM8pH8oFvQTkSIBz?purpose=fullsize",
-      title: "Expert Clinical Care",
-      tag: "Veterinarian"
-    }
-  ];
 
   return (
     <div className="relative min-h-screen overflow-x-hidden selection:bg-accent selection:text-accent-foreground font-sans">
@@ -128,129 +148,269 @@ function Landing() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-16 pb-20 lg:pt-24 lg:pb-32 grid gap-12 lg:grid-cols-12 items-center">
-        <div className="space-y-8 text-center lg:text-left lg:col-span-7">
+      {/* 1. HERO SLIDER SECTION (Under Navbar directly) */}
+      <section className="mx-auto max-w-7xl px-6 pt-6">
+        <div className="relative h-64 md:h-[400px] w-full overflow-hidden rounded-[2.5rem] bg-muted shadow-2xl group/carousel">
+          {SLIDES.map((s, idx) => (
+            <div 
+              key={idx}
+              className={cn(
+                "absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out flex flex-col justify-end p-6 md:p-12 text-white text-left",
+                slide === idx ? "opacity-100 scale-100 z-10 animate-in fade-in zoom-in-95 duration-500" : "opacity-0 scale-95 pointer-events-none z-0"
+              )}
+            >
+              <img 
+                src={s.img} 
+                alt={s.title} 
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-[5500ms] ease-linear scale-105 group-hover/carousel:scale-100" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+              <div className="relative z-10 space-y-2 md:space-y-4 max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <span className="inline-flex rounded-full bg-primary/25 backdrop-blur-md px-3 py-1 text-[9px] font-black uppercase tracking-wider text-primary border border-primary/30 w-max">
+                  {s.badge}
+                </span>
+                <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight leading-tight">
+                  {s.title}
+                </h2>
+                <p className="text-white/80 text-xs md:text-sm font-semibold leading-relaxed max-w-lg">
+                  {s.subtitle}
+                </p>
+                <Button asChild size="lg" className="rounded-full bg-primary text-white font-bold hover:scale-105 transition-transform w-max px-6 py-6 text-xs uppercase tracking-wider shadow-lg shadow-primary/20">
+                  <Link to="/signup">Start Free Journey</Link>
+                </Button>
+              </div>
+            </div>
+          ))}
+          
+          {/* Slider Dots */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            {SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setSlide(idx)}
+                className={cn(
+                  "h-2.5 rounded-full transition-all duration-300",
+                  slide === idx ? "w-8 bg-primary" : "w-2.5 bg-white/45 hover:bg-white/70"
+                )}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 2. CATEGORIES SECTION (Circular Categories Row) */}
+      <section className="mx-auto max-w-7xl px-6 py-10 text-center space-y-4">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Discover PetPal</span>
+          <h2 className="font-display text-2xl md:text-3xl font-extrabold text-foreground">Explore Categories</h2>
+        </div>
+        
+        <div className="flex flex-wrap gap-4 md:gap-6 justify-center">
+          {[
+            { label: "Dogs", emoji: "🐶", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=150&auto=format&fit=crop&q=60" },
+            { label: "Cats", emoji: "🐱", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=150&auto=format&fit=crop&q=60" },
+            { label: "Birds", emoji: "🐦", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=150&auto=format&fit=crop&q=60" },
+            { label: "Rabbits", emoji: "🐰", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&auto=format&fit=crop&q=60" },
+            { label: "Fish", emoji: "🐠", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=150&auto=format&fit=crop&q=60" },
+            { label: "Reptiles", emoji: "🦎", img: "https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=150&auto=format&fit=crop&q=60" }
+          ].map((cat) => (
+            <Link 
+              key={cat.label} 
+              to="/signup" 
+              className="flex flex-col items-center gap-2 group transition-all duration-300"
+            >
+              <div className="relative h-20 w-20 md:h-24 md:w-24 overflow-hidden rounded-full border-2 border-border/60 hover:border-primary shadow-md group-hover:shadow-xl group-hover:scale-115 transition-all duration-500">
+                <img 
+                  src={cat.img} 
+                  alt={cat.label} 
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                />
+              </div>
+              <span className="text-xs font-black tracking-wide text-muted-foreground group-hover:text-primary transition-colors">
+                {cat.emoji} {cat.label}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Main Core Tagline Section */}
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-10 pb-16 grid gap-12 lg:grid-cols-2 items-center">
+        <div className="space-y-6 text-center lg:text-left">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">
             <Sparkles className="h-3.5 w-3.5 animate-pulse" /> Smart pet care, simplified
           </div>
-          
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tighter text-foreground">
-            Because Every Pet <span className="block text-primary">Deserves Exceptional Care ❤️</span>
+            Because Every Pet <span className="text-primary block">Deserves Exceptional Care ❤️</span>
           </h1>
-          
           <p className="max-w-xl mx-auto lg:mx-0 text-base sm:text-lg font-medium leading-relaxed text-muted-foreground/90">
             A comprehensive, luxury pet healthcare platform. Track your companion's vitals, book veterinarian appointments, chat with our advanced AI diagnostic assistant, and access instant emergency support.
           </p>
-
-          {/* Quick Stats list requested */}
-          <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto lg:mx-0 pt-2">
-            {[
-              { label: "Track Health", icon: Activity, desc: "Interactive charts & timeline Logs" },
-              { label: "Book Appointments", icon: Calendar, desc: "Easy schedule & direct invoice" },
-              { label: "AI Diagnostics", icon: Brain, desc: "Symptom checker chat wizard" },
-              { label: "Emergency Support", icon: ShieldAlert, desc: "24/7 clinics finder map & triage" }
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-3.5 rounded-2xl glass-card border border-border/40 hover-lift">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                  <item.icon className="h-5 w-5" />
-                </div>
-                <div className="text-left">
-                  <h4 className="text-xs font-black text-foreground">{item.label}</h4>
-                  <p className="text-[10px] text-muted-foreground font-medium leading-tight">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
           
           <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-2">
             <Link to="/signup" className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-primary px-8 py-4 text-sm font-black tracking-wide text-primary-foreground transition-all hover:shadow-2xl hover:shadow-primary/20 hover:scale-[1.03] active:scale-95">
               <span>Start Free Trial</span>
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link to="/login" className="inline-flex items-center justify-center rounded-full border-2 border-border/70 bg-card/65 backdrop-blur-sm px-8 py-4 text-sm font-bold tracking-wide transition-all hover:bg-background/80 hover:border-foreground/35 hover:scale-[1.03] active:scale-95">
+            <Link to="/login" className="inline-flex items-center justify-center rounded-full border-2 border-border/70 bg-card/65 backdrop-blur-sm px-8 py-4 text-sm font-bold tracking-wide transition-all hover:scale-[1.03] active:scale-95">
               Sign In to Account
             </Link>
           </div>
-          
-          <div className="flex items-center justify-center lg:justify-start gap-6 pt-6 border-t border-border/30 max-w-md mx-auto lg:mx-0">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-10 w-10 rounded-full border-2 border-background bg-secondary/80 flex items-center justify-center font-bold text-xs">
-                  {i === 4 ? "🐾" : "🐕"}
-                </div>
-              ))}
-            </div>
-            <div>
-              <p className="text-sm font-bold text-foreground">Join 2,500+ happy pets</p>
-              <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">Trusted by veterinary clinics</p>
-            </div>
-          </div>
         </div>
 
-        {/* Bento Grid / Multi-image Premium Gallery requested */}
-        <div className="lg:col-span-5 grid grid-cols-2 gap-4 relative">
-          <div className="absolute -inset-4 rounded-[3.5rem] bg-primary/5 blur-3xl pointer-events-none" />
-          
-          {/* Column 1 */}
-          <div className="space-y-4">
-            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-[4/5]">
+        <div className="relative mx-auto lg:mr-0 max-w-lg lg:max-w-none w-full grid grid-cols-2 gap-4">
+          {[
+            { label: "Track Health", icon: Activity, desc: "Interactive charts & timeline Logs", img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400" },
+            { label: "Book Appointments", icon: Calendar, desc: "Easy schedule & direct invoice", img: "https://images.unsplash.com/photo-1581888227599-779811939961?w=400" },
+            { label: "AI Diagnostics", icon: Brain, desc: "Symptom checker chat wizard", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400" },
+            { label: "Emergency Support", icon: ShieldAlert, desc: "24/7 clinics finder map & triage", img: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=400" }
+          ].map((item, idx) => (
+            <div key={idx} className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-square">
               <img
-                src={bentoImages[0].url}
-                alt={bentoImages[0].title}
+                src={item.img}
+                alt={item.label}
                 className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
-                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
-                  {bentoImages[0].tag}
-                </span>
-                <h4 className="text-xs font-black text-white">{bentoImages[0].title}</h4>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent flex flex-col justify-end p-4 text-left">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-md text-white mb-2 border border-primary/20">
+                  <item.icon className="h-4.5 w-4.5" />
+                </div>
+                <h4 className="text-xs font-black text-white">{item.label}</h4>
+                <p className="text-[9px] text-white/70 font-semibold leading-tight mt-0.5">{item.desc}</p>
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-square">
-              <img
-                src={bentoImages[1].url}
-                alt={bentoImages[1].title}
-                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
-                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
-                  {bentoImages[1].tag}
-                </span>
-                <h4 className="text-xs font-black text-white">{bentoImages[1].title}</h4>
-              </div>
-            </div>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          {/* Column 2 */}
-          <div className="space-y-4 pt-8">
-            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-square">
-              <img
-                src={bentoImages[2].url}
-                alt={bentoImages[2].title}
-                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
-                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
-                  {bentoImages[2].tag}
-                </span>
-                <h4 className="text-xs font-black text-white">{bentoImages[2].title}</h4>
+      {/* 3. ADOPTION SPOTLIGHT SECTION */}
+      <section className="mx-auto max-w-7xl px-6 py-16 space-y-8 text-center bg-secondary/20 rounded-[3rem] border border-border/30">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Find a companion</span>
+          <h2 className="font-display text-3xl font-extrabold text-foreground flex items-center justify-center gap-1.5">
+            Adoption Spotlight 🏡❤️
+          </h2>
+          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto">Give these rescued companions a loving, warm home. Explore their profiles.</p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
+          {[
+            { name: "Bella", breed: "Husky Puppy", age: "2 months", img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=500&auto=format&fit=crop&q=80" },
+            { name: "Oliver", breed: "British Shorthair", age: "1 year", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=80" },
+            { name: "Milo", breed: "Angora Rabbit", age: "6 months", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=500&auto=format&fit=crop&q=80" }
+          ].map((pet, idx) => (
+            <div key={idx} className="group overflow-hidden rounded-[2.2rem] bg-card border border-border hover:shadow-xl transition-all duration-500 flex flex-col justify-between hover-lift">
+              <div className="p-3.5 space-y-4">
+                <div className="relative overflow-hidden rounded-[1.6rem] bg-secondary/50 aspect-square">
+                  <img src={pet.img} alt={pet.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[8px] uppercase font-extrabold tracking-wider bg-black/60 text-white px-2 py-0.5 rounded-full">
+                      {pet.age}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-1 px-1 text-left">
+                  <h3 className="font-display font-bold text-xl text-foreground/90">{pet.name}</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-accent">{pet.breed}</p>
+                </div>
+              </div>
+              <div className="p-3.5 pt-0">
+                <Button asChild className="w-full rounded-xl text-xs font-bold py-5 mt-1 bg-primary text-white shadow-md shadow-primary/10">
+                  <Link to="/signup">Adopt Me ❤️</Link>
+                </Button>
               </div>
             </div>
-            <div className="relative overflow-hidden rounded-3xl border border-white/20 shadow-xl bg-card hover-lift group aspect-[4/5]">
-              <img
-                src={bentoImages[3].url}
-                alt={bentoImages[3].title}
-                className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          ))}
+        </div>
+      </section>
+
+      {/* 4. RECENT COMMUNITY POSTS (Instagram Style) */}
+      <section className="mx-auto max-w-7xl px-6 py-16 space-y-8 text-center">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Instagram for Pets</span>
+          <h2 className="font-display text-3xl font-extrabold text-foreground">Recent Community Feed</h2>
+          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto">See how members are caring for their animal companions on our social boards.</p>
+        </div>
+
+        <div className="grid gap-6 grid-cols-2 md:grid-cols-4 max-w-6xl mx-auto">
+          {[
+            { img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&auto=format&fit=crop&q=80", likes: 142, comments: 24, tag: "🐶 Playtime" },
+            { img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=80", likes: 98, comments: 16, tag: "🐱 Napping" },
+            { img: "https://images.unsplash.com/photo-1522856283749-626210a309e1?w=500&auto=format&fit=crop&q=80", likes: 74, comments: 10, tag: "🐦 Singing" },
+            { img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=500&auto=format&fit=crop&q=80", likes: 110, comments: 18, tag: "🐰 Eating" }
+          ].map((post, idx) => (
+            <div key={idx} className="group relative overflow-hidden rounded-[2.2rem] aspect-[4/5] bg-muted shadow-sm hover:shadow-xl transition-all duration-500 hover-lift border border-border/40">
+              <img 
+                src={post.img} 
+                alt={`Community Post ${idx + 1}`}
+                className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-105"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-4 text-left">
-                <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary bg-primary/20 backdrop-blur-md px-2 py-0.5 rounded-full w-max mb-1">
-                  {bentoImages[3].tag}
+              {/* Badge */}
+              <div className="absolute top-3 left-3 z-10">
+                <span className="text-[8px] font-extrabold uppercase bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full">
+                  {post.tag}
                 </span>
-                <h4 className="text-xs font-black text-white">{bentoImages[3].title}</h4>
+              </div>
+              {/* Overlay likes / comments */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6 text-white">
+                <div className="flex items-center gap-6 text-xs font-black">
+                  <div className="flex items-center gap-1.5 hover:scale-110 transition-transform cursor-pointer">
+                    <Heart className="h-4.5 w-4.5 fill-white text-white" />
+                    <span>{post.likes}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 hover:scale-110 transition-transform cursor-pointer">
+                    <MessageSquare className="h-4.5 w-4.5 fill-white text-white" />
+                    <span>{post.comments}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. TIPS & ARTICLES SECTION */}
+      <section className="mx-auto max-w-7xl px-6 py-16 space-y-8 text-center bg-secondary/20 rounded-[3rem] border border-border/30">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">Preventative Care</span>
+          <h2 className="font-display text-3xl font-extrabold text-foreground">Tips & Health Articles</h2>
+          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto">Expert guides, medical checklists, and nutritional instructions from certified veterinarians.</p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
+          {[
+            { title: "5 Signs Your Dog Needs A Vet 🩺", desc: "Recognize warning indicators of dehydration, severe digestion issues, or joints pains early.", img: "https://images.unsplash.com/photo-1581888227599-779811939961?w=500", label: "Dogs" },
+            { title: "Optimal Cat Nutrition Guide 🐈", desc: "How balanced protein ratios affect joint mobility, metabolic recovery, and coat hydration.", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500", label: "Cats" },
+            { title: "Small Pet Enrichment Tips 🐹", desc: "Keep your rabbits, hamsters, and birds active with chewing logs, nesting materials, and tunnels.", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=500", label: "Rabbits" }
+          ].map((art, idx) => (
+            <div key={idx} className="group overflow-hidden rounded-[2.2rem] bg-card border border-border hover:shadow-xl transition-all duration-500 flex flex-col justify-between hover-lift text-left">
+              <div className="p-3.5 space-y-4">
+                <div className="relative overflow-hidden rounded-[1.6rem] bg-secondary/50 aspect-video">
+                  <img src={art.img} alt={art.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[8px] uppercase font-extrabold tracking-wider bg-black/60 text-white px-2 py-0.5 rounded-full">
+                      {art.label}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-2 px-1">
+                  <h3 className="font-display font-bold text-base text-foreground/90 leading-tight group-hover:text-primary transition-colors">
+                    {art.title}
+                  </h3>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    {art.desc}
+                  </p>
+                </div>
+              </div>
+              <div className="p-3.5 pt-0 border-t border-border/10">
+                <Button asChild variant="ghost" className="w-full text-xs font-black py-4 hover:bg-secondary/10 flex items-center justify-center gap-1 text-primary">
+                  <Link to="/signup">Read Article <BookOpen className="h-4 w-4" /></Link>
+                </Button>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -450,7 +610,7 @@ function Landing() {
               value={contactMsg}
               onChange={(e) => setContactMsg(e.target.value)}
               placeholder="How can we assist you and your pet?"
-              className="flex min-h-[100px] w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-h-[100px] w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             />
           </div>
           <Button type="submit" disabled={sending} className="w-full rounded-xl py-6 flex items-center justify-center gap-1.5 shadow-md shadow-primary/10">
