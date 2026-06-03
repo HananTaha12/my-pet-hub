@@ -36,6 +36,52 @@ function Shop() {
   const [reviewing, setReviewing] = useState<Product | null>(null);
   const [cartCount, setCartCount] = useState(0);
 
+  // Carousel & Species Filter states
+  const [selectedSpecies, setSelectedSpecies] = useState<string | null>(null);
+  const [slide, setSlide] = useState(0);
+
+  const BANNERS = [
+    {
+      badge: "Campaign 💉",
+      title: "Vaccination Campaign",
+      subtitle: "Protect your companion! Book now to get 15% discount on all active immunization boosters.",
+      btnText: "Book Appointment",
+      to: "/book",
+      img: "https://images.unsplash.com/photo-1581888227599-779811939961?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "Seasonal ☀️",
+      title: "Summer Pet Care",
+      subtitle: "Keep cool and hydrated! Explore premium pools, cooling mats, and travel crates.",
+      btnText: "Explore Shop",
+      to: "/shop",
+      img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "Triage 🚨",
+      title: "Emergency Tips & Support",
+      subtitle: "Be prepared. Access 24/7 maps of open vet clinics and diagnostic triage.",
+      btnText: "Open Emergency Map",
+      to: "/map",
+      img: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&auto=format&fit=crop&q=80"
+    },
+    {
+      badge: "New Arrival ✨",
+      title: "Cozy Premium Arrivals",
+      subtitle: "Browse the latest arrival of organic salmon recipes and luxury velvet beds.",
+      btnText: "Browse Supplies",
+      to: "/shop",
+      img: "https://images.unsplash.com/photo-1535268647977-a403b69fc756?w=800&auto=format&fit=crop&q=80"
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSlide(prev => (prev + 1) % 4);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
   const loadRatings = async () => {
     const { data } = await supabase.from("product_reviews").select("product_id, rating");
     const map = new Map<string, { sum: number; count: number }>();
@@ -106,11 +152,12 @@ function Shop() {
 
   const filtered = products.filter((p) => {
     const matchesCat = !selectedCat || p.category_id === selectedCat;
+    const matchesSpecies = !selectedSpecies || 
+      (p.species && (p.species.toLowerCase() === selectedSpecies.toLowerCase() || p.species.toLowerCase() === "all"));
     const matchesSearch = !q || 
       p.name.toLowerCase().includes(q.toLowerCase()) || 
-      (p.description && p.description.toLowerCase().includes(q.toLowerCase())) ||
-      (p.species && p.species.toLowerCase().includes(q.toLowerCase()));
-    return matchesCat && matchesSearch;
+      (p.description && p.description.toLowerCase().includes(q.toLowerCase()));
+    return matchesCat && matchesSpecies && matchesSearch;
   });
 
   const add = async (id: string) => {
@@ -153,6 +200,98 @@ function Shop() {
               )}
             </Button>
           </Link>
+        </div>
+      </div>
+
+      {/* 1. LARGE PROMOTIONAL CAROUSEL BANNER */}
+      <div className="relative h-56 md:h-72 w-full overflow-hidden rounded-[2.5rem] bg-muted shadow-lg group/carousel">
+        {BANNERS.map((b, idx) => (
+          <div 
+            key={idx}
+            className={cn(
+              "absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out flex flex-col justify-end p-6 md:p-10 text-white text-left",
+              slide === idx ? "opacity-100 scale-100 z-10 animate-in fade-in zoom-in-95 duration-500" : "opacity-0 scale-95 pointer-events-none z-0"
+            )}
+          >
+            <img 
+              src={b.img} 
+              alt={b.title} 
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-[6000ms] ease-linear scale-105 group-hover/carousel:scale-100" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="relative z-10 space-y-2 md:space-y-3 max-w-xl animate-in fade-in slide-in-from-bottom-3 duration-700">
+              <span className="inline-flex rounded-full bg-primary/20 backdrop-blur-md px-3 py-1 text-[9px] font-black uppercase tracking-wider text-primary border border-primary/30 w-max">
+                {b.badge}
+              </span>
+              <h2 className="font-display text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
+                {b.title}
+              </h2>
+              <p className="text-white/80 text-[10px] md:text-xs font-semibold leading-relaxed">
+                {b.subtitle}
+              </p>
+              <Button asChild size="sm" className="rounded-full bg-primary text-white font-bold hover:scale-105 transition-transform w-max">
+                <Link to={b.to}>{b.btnText}</Link>
+              </Button>
+            </div>
+          </div>
+        ))}
+        
+        {/* Dots navigation indicator */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {BANNERS.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setSlide(idx)}
+              className={cn(
+                "h-2 rounded-full transition-all duration-300",
+                slide === idx ? "w-6 bg-primary" : "w-2 bg-white/40 hover:bg-white/70"
+              )}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 2. SHOP BY PET (Circular Categories) */}
+      <div className="space-y-3 text-left animate-in fade-in duration-500">
+        <h3 className="font-display text-lg font-bold text-foreground">Shop by Pet</h3>
+        <div className="flex flex-wrap gap-4 items-center justify-start">
+          {[
+            { id: null, label: "All Pets", emoji: "🐾", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=120&auto=format&fit=crop&q=60" },
+            { id: "dog", label: "Dogs", emoji: "🐶", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=120&auto=format&fit=crop&q=60" },
+            { id: "cat", label: "Cats", emoji: "🐱", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=120&auto=format&fit=crop&q=60" },
+            { id: "bird", label: "Birds", emoji: "🐦", img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=120&auto=format&fit=crop&q=60" },
+            { id: "rabbit", label: "Rabbits", emoji: "🐰", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=120&auto=format&fit=crop&q=60" },
+            { id: "fish", label: "Fish", emoji: "🐠", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=120&auto=format&fit=crop&q=60" }
+          ].map((pet) => (
+            <button
+              key={pet.label}
+              onClick={() => setSelectedSpecies(pet.id)}
+              className={cn(
+                "flex flex-col items-center gap-2 group transition-all duration-300",
+                selectedSpecies === pet.id ? "scale-105" : "opacity-80 hover:opacity-100"
+              )}
+            >
+              <div className={cn(
+                "relative h-16 w-16 md:h-20 md:w-20 overflow-hidden rounded-full border-2 transition-all duration-500 shadow-md group-hover:shadow-lg group-hover:scale-110",
+                selectedSpecies === pet.id 
+                  ? "border-primary ring-2 ring-primary/20 scale-105" 
+                  : "border-border/60 hover:border-primary/50"
+              )}>
+                <img 
+                  src={pet.img} 
+                  alt={pet.label} 
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                />
+              </div>
+              <span className={cn(
+                "text-[10px] md:text-xs font-black tracking-wide",
+                selectedSpecies === pet.id ? "text-primary font-black" : "text-muted-foreground"
+              )}>
+                {pet.emoji} {pet.label}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 

@@ -596,33 +596,47 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 6. RECENT MEMORIES */}
+      {/* 6. FEATURED COMPANIONS */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
-            Recent Memories
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground flex items-center gap-1.5">
+            Featured Pets ❤️
           </h2>
-          <span className="text-xs font-bold uppercase tracking-wider text-pink-500 hover:opacity-80 cursor-pointer">
-            Gallery Feed
+          <span className="text-xs font-bold uppercase tracking-wider text-pink-500 hover:underline cursor-pointer">
+            View Community Pets
           </span>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=400", // dog
-            "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400", // cat with glasses
-            "https://images.unsplash.com/photo-1522856283749-626210a309e1?auto=format&fit=crop&q=80&w=400", // parrot
-            "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400"  // dog wash
-          ].map((imgUrl, idx) => (
-            <div key={idx} className="group relative overflow-hidden rounded-[1.8rem] aspect-square bg-muted shadow-sm hover:shadow-md transition-shadow">
-              <img 
-                src={imgUrl} 
-                alt={`Pet Memory ${idx + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <Heart className="h-5 w-5 text-white fill-white cursor-pointer hover:scale-110 transition-transform" />
+            { name: "Daisy", breed: "Golden Puppy", age: "3 months", health: "100%", status: "Playful", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&auto=format&fit=crop&q=80" },
+            { name: "Oliver", breed: "British Shorthair", age: "1 year", health: "98%", status: "Napping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop&q=80" },
+            { name: "Milo", breed: "Angora Rabbit", age: "6 months", health: "95%", status: "Eating", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&auto=format&fit=crop&q=80" },
+            { name: "Bella", breed: "Siberian Husky", age: "2 years", health: "97%", status: "Active", img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=400&auto=format&fit=crop&q=80" }
+          ].map((pet, idx) => (
+            <div key={idx} className="group relative overflow-hidden rounded-[2.2rem] glass-card border border-border/40 hover:shadow-xl transition-all duration-500 bg-card/65 flex flex-col justify-between hover-lift">
+              <div className="p-3.5 space-y-3">
+                <div className="relative overflow-hidden rounded-[1.6rem] aspect-square bg-secondary/30">
+                  <img 
+                    src={pet.img} 
+                    alt={pet.name} 
+                    className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-2.5 left-2.5">
+                    <span className="text-[8px] uppercase font-extrabold tracking-wider bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full">
+                      {pet.status}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-1 px-1 text-left">
+                  <h3 className="font-display font-bold text-base text-foreground leading-tight">{pet.name}</h3>
+                  <p className="text-[9px] font-bold text-accent uppercase tracking-wider">{pet.breed} · {pet.age}</p>
+                </div>
+              </div>
+              <div className="p-3.5 pt-0 border-t border-border/20 flex items-center justify-between text-[10px] font-bold text-muted-foreground/80">
+                <span>Wellness Score</span>
+                <span className="text-emerald-500 font-extrabold">{pet.health}</span>
               </div>
             </div>
           ))}
