@@ -39,6 +39,21 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Sticky Promo Announcement Bar */}
+      <div className="w-full bg-gradient-to-r from-[#D98CB3] via-[#4E1B33] to-[#D98CB3] text-white py-2 px-4 text-center text-[10px] sm:text-xs font-extrabold flex items-center justify-between border-b border-white/15 relative z-50 shadow-md">
+        <div className="flex-1 flex items-center justify-center gap-1.5 sm:gap-4 flex-wrap">
+          <span className="flex items-center gap-1">🐾 <strong>Special Offer!</strong> 20% OFF on Matching Hoodies for You & Your Best Friend!</span>
+          <span className="bg-white/10 border border-white/10 px-2 py-0.5 rounded text-[9px] font-mono tracking-widest uppercase">Use Code: <strong>PET20</strong></span>
+          <span className="text-[9px] opacity-75 font-semibold hidden lg:inline">• Limited Time Only</span>
+        </div>
+        <Link 
+          to="/shop" 
+          className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-3.5 py-1 text-[10px] font-black transition-all duration-300 shadow-md hover:scale-105 shrink-0 ml-2"
+        >
+          Shop Now
+        </Link>
+      </div>
+
       {/* Desktop top bar */}
       <header className="sticky top-0 z-40 hidden border-b border-white/10 bg-[#4E1B33] text-[#FFF5F9] md:block shadow-md">
         <div className="mx-auto flex h-16 max-w-[1600px] w-[95%] items-center justify-between px-6">

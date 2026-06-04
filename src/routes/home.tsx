@@ -76,6 +76,79 @@ function HomePage() {
   const [healthScore, setHealthScore] = useState(0);
   const [count, setCount] = useState(0);
 
+  // Countdown Timer State
+  const [timeLeft, setTimeLeft] = useState({
+    days: "02",
+    hours: "14",
+    minutes: "35",
+    seconds: "59"
+  });
+
+  // Interactive Photo Uploader State
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [generatedDesign, setGeneratedDesign] = useState<string | null>(null);
+
+  // Shop Categories Tabs State
+  const [activeShopTab, setActiveShopTab] = useState<"trending" | "best" | "new">("trending");
+
+  // Countdown timer hook
+  useEffect(() => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 2);
+    targetDate.setHours(targetDate.getHours() + 14);
+    targetDate.setMinutes(targetDate.getMinutes() + 35);
+
+    const timer = setInterval(() => {
+      const difference = targetDate.getTime() - Date.now();
+      if (difference <= 0) {
+        clearInterval(timer);
+        setTimeLeft({ days: "00", hours: "00", minutes: "00", seconds: "00" });
+      } else {
+        const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const h = Math.floor((difference / (1000 * 60 * 60)) % 24);
+        const m = Math.floor((difference / 1000 / 60) % 60);
+        const s = Math.floor((difference / 1000) % 60);
+
+        setTimeLeft({
+          days: String(d).padStart(2, "0"),
+          hours: String(h).padStart(2, "0"),
+          minutes: String(m).padStart(2, "0"),
+          seconds: String(s).padStart(2, "0")
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setUploadProgress(0);
+    setUploadedImage(URL.createObjectURL(file));
+    setGeneratedDesign(null);
+
+    const interval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setUploading(false);
+            // Simulate generating custom hoodie mockup card image
+            setGeneratedDesign("https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400");
+            toast.success("Success! Custom hoodie mock design generated successfully!");
+          }, 800);
+          return 100;
+        }
+        return prev + 20;
+      });
+    }, 250);
+  };
+
   useEffect(() => {
     const scoreTimer = setTimeout(() => setHealthScore(98), 300);
 
@@ -314,6 +387,366 @@ function HomePage() {
             </Button>
           </div>
 
+        </div>
+      </section>
+
+      {/* NEW SECTION: MATCH WITH YOUR PET & COUNTDOWN */}
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#4E1B33] to-[#78284e] text-white p-6 md:p-10 shadow-2xl hover-lift flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl pointer-events-none" />
+        
+        <div className="flex-1 space-y-6 text-left relative z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#D98CB3]/20 border border-[#D98CB3]/30 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#D98CB3]">
+            🔥 Special Campaign
+          </span>
+          <div className="space-y-3">
+            <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+              Match With Your Pet! 🐾
+            </h2>
+            <p className="text-xs sm:text-sm text-[#EBC4D8] leading-relaxed max-w-lg font-medium">
+              Create your matching set! Upload a photo of your pet, choose your custom apparel, and we will generate a matching designer set for both of you!
+            </p>
+          </div>
+
+          {/* Live Countdown Timer */}
+          <div className="space-y-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#FFF5F9]/60">Sale Ends In:</p>
+            <div className="flex items-center gap-3">
+              {[
+                { label: "Days", val: timeLeft.days },
+                { label: "Hours", val: timeLeft.hours },
+                { label: "Mins", val: timeLeft.minutes },
+                { label: "Secs", val: timeLeft.seconds }
+              ].map((t, idx) => (
+                <div key={idx} className="flex flex-col items-center">
+                  <div className="h-14 w-14 rounded-2xl bg-[#3D1426] border border-white/5 flex items-center justify-center text-xl font-black tracking-tight shadow-md text-[#FFF5F9]">
+                    {t.val}
+                  </div>
+                  <span className="text-[8px] font-black uppercase tracking-wider text-[#EBC4D8] mt-1.5">{t.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-6 font-extrabold shadow-lg hover:scale-105 transition-transform flex items-center gap-2" asChild>
+              <Link to="/shop">
+                <Sparkles className="h-4.5 w-4.5 text-[#D98CB3]" /> Create Your Matching Set
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Right side: Image representing matching Owner & Pet outfits */}
+        <div className="w-full md:w-[42%] shrink-0 relative group">
+          <div className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-[#D98CB3] to-white/10 opacity-20 blur-lg group-hover:opacity-35 transition-opacity" />
+          <img 
+            src="https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=600" 
+            alt="Human and pet matching hoodies" 
+            className="relative w-full aspect-[4/3] md:aspect-square object-cover rounded-[2.2rem] border-4 border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-103"
+          />
+        </div>
+      </section>
+
+      {/* NEW SECTION: FEATURED COLLECTION & PRODUCT TABS */}
+      <section className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="text-left space-y-1">
+            <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+              Featured Collection 🎨
+            </h2>
+            <p className="text-xs text-muted-foreground font-semibold">Hand-crafted matching designs & luxury accessories</p>
+          </div>
+          
+          {/* Tab selectors for Trending / Best / New */}
+          <div className="flex items-center bg-[#4E1B33]/5 dark:bg-white/5 border border-border/60 p-1 rounded-full w-fit">
+            {[
+              { id: "trending", label: "Trending" },
+              { id: "best", label: "Best Sellers" },
+              { id: "new", label: "New Arrivals" }
+            ].map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setActiveShopTab(t.id as any)}
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer",
+                  activeShopTab === t.id 
+                    ? "bg-[#4E1B33] text-white shadow" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 4 Large Featured Cards */}
+        <div className="grid gap-6 grid-cols-2 lg:grid-cols-4">
+          {[
+            { 
+              title: "Matching Hoodies", 
+              desc: "Owner & Pet coordinates", 
+              img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400",
+              price: "$49.99"
+            },
+            { 
+              title: "Pet Necklaces", 
+              desc: "Custom brass collars", 
+              img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=400",
+              price: "$24.99"
+            },
+            { 
+              title: "Personalized Accessories", 
+              desc: "Name tags & bandanas", 
+              img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400",
+              price: "$14.99"
+            },
+            { 
+              title: "Pet Toys", 
+              desc: "Ergonomic play sets", 
+              img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=400",
+              price: "$19.99"
+            }
+          ].map((item, idx) => (
+            <Link 
+              key={idx} 
+              to="/shop" 
+              className="group relative rounded-[2.2rem] overflow-hidden hover-lift border border-border/30 aspect-[4/5] flex flex-col justify-end p-5 shadow-sm text-left"
+            >
+              {/* Card Image Cover */}
+              <img 
+                src={item.img} 
+                alt={item.title} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              
+              {/* Bottom Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+              
+              {/* Card Text Content */}
+              <div className="relative z-10 space-y-2">
+                <div className="space-y-0.5">
+                  <h3 className="font-display text-base font-extrabold text-white leading-tight">{item.title}</h3>
+                  <p className="text-[10px] text-[#EBC4D8] font-medium leading-relaxed">{item.desc}</p>
+                </div>
+                <div className="flex items-center justify-between border-t border-white/10 pt-2 text-[10px] font-black text-white">
+                  <span className="bg-[#D98CB3] px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider">{item.price}</span>
+                  <span className="flex items-center gap-0.5 text-[#EBC4D8] group-hover:text-white transition-colors">
+                    Shop Now <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* NEW SECTION: INTERACTIVE UPLOADER */}
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-card border border-border/40 p-6 md:p-8 hover-lift shadow-xl text-left">
+        <div className="absolute -right-24 -bottom-24 h-96 w-96 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
+        
+        <div className="grid gap-8 lg:grid-cols-12 items-center">
+          {/* Left Text */}
+          <div className="lg:col-span-5 space-y-5">
+            <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+              Personalized Studio 🎨
+            </span>
+            <div className="space-y-2">
+              <h2 className="font-display text-3xl font-black text-foreground tracking-tight leading-tight">
+                Upload Your Pet's Photo! 🐕
+              </h2>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+                Upload a photo of your pet and we will generate a matching vector artwork custom design for your cozy hoodie, necklace tag, or sweatshirt collar.
+              </p>
+            </div>
+            
+            {/* Steps indicator */}
+            <div className="grid grid-cols-3 gap-2 border-t border-border/20 pt-4 text-[9px] font-black text-muted-foreground uppercase">
+              <div>
+                <span className="text-primary block text-sm font-black mb-1">01</span>
+                Upload Image
+              </div>
+              <div>
+                <span className="text-primary block text-sm font-black mb-1">02</span>
+                Vectorize Graphic
+              </div>
+              <div>
+                <span className="text-primary block text-sm font-black mb-1">03</span>
+                Place Order
+              </div>
+            </div>
+          </div>
+
+          {/* Right interactive Uploader Panel */}
+          <div className="lg:col-span-7 bg-[#FFF5F9]/40 border border-border/50 rounded-3xl p-6 flex flex-col items-center justify-center min-h-[220px] relative overflow-hidden">
+            {uploading ? (
+              <div className="space-y-4 w-full max-w-xs text-center">
+                <div className="flex justify-between text-[10px] font-black text-primary uppercase">
+                  <span>Analyzing Photo...</span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-primary transition-all duration-300 rounded-full" 
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <p className="text-[9px] text-muted-foreground font-medium animate-pulse">Running smart vector edge-detection filters...</p>
+              </div>
+            ) : generatedDesign ? (
+              <div className="flex flex-col sm:flex-row items-center gap-6 w-full animate-in fade-in zoom-in-95">
+                <div className="relative shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
+                  <img src={uploadedImage!} alt="Original" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px] font-bold">Uploaded</div>
+                </div>
+                <div className="flex-1 space-y-3 text-center sm:text-left">
+                  <div>
+                    <h3 className="text-xs font-black uppercase text-[#4E1B33]">Custom Hoodie Mockup Generated!</h3>
+                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed font-semibold">Your custom print vector is ready. Code PET20 auto-applied.</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
+                    <Button size="sm" className="bg-primary hover:bg-primary/95 text-white rounded-full font-bold text-[10px] px-4 py-3 shadow" asChild>
+                      <Link to="/shop">Order Your Set</Link>
+                    </Button>
+                    <button 
+                      onClick={() => { setUploadedImage(null); setGeneratedDesign(null); }}
+                      className="text-[10px] font-black uppercase text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    >
+                      Upload Another
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center gap-3 cursor-pointer w-full h-full py-8 text-center group">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  onChange={handlePhotoUpload}
+                />
+                <div className="h-14 w-14 rounded-full bg-[#FFF5F9] border border-border/80 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-inner">
+                  <PawPrint className="h-6 w-6 text-primary" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-[#4E1B33]">Drag & drop or click to upload your pet's photo</p>
+                  <p className="text-[10px] text-muted-foreground/80 font-medium">Supports PNG, JPG, or HEIC (Up to 10MB)</p>
+                </div>
+              </label>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* NEW SECTION: WHY CHOOSE PETPAL? */}
+      <section className="space-y-6">
+        <div className="text-center space-y-1">
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Why Choose PetPal? 👑
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Crafted with premium specifications for you and your companion</p>
+        </div>
+
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          {[
+            { 
+              title: "Premium Quality", 
+              desc: "Double-stitched organic cotton hoodies & high-grade custom accessories built to last.", 
+              icon: PawPrint, 
+              color: "bg-pink-500/10 text-pink-500" 
+            },
+            { 
+              title: "Fast Delivery", 
+              desc: "Fast express delivery options directly to your doorstep with tracking notifications.", 
+              icon: Clock, 
+              color: "bg-rose-500/10 text-rose-500" 
+            },
+            { 
+              title: "Personalized Designs", 
+              desc: "Upload photos, vectorize custom tag shapes, and configure exact matching prints.", 
+              icon: Sparkles, 
+              color: "bg-amber-500/10 text-amber-500" 
+            },
+            { 
+              title: "Made For Pet Lovers", 
+              desc: "Ergonomically fitted cuffs, collars, and materials that guarantee total pet comfort.", 
+              icon: Heart, 
+              color: "bg-pink-600/10 text-pink-600" 
+            }
+          ].map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div key={idx} className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between hover-lift min-h-[160px] text-left">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className={cn("rounded-xl p-2 shrink-0", item.color)}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display text-sm font-bold text-foreground">{item.title}</h3>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed font-semibold">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* NEW SECTION: CUSTOMER TESTIMONIALS */}
+      <section className="space-y-6">
+        <div className="text-center space-y-1">
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Loved By Pet Parents ❤️
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Check out real reviews from our verified family members</p>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {[
+            { 
+              name: "Sarah & Albie", 
+              role: "Golden Owner", 
+              text: "The hoodie quality is amazing! The cotton feels premium, double-stitching is clean, and my dog is super comfortable. We get so many smiles!", 
+              img: "https://images.unsplash.com/photo-1544568100-847a948585b9?w=100&auto=format&fit=crop&q=80" 
+            },
+            { 
+              name: "Taqwa & Buddy", 
+              role: "Beagle Parent", 
+              text: "My dog and I got so many compliments at the park on our matching outfits. The custom vector tag necklace detail is gorgeous and fits perfectly.", 
+              img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100&auto=format&fit=crop&q=80" 
+            },
+            { 
+              name: "James & Bella", 
+              role: "Husky Lover", 
+              text: "Fast shipping, beautiful design, and the materials are very soft. Highly recommend matching sets for anyone who loves their best friend!", 
+              img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=100&auto=format&fit=crop&q=80" 
+            }
+          ].map((rev, idx) => (
+            <div key={idx} className="rounded-3xl bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm text-left relative">
+              <div className="space-y-4">
+                {/* 5 Stars */}
+                <div className="flex items-center gap-0.5 text-amber-500 text-sm">
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed italic font-medium">
+                  "{rev.text}"
+                </p>
+              </div>
+              <div className="flex items-center gap-3 border-t border-border/30 pt-4 mt-6">
+                <img src={rev.img} alt={rev.name} className="h-8 w-8 rounded-full object-cover border border-primary/20 shadow-inner" />
+                <div>
+                  <h4 className="text-xs font-bold text-foreground leading-tight">{rev.name}</h4>
+                  <p className="text-[9px] text-muted-foreground uppercase font-black tracking-wider">{rev.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
