@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/staff")({
   head: () => ({ meta: [{ title: "Admin Dashboard — PetPal" }] }),
@@ -57,6 +58,15 @@ interface Patient {
   date_of_birth: string | null;
   weight_kg: number | null;
   notes: string | null;
+}
+
+interface MedicalRecord {
+  id: string;
+  title: string;
+  date: string;
+  vetName: string;
+  notes: string;
+  status: "Completed" | "Follow-up Required" | "Ongoing";
 }
 
 const MOCK_REVENUE_DATA = [
