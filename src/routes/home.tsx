@@ -90,6 +90,14 @@ function HomePage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [generatedDesign, setGeneratedDesign] = useState<string | null>(null);
 
+  // Hotel Booking Form State
+  const [hotelCheckIn, setHotelCheckIn] = useState("");
+  const [hotelCheckOut, setHotelCheckOut] = useState("");
+  const [hotelPetType, setHotelPetType] = useState("dog");
+
+  // AI recommendations state
+  const [selectedRecs, setSelectedRecs] = useState<string[]>(["hoodie", "jewelry", "spa"]);
+
   // Shop Categories Tabs State
   const [activeShopTab, setActiveShopTab] = useState<"trending" | "best" | "new">("trending");
 
@@ -268,20 +276,45 @@ function HomePage() {
   return (
     <div className="space-y-10 transition-all duration-700 animate-in fade-in zoom-in-95">
       
-      {/* 0. WELCOME HEADER */}
-      <div className="bg-card/45 backdrop-blur-md rounded-[2rem] border border-border/40 p-6 flex flex-col md:flex-row items-center justify-between gap-4 hover-lift text-left">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-foreground font-display text-xl font-bold">
-            <span>🐾 Welcome Back, {user?.email ? user.email.split("@")[0] : "Taqwamrowat"}</span>
+      {/* 0. WELCOME HEADER & LOYALTY GRID */}
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Welcome Header */}
+        <div className="md:col-span-2 bg-card/45 backdrop-blur-md rounded-[2rem] border border-border/40 p-6 flex flex-col justify-between hover-lift text-left min-h-[140px]">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-foreground font-display text-xl font-bold">
+              <span>🐾 Welcome Back, {user?.email ? user.email.split("@")[0] : "Taqwamrowat"}</span>
+            </div>
+            <p className="text-xs text-muted-foreground font-semibold">Your Pet's Health Companion</p>
           </div>
-          <p className="text-xs text-muted-foreground font-semibold">Your Pet's Health Companion</p>
+          <div className="flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-wider text-primary mt-4">
+            <span>Track Health</span>
+            <span>•</span>
+            <span>AI Diagnosis</span>
+            <span>•</span>
+            <span>Emergency Support</span>
+          </div>
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-wider text-primary">
-          <span>Track Health</span>
-          <span>•</span>
-          <span>AI Diagnosis</span>
-          <span>•</span>
-          <span>Emergency Support</span>
+
+        {/* Loyalty Program Reward Card */}
+        <div className="bg-card/45 backdrop-blur-md rounded-[2rem] border border-border/40 p-5 flex flex-col justify-between hover-lift text-left min-h-[140px]">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#D98CB3] flex items-center gap-1">
+              <Sparkles className="h-3.5 w-3.5" /> PetPoints Rewards
+            </span>
+            <span className="bg-[#4E1B33] text-[#FFF5F9] px-2 py-0.5 rounded-full text-[8px] font-bold">VIP Silver</span>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-baseline">
+              <span className="text-xl font-display font-black text-[#4E1B33] dark:text-[#FFF5F9]">350 pts</span>
+              <span className="text-[9px] text-muted-foreground font-semibold">/ 500 to next reward</span>
+            </div>
+            <div className="h-1.5 w-full bg-[#4E1B33]/10 dark:bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full bg-[#D98CB3] rounded-full" style={{ width: "70%" }} />
+            </div>
+            <p className="text-[8.5px] text-muted-foreground font-medium leading-tight">
+              100 pts = $10 discount. Reach 500 for a free custom tag!
+            </p>
+          </div>
         </div>
       </div>
 
@@ -390,6 +423,29 @@ function HomePage() {
         </div>
       </section>
 
+      {/* EMERGENCY DIALER CALLOUT PANEL */}
+      <div className="w-full bg-gradient-to-r from-red-600 via-red-500 to-rose-600 text-white rounded-[2rem] p-5 border border-red-400/20 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3 text-left">
+          <div className="h-10 w-10 rounded-full bg-white/15 flex items-center justify-center text-white shrink-0 animate-bounce">
+            <PhoneCall className="h-5 w-5" />
+          </div>
+          <div>
+            <h4 className="font-bold text-sm leading-tight text-white flex items-center gap-1.5">
+              🚨 Emergency Veterinary Support (24/7 Hotline)
+            </h4>
+            <p className="text-[10px] text-red-100 font-medium leading-relaxed">
+              If your pet is experiencing distress, loss of consciousness, or physical injury, click below to immediately consult a trauma veterinarian.
+            </p>
+          </div>
+        </div>
+        <Button 
+          onClick={() => setShowEmergencyDialog(true)}
+          className="bg-white text-red-600 hover:bg-red-50 rounded-full font-black text-xs px-6 py-5 shadow-lg shrink-0"
+        >
+          Dial Trauma Response
+        </Button>
+      </div>
+
       {/* NEW SECTION: MATCH WITH YOUR PET & COUNTDOWN */}
       <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#4E1B33] to-[#78284e] text-white p-6 md:p-10 shadow-2xl hover-lift flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl pointer-events-none" />
@@ -444,6 +500,57 @@ function HomePage() {
             alt="Human and pet matching hoodies" 
             className="relative w-full aspect-[4/3] md:aspect-square object-cover rounded-[2.2rem] border-4 border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-103"
           />
+        </div>
+      </section>
+
+      {/* NEW SECTION: PERSONALIZED PET JEWELRY SALE */}
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#EBC4D8]/30 via-white to-[#FFF5F9] text-foreground p-6 md:p-10 shadow-xl border border-border/40 hover-lift flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+        <div className="flex-1 space-y-6 text-left relative z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#4E1B33]/10 border border-[#4E1B33]/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#4E1B33]">
+            🐾 Personalized Pet Jewelry Sale
+          </span>
+          <div className="space-y-3">
+            <div className="flex items-baseline gap-2">
+              <h2 className="font-display text-4xl sm:text-5xl font-black tracking-tight leading-none text-[#4E1B33]">
+                30% OFF
+              </h2>
+              <span className="text-sm font-extrabold text-[#D98CB3] uppercase tracking-wider">Limited Offer</span>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-lg font-semibold">
+              Custom Necklaces & Bracelets engraved with your pet's photo. A beautiful heirloom or matching set for you and your companion.
+            </p>
+            <div className="inline-flex items-center gap-2 bg-[#4E1B33] text-white px-3 py-1.5 rounded-xl font-mono text-xs font-black shadow-sm">
+              <span>Use Code:</span>
+              <span className="text-[#D98CB3] tracking-widest">PAW30</span>
+            </div>
+          </div>
+          <div className="pt-2">
+            <Button className="bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full px-6 py-6 font-extrabold shadow-lg hover:scale-105 transition-transform flex items-center gap-2" asChild>
+              <Link to="/shop">
+                <ShoppingBag className="h-4.5 w-4.5" /> Shop Collection
+              </Link>
+            </Button>
+          </div>
+        </div>
+        
+        {/* Right side: 4 small card previews */}
+        <div className="w-full md:w-[48%] shrink-0 grid grid-cols-2 gap-4">
+          {[
+            { name: "Silver Dog Engraving", img: "https://images.unsplash.com/photo-1611085583191-a3b1a30a5a40?auto=format&fit=crop&q=80&w=200", desc: "Fine silver pendant" },
+            { name: "Cat Charm Bracelet", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=200", desc: "Custom face engraving" },
+            { name: "Monogram Pet Medal", img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=200", desc: "Deep engraved brass" },
+            { name: "Owner & Pet Gift Set", img: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&q=80&w=200", desc: "Matching pendant kit" }
+          ].map((item, idx) => (
+            <div key={idx} className="group relative rounded-2xl overflow-hidden border border-border/30 aspect-square flex flex-col justify-end p-3 shadow-sm bg-white">
+              <img src={item.img} alt={item.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#4E1B33]/95 via-black/20 to-transparent" />
+              <div className="relative z-10 text-left">
+                <p className="text-[9px] font-black text-white leading-tight truncate">{item.name}</p>
+                <p className="text-[8px] text-[#EBC4D8] leading-none mt-0.5">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -594,27 +701,111 @@ function HomePage() {
                 <p className="text-[9px] text-muted-foreground font-medium animate-pulse">Running smart vector edge-detection filters...</p>
               </div>
             ) : generatedDesign ? (
-              <div className="flex flex-col sm:flex-row items-center gap-6 w-full animate-in fade-in zoom-in-95">
-                <div className="relative shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
-                  <img src={uploadedImage!} alt="Original" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px] font-bold">Uploaded</div>
+              <div className="grid gap-6 md:grid-cols-2 w-full animate-in fade-in zoom-in-95 text-left">
+                {/* Generated Design Mockup */}
+                <div className="flex gap-4 items-center border-b md:border-b-0 md:border-r border-border/30 pb-4 md:pb-0 md:pr-4">
+                  <div className="relative shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
+                    <img src={uploadedImage!} alt="Original" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[9px] font-bold">Original</div>
+                  </div>
+                  <div className="relative shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
+                    <img src={generatedDesign!} alt="Mockup" className="w-full h-full object-cover animate-pulse" />
+                    <div className="absolute inset-0 bg-black/45 flex items-center justify-center text-white text-[9px] font-bold">Vector Design</div>
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <div>
+                      <h4 className="text-xs font-black uppercase text-[#4E1B33]">Design Completed!</h4>
+                      <p className="text-[9px] text-muted-foreground mt-0.5 leading-relaxed font-semibold">Your custom print vector is ready. Code PET20 auto-applied.</p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Button size="sm" className="bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full font-bold text-[9px] px-3.5 py-2 shadow" asChild>
+                        <Link to="/shop">Order Now</Link>
+                      </Button>
+                      <button 
+                        onClick={() => { setUploadedImage(null); setGeneratedDesign(null); }}
+                        className="text-[9px] font-black uppercase text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                      >
+                        Upload Another
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 space-y-3 text-center sm:text-left">
-                  <div>
-                    <h3 className="text-xs font-black uppercase text-[#4E1B33]">Custom Hoodie Mockup Generated!</h3>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed font-semibold">Your custom print vector is ready. Code PET20 auto-applied.</p>
+
+                {/* AI Recommendations Checklist */}
+                <div className="space-y-3">
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">✨ AI Recommended for {petName}</span>
+                    <p className="text-[10px] text-muted-foreground font-semibold mt-1">Based on species & size analysis. Check items to bundle:</p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-                    <Button size="sm" className="bg-primary hover:bg-primary/95 text-white rounded-full font-bold text-[10px] px-4 py-3 shadow" asChild>
-                      <Link to="/shop">Order Your Set</Link>
-                    </Button>
-                    <button 
-                      onClick={() => { setUploadedImage(null); setGeneratedDesign(null); }}
-                      className="text-[10px] font-black uppercase text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                    >
-                      Upload Another
-                    </button>
+                  
+                  <div className="space-y-1.5">
+                    {[
+                      { id: "hoodie", label: `Matching Custom Hoodie for ${petName}`, price: "$49.99" },
+                      { id: "jewelry", label: `Engraved Name Collar tag (PAW30)`, price: "$24.99" },
+                      { id: "spa", label: "Recommended Spa & Grooming booking", price: "$35.00" }
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center justify-between p-2 rounded-xl bg-card border border-border/50 hover:bg-[#FFF5F9] cursor-pointer transition-colors text-xs font-medium">
+                        <div className="flex items-center gap-2">
+                          <input 
+                            type="checkbox" 
+                            checked={selectedRecs.includes(item.id)} 
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedRecs([...selectedRecs, item.id]);
+                              } else {
+                                setSelectedRecs(selectedRecs.filter(x => x !== item.id));
+                              }
+                            }}
+                            className="rounded text-primary border-border focus:ring-primary w-3.5 h-3.5 accent-[#D98CB3]"
+                          />
+                          <span className="text-[#4E1B33]">{item.label}</span>
+                        </div>
+                        <span className="text-xs font-black text-[#D98CB3]">{item.price}</span>
+                      </label>
+                    ))}
                   </div>
+
+                  <Button 
+                    onClick={async () => {
+                      if (!user) {
+                        toast.error("Please login to add items to your cart");
+                        return;
+                      }
+                      let hasCartItems = false;
+                      let hasSpa = false;
+                      
+                      if (selectedRecs.includes("hoodie")) {
+                        await addToCart(user.id, "d06da0d1-aacc-400d-800d-000000000001");
+                        hasCartItems = true;
+                      }
+                      if (selectedRecs.includes("jewelry")) {
+                        await addToCart(user.id, "d06da0d1-aacc-400d-800d-000000000003");
+                        hasCartItems = true;
+                      }
+                      if (selectedRecs.includes("spa")) {
+                        hasSpa = true;
+                      }
+
+                      if (hasCartItems) {
+                        toast.success("Successfully added custom matching hoodie and jewelry tag to your cart!");
+                      }
+                      
+                      if (hasSpa) {
+                        toast.info("Redirecting you to complete your Spa & Grooming appointment booking...");
+                        setTimeout(() => {
+                          window.location.href = `/book?type=grooming`;
+                        }, 1500);
+                      } else if (hasCartItems) {
+                        setTimeout(() => {
+                          window.location.href = `/cart`;
+                        }, 1500);
+                      }
+                    }}
+                    disabled={selectedRecs.length === 0}
+                    className="w-full bg-[#D98CB3] hover:bg-[#D98CB3]/90 text-white rounded-full py-4 text-xs font-extrabold shadow-md transition-all hover:scale-102 flex items-center justify-center gap-1.5"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" /> Bundle Selected Items
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -914,6 +1105,177 @@ function HomePage() {
                 <Clock className="h-3.5 w-3.5" /> In 12 days (June 12)
               </div>
             </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* NEW SECTION: PREMIUM PET CARE & HOTEL HUB */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#4E1B33]/10 border border-[#4E1B33]/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#4E1B33]">
+            Professional Pet Boarding & Spa Services 🏨 ✂️
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Boarding, Grooming & Subscription Box
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Keep your best friend clean, happy, and cared for while you are away</p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3 text-left">
+          
+          {/* CARD 1: PET HOTEL BOARDING */}
+          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl p-2 bg-[#D98CB3]/20 text-[#4E1B33] shrink-0">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">🏨 Pet Hotel & Boarding</h3>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">$40 / Night</span>
+                </div>
+              </div>
+              
+              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                Traveling? Leave your pet in our safe, state-of-the-art environment with 24/7 care, daily walks, and live camera updates.
+              </p>
+
+              {/* Booking Search Form */}
+              <div className="space-y-3 pt-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase text-muted-foreground">Check-in</label>
+                    <input 
+                      type="date" 
+                      value={hotelCheckIn}
+                      onChange={(e) => setHotelCheckIn(e.target.value)}
+                      className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase text-muted-foreground">Check-out</label>
+                    <input 
+                      type="date" 
+                      value={hotelCheckOut}
+                      onChange={(e) => setHotelCheckOut(e.target.value)}
+                      className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase text-muted-foreground">Guest Pet Type</label>
+                  <select 
+                    value={hotelPetType}
+                    onChange={(e) => setHotelPetType(e.target.value)}
+                    className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground shadow-sm"
+                  >
+                    <option value="dog">🐶 Dog Guest</option>
+                    <option value="cat">🐱 Cat Guest</option>
+                    <option value="bird">🐦 Bird Guest</option>
+                    <option value="rabbit">🐰 Rabbit Guest</option>
+                    <option value="fish">🐠 Fish Guest</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => {
+                if (!hotelCheckIn || !hotelCheckOut) {
+                  toast.error("Please select check-in and check-out dates");
+                  return;
+                }
+                window.location.href = `/book?type=hotel&checkin=${hotelCheckIn}&checkout=${hotelCheckOut}&pet=${hotelPetType}`;
+              }}
+              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
+            >
+              Book Stay Now
+            </Button>
+          </div>
+
+          {/* CARD 2: GROOMING & SPA CHECKLIST */}
+          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl p-2 bg-[#D98CB3]/20 text-[#4E1B33] shrink-0">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">✂️ Grooming & Spa</h3>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">Professional Pet Care</span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                Pamper your pet with custom luxury treatments. Select from our menu of professional care packages:
+              </p>
+
+              {/* Grooming Checklists */}
+              <div className="space-y-1.5 pt-1">
+                {[
+                  { name: "Bath & Deep Cleaning", desc: "Organic aloe vera cleaning" },
+                  { name: "Hair Cut & Styling", desc: "Full styling and sanitary trim" },
+                  { name: "Nail Trimming & Filing", desc: "Gentle nail file care" },
+                  { name: "Ear Cleaning & Checkup", desc: "Prevents infections" }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-[#FFF5F9] transition-colors">
+                    <div className="h-4.5 w-4.5 rounded-full bg-[#D98CB3]/20 flex items-center justify-center text-[10px] text-[#4E1B33] font-black shrink-0">✓</div>
+                    <div>
+                      <p className="text-xs font-bold text-foreground leading-none">{item.name}</p>
+                      <p className="text-[8px] text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => {
+                window.location.href = `/book?type=grooming`;
+              }}
+              className="w-full bg-[#D98CB3] hover:bg-[#D98CB3]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
+            >
+              Book Spa Package
+            </Button>
+          </div>
+
+          {/* CARD 3: MONTHLY PETPAL BOX */}
+          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl p-2 bg-amber-500/10 text-amber-600 shrink-0">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">📦 Monthly PetPal Box</h3>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">Only $19.99 / Month</span>
+                </div>
+              </div>
+
+              <div className="relative rounded-2xl overflow-hidden h-28 border border-border/30 shadow-inner">
+                <img 
+                  src="https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400" 
+                  alt="PetPal Box" 
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+                <div className="absolute top-2 left-2 bg-[#D98CB3] text-white px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shadow">Best Seller</div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                A themed subscription box delivered to your door monthly. Filled with healthy treats, premium toys, custom accessories, and grooming samples customized for your pet.
+              </p>
+            </div>
+
+            <Button 
+              onClick={() => {
+                toast.success("Hooray! You've successfully subscribed to the Monthly PetPal Box!");
+              }}
+              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
+            >
+              Subscribe Now
+            </Button>
           </div>
 
         </div>

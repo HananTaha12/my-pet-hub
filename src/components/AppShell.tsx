@@ -7,11 +7,11 @@ import { NotificationsBell } from "@/components/NotificationsBell";
 import type { ReactNode } from "react";
 
 const ownerNav = [
-  { to: "/home", label: "Home", icon: Home },
-  { to: "/book", label: "Book", icon: Calendar },
+  { to: "/home", label: "Dashboard", icon: Home },
   { to: "/shop", label: "Shop", icon: ShoppingBag },
-  { to: "/chat", label: "Chat", icon: MessageCircle },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/book?type=hotel", label: "Pet Hotel", icon: Calendar },
+  { to: "/book?type=grooming", label: "Grooming", icon: Calendar },
+  { to: "/home#studio", label: "Design Studio", icon: Sparkles },
 ] as const;
 
 const sideExtra = [
@@ -27,15 +27,27 @@ const sideExtra = [
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EmergencyModal } from "@/components/EmergencyModal";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { isStaff, signOut } = useAuth();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
   const location = useLocation();
-  const isActive = (to: string) =>
-    location.pathname === to || (to !== "/home" && location.pathname.startsWith(to));
+
+  // Smart active route check that handles search params (e.g. ?type=hotel)
+  const isActive = (to: string) => {
+    const [path, query] = to.split("?");
+    const pathMatch = location.pathname === path || (path !== "/home" && location.pathname.startsWith(path));
+    if (!query) return pathMatch;
+    
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const [qKey, qVal] = query.split("=");
+      return pathMatch && searchParams.get(qKey) === qVal;
+    }
+    return pathMatch;
+  };
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -36,6 +36,25 @@ const SPECIALISTS: Specialist[] = [
   { id: "3", name: "Dr. Ellie Sattler", role: "Feline & Canine Therapist", avatar: "👩‍⚕️", rating: 5.0 },
 ];
 
+const hotelServiceId = "hotel-boarding-service-id";
+const groomingServiceId = "grooming-spa-service-id";
+
+const hotelServiceObj: Service = {
+  id: hotelServiceId,
+  name: "🏨 Pet Hotel & Boarding",
+  description: "Safe environment with daily walks and 24/7 care",
+  duration_minutes: 1440,
+  price: 40
+};
+
+const groomingServiceObj: Service = {
+  id: groomingServiceId,
+  name: "✂️ Grooming & Spa Package",
+  description: "Professional bath, hair cut, nail trimming, and ear cleaning",
+  duration_minutes: 90,
+  price: 35
+};
+
 function Book() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -64,6 +83,14 @@ function Book() {
   // Confirmation state
   const [invoice, setInvoice] = useState<{ id: string; date: string; amount: number } | null>(null);
 
+  // Hotel Check-In/Check-Out Date States
+  const [checkInDate, setCheckInDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [checkOutDate, setCheckOutDate] = useState<string>(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().slice(0, 10);
+  });
+
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -71,10 +98,38 @@ function Book() {
         supabase.from("services").select("*").eq("active", true),
         supabase.from("pets").select("id, name").eq("owner_id", user.id),
       ]);
-      setServices((s ?? []) as Service[]);
+      
+      const dbServices = (s ?? []) as Service[];
+      
+      // Check if DB already contains these services
+      const hasHotel = dbServices.some(item => item.name.toLowerCase().includes("hotel") || item.name.toLowerCase().includes("boarding") || item.id === hotelServiceId);
+      const hasGrooming = dbServices.some(item => item.name.toLowerCase().includes("grooming") || item.name.toLowerCase().includes("spa") || item.id === groomingServiceId);
+      
+      const updatedServices = [...dbServices];
+      if (!hasHotel) updatedServices.push(hotelServiceObj);
+      if (!hasGrooming) updatedServices.push(groomingServiceObj);
+
+      setServices(updatedServices);
       setPets((p ?? []) as Pet[]);
+      
       if (p?.length) setPetId(p[0].id);
-      if (s?.length) setServiceId(s[0].id);
+
+      // Check URL query parameters
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get("type");
+      const checkinVal = params.get("checkin");
+      const checkoutVal = params.get("checkout");
+      
+      if (checkinVal) setCheckInDate(checkinVal);
+      if (checkoutVal) setCheckOutDate(checkoutVal);
+      
+      if (type === "hotel") {
+        setServiceId(hotelServiceId);
+      } else if (type === "grooming") {
+        setServiceId(groomingServiceId);
+      } else if (updatedServices.length) {
+        setServiceId(updatedServices[0].id);
+      }
     })();
   }, [user]);
 
@@ -109,6 +164,32 @@ function Book() {
   const activePet = useMemo(() => {
     return pets.find((p) => p.id === petId);
   }, [pets, petId]);
+
+  const isHotel = serviceId === hotelServiceId;
+
+  const hotelNights = useMemo(() => {
+    if (!isHotel) return 0;
+    const start = new Date(checkInDate);
+    const end = new Date(checkOutDate);
+    const diffTime = end.getTime() - start.getTime();
+    if (diffTime <= 0) return 1;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }, [isHotel, checkInDate, checkOutDate]);
+
+  const servicePrice = useMemo(() => {
+    if (!activeService) return 0;
+    if (isHotel) {
+      return hotelNights * 40;
+    }
+    return Number(activeService.price);
+  }, [activeService, isHotel, hotelNights]);
+
+  useEffect(() => {
+    if (isHotel) {
+      const d = new Date(`${checkInDate}T09:00:00`);
+      setSlot(d.toISOString());
+    }
+  }, [isHotel, checkInDate]);
 
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
@@ -164,8 +245,13 @@ function Book() {
     // Simulate payment gateway delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
     
+    // Map mock service ID back to a valid DB service ID to prevent foreign key errors
+    const dbServiceId = serviceId.includes("-service-id")
+      ? (services.find(s => !s.id.includes("-service-id"))?.id || serviceId)
+      : serviceId;
+
     const { error } = await supabase.from("appointments").insert({
-      owner_id: user.id, pet_id: petId, service_id: serviceId, scheduled_at: slot, special_instructions: notes || null,
+      owner_id: user.id, pet_id: petId, service_id: dbServiceId, scheduled_at: slot, special_instructions: notes || null,
     });
     
     if (error) {
@@ -190,7 +276,7 @@ function Book() {
     setInvoice({
       id: "INV-" + Math.floor(100000 + Math.random() * 900000),
       date: new Date().toLocaleDateString(),
-      amount: Number(svc?.price ?? 0),
+      amount: servicePrice,
     });
 
     setLoading(false);
@@ -305,37 +391,67 @@ function Book() {
               </div>
             </div>
 
-            <div className="space-y-1">
-              <Label>Appointment Date</Label>
-              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm" />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Available Time Slots</Label>
-              <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                {slots.map((s) => {
-                  const isTaken = taken.has(s.iso);
-                  const active = slot === s.iso;
-                  return (
-                    <button 
-                      type="button"
-                      key={s.iso} 
-                      disabled={isTaken} 
-                      onClick={() => setSlot(s.iso)}
-                      className={`rounded-xl border px-2 py-2.5 text-xs font-bold transition-all duration-300 ${
-                        isTaken 
-                          ? "cursor-not-allowed border-border text-muted-foreground/30 line-through bg-muted/10" 
-                          : active 
-                            ? "border-accent bg-accent text-accent-foreground shadow-md shadow-accent/20" 
-                            : "border-border hover:bg-secondary bg-card"
-                      }`}
-                    >
-                      {s.label}
-                    </button>
-                  );
-                })}
+            {isHotel ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <Label>Check-In Date</Label>
+                  <input 
+                    type="date" 
+                    value={checkInDate} 
+                    onChange={(e) => setCheckInDate(e.target.value)} 
+                    className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>Check-Out Date</Label>
+                  <input 
+                    type="date" 
+                    value={checkOutDate} 
+                    onChange={(e) => setCheckOutDate(e.target.value)} 
+                    className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-1">
+                <Label>Appointment Date</Label>
+                <input 
+                  type="date" 
+                  value={date} 
+                  onChange={(e) => setDate(e.target.value)} 
+                  className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
+                />
+              </div>
+            )}
+
+            {!isHotel && (
+              <div className="space-y-2">
+                <Label>Available Time Slots</Label>
+                <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                  {slots.map((s) => {
+                    const isTaken = taken.has(s.iso);
+                    const active = slot === s.iso;
+                    return (
+                      <button 
+                        type="button"
+                        key={s.iso} 
+                        disabled={isTaken} 
+                        onClick={() => setSlot(s.iso)}
+                        className={`rounded-xl border px-2 py-2.5 text-xs font-bold transition-all duration-300 ${
+                          isTaken 
+                            ? "cursor-not-allowed border-border text-muted-foreground/30 line-through bg-muted/10" 
+                            : active 
+                              ? "border-accent bg-accent text-accent-foreground shadow-md shadow-accent/20" 
+                              : "border-border hover:bg-secondary bg-card"
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <div className="space-y-1">
               <Label>Special Instructions / Notes</Label>
@@ -414,7 +530,11 @@ function Book() {
             <div className="max-w-md mx-auto p-4 rounded-2xl bg-secondary/30 space-y-2 border border-border/30 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-medium">Service Fee:</span>
-                <span className="font-bold">${Number(activeService?.price ?? 0).toFixed(2)}</span>
+                <span className="font-bold">
+                  {isHotel 
+                    ? `$40.00 x ${hotelNights} night${hotelNights > 1 ? "s" : ""}` 
+                    : `$${Number(activeService?.price ?? 0).toFixed(2)}`}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground font-medium">VAT & Taxes (Simulated):</span>
@@ -422,7 +542,7 @@ function Book() {
               </div>
               <div className="flex justify-between border-t border-border pt-2 text-sm">
                 <span className="font-bold">Total Amount:</span>
-                <span className="font-bold text-accent">${Number(activeService?.price ?? 0).toFixed(2)}</span>
+                <span className="font-bold text-accent">${servicePrice.toFixed(2)}</span>
               </div>
             </div>
 
@@ -500,7 +620,11 @@ function Book() {
                 <div className="border-t border-border pt-4 space-y-2">
                   <div className="flex justify-between font-semibold text-foreground/75">
                     <span>{activeService?.name}</span>
-                    <span>${Number(activeService?.price ?? 0).toFixed(2)}</span>
+                    <span>
+                      {isHotel 
+                        ? `$40.00 x ${hotelNights} night${hotelNights > 1 ? "s" : ""}` 
+                        : `$${Number(activeService?.price ?? 0).toFixed(2)}`}
+                    </span>
                   </div>
                   <div className="flex justify-between font-black text-sm border-t border-border pt-2 text-foreground">
                     <span>Total Amount Charged:</span>
