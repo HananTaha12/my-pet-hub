@@ -119,7 +119,7 @@ function Shop() {
       });
 
       const dbProducts = p ?? [];
-      const mergedProducts = [...dbProducts];
+      const mergedProducts: Product[] = [...(dbProducts as Product[])];
       
       DEFAULT_PRODUCTS.forEach(mockProd => {
         const exists = dbProducts.some(dbProd => 
