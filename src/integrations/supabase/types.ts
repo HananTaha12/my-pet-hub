@@ -56,6 +56,35 @@ export type Database = {
         }
         Relationships: []
       }
+      appointment_staff_notes: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_staff_notes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           created_at: string
@@ -65,7 +94,6 @@ export type Database = {
           scheduled_at: string
           service_id: string
           special_instructions: string | null
-          staff_notes: string | null
           status: Database["public"]["Enums"]["appointment_status"]
           updated_at: string
         }
@@ -77,7 +105,6 @@ export type Database = {
           scheduled_at: string
           service_id: string
           special_instructions?: string | null
-          staff_notes?: string | null
           status?: Database["public"]["Enums"]["appointment_status"]
           updated_at?: string
         }
@@ -89,7 +116,6 @@ export type Database = {
           scheduled_at?: string
           service_id?: string
           special_instructions?: string | null
-          staff_notes?: string | null
           status?: Database["public"]["Enums"]["appointment_status"]
           updated_at?: string
         }
