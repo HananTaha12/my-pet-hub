@@ -6,13 +6,14 @@ import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { DEFAULT_PRODUCTS } from "@/lib/mock-products";
+import { DEFAULT_PRODUCTS, type Product } from "@/lib/mock-products";
 import { addToCart } from "@/lib/cart";
 
 export const Route = createFileRoute("/chat")({
@@ -42,6 +43,8 @@ const SYMPTOMS = [
   { id: "appetite", label: "Loss of Appetite 🍽️", desc: "Refusal to eat or drink" },
   { id: "general", label: "General Wellness Checkup 🩺", desc: "Routine health advice" }
 ];
+
+const DEFAULT_PET_PHOTO = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=600";
 
 function Chat() {
   const { user } = useAuth();
@@ -519,7 +522,8 @@ Is there any specific symptom you want me to advise on?`;
                             variant="outline" 
                             className="h-8 rounded-full text-[10px] px-2.5 font-bold shrink-0 border-pink-200/50 hover:bg-pink-500 hover:text-white"
                             onClick={() => {
-                              addToCart(p.id);
+                              if (!user) return toast.error("Please sign in first.");
+                              addToCart(user.id, p.id);
                               toast.success(`${p.name} added to cart!`);
                             }}
                           >
