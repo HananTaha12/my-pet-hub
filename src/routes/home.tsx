@@ -298,9 +298,51 @@ function HomePage() {
   const badgesCount = "5 Badges";
 
   return (
-    <div className="space-y-10 transition-all duration-700 animate-in fade-in zoom-in-95">
+    <div className="space-y-12 transition-all duration-700 animate-in fade-in zoom-in-95">
       
-      {/* 0. WELCOME HEADER & LOYALTY GRID */}
+      {/* 1. NIKE/APPLE STYLE HERO SECTION */}
+      <section className="relative h-[480px] rounded-[2.5rem] overflow-hidden shadow-2xl hover-lift group border border-white/10 text-left">
+        {/* Cover image background */}
+        <img 
+          src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=1200" 
+          alt="Dog and Cat Hero" 
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
+        />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+        
+        {/* Decorative lights */}
+        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+        
+        {/* Text and CTAs */}
+        <div className="absolute inset-x-6 bottom-8 md:bottom-12 md:left-12 max-w-xl space-y-4 md:space-y-6 z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#D98CB3]/20 border border-[#D98CB3]/30 px-3.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#FFF5F9] animate-pulse">
+            🔥 Premium Pet Hub
+          </span>
+          <div className="space-y-2 md:space-y-3">
+            <h1 className="font-display text-4xl sm:text-6xl font-black text-white tracking-tight leading-none">
+              Everything Your Pet Needs 🐾
+            </h1>
+            <p className="text-xs sm:text-sm text-[#EBC4D8] leading-relaxed font-semibold">
+              Ecosystem connecting pet profiles, veterinary clinical schedulers, premium supply stores, and smart AI wellness diagnostics in one dashboard.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-6 font-extrabold shadow-lg hover:scale-105 transition-transform flex items-center gap-2" asChild>
+              <Link to="/shop">
+                Shop Now <ShoppingBag className="h-4.5 w-4.5 text-primary" />
+              </Link>
+            </Button>
+            <Button variant="outline" className="border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-full px-6 py-6 font-extrabold hover:scale-105 transition-transform flex items-center gap-2" asChild>
+              <Link to="/pets">
+                Explore Pets <ChevronRight className="h-4.5 w-4.5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. WELCOME HEADER & LOYALTY GRID */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Welcome Header */}
         <div className="md:col-span-2 bg-card/45 backdrop-blur-md rounded-[2rem] border border-border/40 p-6 flex flex-col justify-between hover-lift text-left min-h-[140px]">
@@ -342,108 +384,244 @@ function HomePage() {
         </div>
       </div>
 
-      {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-card/65 backdrop-blur-md border border-border/40 p-6 md:p-8 text-foreground shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8 hover-lift">
-        {/* Decorative ambient lights */}
-        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl animate-pulse pointer-events-none" />
-        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
-        
-        <div className="relative z-10 grid gap-8 lg:grid-cols-12 w-full items-center">
-          
-          {/* Left Column: Pet Image */}
-          <div className="lg:col-span-3 flex justify-center lg:justify-start">
-            <div className="relative group">
-              <div className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-primary to-accent opacity-25 blur-lg group-hover:opacity-40 transition-opacity" />
+      {/* 3. HAPPY PET GALLERY */}
+      <section className="space-y-4">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Visual Highlights 📸
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Happy Pet Gallery
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Moments of pure joy and companionship captured from our family members</p>
+        </div>
+
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+          {[
+            { title: "Dog Playing", img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=600" },
+            { title: "Cat Sleeping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600" },
+            { title: "Milo Rabbit", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=600" },
+            { title: "Family Pet", img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=600" },
+            { title: "Sleepy Kitten", img: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=600" },
+            { title: "Dog in Park", img: "https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=600" }
+          ].map((item, idx) => (
+            <div key={idx} className="group relative rounded-[2rem] overflow-hidden aspect-[4/3] border border-border/30 shadow-md">
               <img 
-                src={petPhoto} 
-                alt={petName} 
-                className="relative w-48 h-48 rounded-[2.2rem] object-cover border-4 border-card shadow-2xl transition-transform duration-500 group-hover:scale-105"
+                src={item.img} 
+                alt={item.title} 
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
               />
-              <div className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1 text-[9px] font-black uppercase tracking-wider text-white shadow-md">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" /> Active Profile
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-3 left-4 text-left z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <span className="text-[10px] font-black uppercase text-white bg-primary px-2.5 py-0.5 rounded-full shadow-md">
+                  {item.title}
+                </span>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. FEATURED PETS */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="text-left space-y-1">
+            <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+              Meet Companions ❤️
+            </span>
+            <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+              Featured Pets
+            </h2>
+            <p className="text-xs text-muted-foreground font-semibold">Meet the newest registered additions to our loving community</p>
           </div>
+          <span className="text-xs font-bold uppercase tracking-wider text-pink-500 hover:underline cursor-pointer">
+            View All
+          </span>
+        </div>
 
-          {/* Center Column: Pet Name, Health Ring, Checkup logs */}
-          <div className="lg:col-span-5 text-center lg:text-left space-y-6">
-            <div className="space-y-1">
-              <h2 className="font-display text-4xl sm:text-5xl font-black text-foreground tracking-tight">
-                🐕 {petName}
-              </h2>
-              <p className="text-xs text-muted-foreground font-extrabold uppercase tracking-widest">
-                {petBreed} · {petAge}
-              </p>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {[
+            { name: "Daisy", breed: "Golden Puppy", age: "3 months", health: "100%", status: "Playful", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop&q=80" },
+            { name: "Oliver", breed: "British Shorthair", age: "1 year", health: "98%", status: "Napping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&auto=format&fit=crop&q=80" },
+            { name: "Milo", breed: "Angora Rabbit", age: "6 months", health: "95%", status: "Eating", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&auto=format&fit=crop&q=80" },
+            { name: "Bella", breed: "Siberian Husky", age: "2 years", health: "97%", status: "Active", img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=600&auto=format&fit=crop&q=80" }
+          ].map((pet, idx) => (
+            <div key={idx} className="group relative overflow-hidden rounded-[2.5rem] bg-card border border-border/40 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between hover-lift">
+              
+              {/* Pet Info on Top of card */}
+              <div className="p-4 flex items-center justify-between border-b border-border/20 text-left bg-[#FFF5F9]/30">
+                <div>
+                  <h3 className="font-display font-black text-lg text-[#4E1B33]">{pet.name}</h3>
+                  <p className="text-[9px] font-bold text-accent uppercase tracking-wider">{pet.breed}</p>
+                </div>
+                <span className="text-[10px] font-black uppercase bg-[#4E1B33] text-white px-2.5 py-0.5 rounded-full">{pet.age}</span>
+              </div>
 
-            {/* Live Animated Health Score Circle */}
-            <div className="flex flex-col sm:flex-row items-center gap-5 justify-center lg:justify-start">
-              <div className="relative flex items-center justify-center h-20 w-20 shrink-0 bg-primary/10 rounded-full border border-primary/20 p-2 shadow-inner">
-                <svg className="h-full w-full transform -rotate-90">
-                  <circle cx="32" cy="32" r="26" className="stroke-primary/15 fill-none" strokeWidth="4.5" />
-                  <circle 
-                    cx="32" 
-                    cy="32" 
-                    r="26" 
-                    className="stroke-primary fill-none transition-all duration-1000 ease-out" 
-                    strokeWidth="4.5" 
-                    strokeDasharray="163.3" 
-                    strokeDashoffset={163.3 - (163.3 * healthScore) / 100} 
-                    strokeLinecap="round" 
+              <div className="p-4 space-y-4">
+                {/* 30% larger Image aspect-square with hover zoom */}
+                <div className="relative overflow-hidden rounded-[2rem] aspect-square bg-secondary/30 shadow-inner">
+                  <img 
+                    src={pet.img} 
+                    alt={pet.name} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
                   />
-                </svg>
-                <span className="absolute text-sm font-black text-foreground">{count}%</span>
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[9px] uppercase font-black tracking-wider bg-black/60 backdrop-blur-md text-white px-2.5 py-0.5 rounded-full">
+                      {pet.status}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="text-left space-y-0.5">
-                <p className="text-xs font-black text-foreground flex items-center gap-1">
-                  ❤️ Health Score Index
-                </p>
-                <p className="text-[10px] text-muted-foreground font-semibold leading-relaxed">
-                  Vitals & daily wellness tracking stable. Next vaccine due soon.
-                </p>
+
+              {/* Meet Me bottom action bar */}
+              <div className="p-4 pt-0 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground/80 px-1">
+                  <span>Wellness Index</span>
+                  <span className="text-emerald-500 font-extrabold">{pet.health}</span>
+                </div>
+                <Button className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-xl py-5 font-black text-xs transition-all hover:scale-102 flex items-center justify-center gap-1" asChild>
+                  <Link to="/community">
+                    Meet Me <Heart className="h-3.5 w-3.5 fill-current text-pink-400" />
+                  </Link>
+                </Button>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Checkup Details */}
-            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/30 max-w-sm mx-auto lg:mx-0">
-              <div className="text-left">
-                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Last Checkup</span>
-                <span className="text-xs font-bold text-foreground block mt-0.5">2 days ago</span>
+      {/* 5. SUMMER PROMO BANNER */}
+      <section className="relative h-[220px] rounded-[2.5rem] overflow-hidden shadow-xl border border-white/15 group text-left">
+        <img 
+          src="https://images.unsplash.com/photo-1513360309081-36f5e878fc9e?auto=format&fit=crop&q=80&w=1200" 
+          alt="Summer Collection" 
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-transparent" />
+        
+        <div className="absolute inset-y-0 left-6 sm:left-12 flex flex-col justify-center text-left space-y-2 max-w-md z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/20 border border-pink-500/30 px-3 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#FFF5F9]">
+            🌸 Fresh Arrivals
+          </span>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-white tracking-tight leading-none">
+            Summer Collection 2026 🌸
+          </h2>
+          <p className="text-[11px] text-[#EBC4D8] font-semibold leading-relaxed">
+            Elevate your best friend's style with our matching coordinates and limited-edition pastel floral pendants.
+          </p>
+          <div className="pt-2">
+            <Button size="sm" className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full font-black text-[10px] px-5 py-3.5 shadow-md" asChild>
+              <Link to="/shop">Explore Collection</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. ACCESSORIES SHOP CATALOG */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Premium Supplies 🛍️
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Shop Premium Accessories
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Hand-crafted items designed for ultimate pet comfort and luxury</p>
+        </div>
+
+        <div className="grid gap-6 grid-cols-2 md:grid-cols-4">
+          {[
+            { name: "Luxury Collar", price: 16.99, img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
+            { name: "Leather Leash", price: 14.99, img: "https://images.unsplash.com/photo-1608096299210-db7e38487075?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
+            { name: "Orthopedic Bed", price: 49.99, img: "https://images.unsplash.com/photo-1541599540903-216a46ca1ad0?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000001" },
+            { name: "Rubber Toy Bone", price: 9.99, img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-7075-400d-800d-000000000001" },
+            { name: "Ceramic Food Bowl", price: 12.99, img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
+            { name: "Comfort Carrier Bag", price: 39.99, img: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000001" },
+            { name: "Winter Cozy Jacket", price: 29.99, img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
+            { name: "Home Grooming Kit", price: 24.99, img: "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-9700-400d-800d-000000000001" }
+          ].map((item, idx) => (
+            <div key={idx} className="group relative rounded-[2.2rem] overflow-hidden border border-border/30 bg-card p-4 flex flex-col justify-between hover-lift shadow-sm text-left">
+              <div className="relative rounded-2xl overflow-hidden aspect-square bg-secondary/35 mb-4 shadow-inner">
+                <img 
+                  src={item.img} 
+                  alt={item.name} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
               </div>
-              <div className="text-left">
-                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Vaccinations</span>
-                <span className="text-xs font-bold text-emerald-500 block mt-0.5">Up To Date</span>
-              </div>
-              <div className="text-left">
-                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Active Weight</span>
-                <span className="text-xs font-bold text-foreground block mt-0.5">{petWeight}</span>
-              </div>
-              <div className="text-left">
-                <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest block">Age Index</span>
-                <span className="text-xs font-bold text-foreground block mt-0.5">{petAge}</span>
+              <div className="space-y-2">
+                <div>
+                  <h3 className="font-display text-sm font-bold text-foreground truncate">{item.name}</h3>
+                  <div className="flex items-center gap-0.5 text-amber-500 text-[10px] mt-0.5">
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-border/20 text-xs">
+                  <span className="font-mono font-black text-[#D98CB3]">${item.price.toFixed(2)}</span>
+                  <button 
+                    onClick={async () => {
+                      if (!user) {
+                        toast.error("Please login to shop products");
+                        return;
+                      }
+                      await addToCart(user.id, item.id);
+                      toast.success(`Added ${item.name} to your shopping cart!`);
+                    }}
+                    className="text-[9px] font-black uppercase text-primary hover:text-[#4E1B33] transition-colors cursor-pointer"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          {/* Right Column: Quick Action Stack */}
-          <div className="lg:col-span-4 flex flex-col gap-3 w-full sm:max-w-xs mx-auto lg:ml-auto">
-            <Button className="w-full bg-primary hover:bg-primary/95 text-white rounded-full py-6 font-bold shadow-lg shadow-primary/10 hover-lift flex items-center justify-center gap-2" asChild>
-              <Link to="/chat">
-                <MessageCircle className="h-4.5 w-4.5" /> Consult AI Vet
-              </Link>
-            </Button>
-            <Button variant="outline" className="w-full border-border/70 bg-card hover:bg-secondary/20 rounded-full py-6 font-bold hover-lift flex items-center justify-center gap-2 text-foreground" asChild>
-              <Link to="/book">
-                <Calendar className="h-4.5 w-4.5 text-primary" /> Book Appointment
-              </Link>
-            </Button>
-            <Button variant="outline" className="w-full border-border/70 bg-card hover:bg-secondary/20 rounded-full py-6 font-bold hover-lift flex items-center justify-center gap-2 text-foreground" asChild>
-              <Link to={`/pets?id=${activePet.id}`}>
-                <FileText className="h-4.5 w-4.5 text-accent" /> Medical Passport
-              </Link>
-            </Button>
-          </div>
+      {/* 7. PET FASHION COLLECTION */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Style Catalog 🐕 🐈
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Pet Fashion Collection
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Make heads turn with premium coordinates and winter clothing sets</p>
+        </div>
 
+        <div className="grid gap-6 grid-cols-2 lg:grid-cols-5 text-left">
+          {[
+            { title: "Winter Jacket", label: "Cozy warm padding", img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=300" },
+            { title: "Bandana Kit", label: "Soft cotton print", img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&q=80&w=300" },
+            { title: "Pastel Hoodie", label: "Matching coordinates", img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=300" },
+            { title: "Winter Clothes", label: "Knitted wool wear", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=300" },
+            { title: "Summer Clothes", label: "Breathable shirts", img: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=300" }
+          ].map((item, idx) => (
+            <Link 
+              key={idx} 
+              to="/shop" 
+              className="group relative rounded-[2rem] overflow-hidden hover-lift border border-border/30 aspect-[4/5] flex flex-col justify-end p-4 shadow-sm"
+            >
+              <img 
+                src={item.img} 
+                alt={item.title} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+              <div className="relative z-10 space-y-1">
+                <h3 className="font-display text-sm font-black text-white leading-tight">{item.title}</h3>
+                <p className="text-[8px] text-[#EBC4D8] font-semibold leading-relaxed">{item.label}</p>
+                <div className="pt-1 text-[8px] font-black text-[#D98CB3] uppercase tracking-wider flex items-center gap-0.5">
+                  Shop Outfit <ChevronRight className="h-2.5 w-2.5" />
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -470,64 +648,178 @@ function HomePage() {
         </Button>
       </div>
 
-      {/* NEW SECTION: MATCH WITH YOUR PET & COUNTDOWN */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#4E1B33] to-[#78284e] text-white p-6 md:p-10 shadow-2xl hover-lift flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-        
-        <div className="flex-1 space-y-6 text-left relative z-10">
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#D98CB3]/20 border border-[#D98CB3]/30 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#D98CB3]">
-            🔥 Special Campaign
+      {/* 8. Boarding, Spa & Subscription Box */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[#4E1B33]/10 border border-[#4E1B33]/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#4E1B33]">
+            Professional Pet Boarding & Spa Services 🏨 ✂️
           </span>
-          <div className="space-y-3">
-            <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-              Match With Your Pet! 🐾
-            </h2>
-            <p className="text-xs sm:text-sm text-[#EBC4D8] leading-relaxed max-w-lg font-medium">
-              Create your matching set! Upload a photo of your pet, choose your custom apparel, and we will generate a matching designer set for both of you!
-            </p>
-          </div>
-
-          {/* Live Countdown Timer */}
-          <div className="space-y-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#FFF5F9]/60">Sale Ends In:</p>
-            <div className="flex items-center gap-3">
-              {[
-                { label: "Days", val: timeLeft.days },
-                { label: "Hours", val: timeLeft.hours },
-                { label: "Mins", val: timeLeft.minutes },
-                { label: "Secs", val: timeLeft.seconds }
-              ].map((t, idx) => (
-                <div key={idx} className="flex flex-col items-center">
-                  <div className="h-14 w-14 rounded-2xl bg-[#3D1426] border border-white/5 flex items-center justify-center text-xl font-black tracking-tight shadow-md text-[#FFF5F9]">
-                    {t.val}
-                  </div>
-                  <span className="text-[8px] font-black uppercase tracking-wider text-[#EBC4D8] mt-1.5">{t.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-6 font-extrabold shadow-lg hover:scale-105 transition-transform flex items-center gap-2" asChild>
-              <Link to="/shop">
-                <Sparkles className="h-4.5 w-4.5 text-[#D98CB3]" /> Create Your Matching Set
-              </Link>
-            </Button>
-          </div>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Boarding, Grooming & Subscription Box
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Keep your best friend clean, happy, and cared for while you are away</p>
         </div>
 
-        {/* Right side: Image representing matching Owner & Pet outfits */}
-        <div className="w-full md:w-[42%] shrink-0 relative group">
-          <div className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-[#D98CB3] to-white/10 opacity-20 blur-lg group-hover:opacity-35 transition-opacity" />
-          <img 
-            src="https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=600" 
-            alt="Human and pet matching hoodies" 
-            className="relative w-full aspect-[4/3] md:aspect-square object-cover rounded-[2.2rem] border-4 border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-103"
-          />
+        <div className="grid gap-6 md:grid-cols-3 text-left">
+          
+          {/* CARD 1: PET HOTEL BOARDING */}
+          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl p-2 bg-[#D98CB3]/20 text-[#4E1B33] shrink-0">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">🏨 Pet Hotel & Boarding</h3>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">$40 / Night</span>
+                </div>
+              </div>
+              
+              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                Traveling? Leave your pet in our safe, state-of-the-art environment with 24/7 care, daily walks, and live camera updates.
+              </p>
+
+              {/* Booking Search Form */}
+              <div className="space-y-3 pt-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase text-muted-foreground">Check-in</label>
+                    <input 
+                      type="date" 
+                      value={hotelCheckIn}
+                      onChange={(e) => setHotelCheckIn(e.target.value)}
+                      className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase text-muted-foreground">Check-out</label>
+                    <input 
+                      type="date" 
+                      value={hotelCheckOut}
+                      onChange={(e) => setHotelCheckOut(e.target.value)}
+                      className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase text-muted-foreground">Guest Pet Type</label>
+                  <select 
+                    value={hotelPetType}
+                    onChange={(e) => setHotelPetType(e.target.value)}
+                    className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground shadow-sm"
+                  >
+                    <option value="dog">🐶 Dog Guest</option>
+                    <option value="cat">🐱 Cat Guest</option>
+                    <option value="bird">🐦 Bird Guest</option>
+                    <option value="rabbit">🐰 Rabbit Guest</option>
+                    <option value="fish">🐠 Fish Guest</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => {
+                if (!hotelCheckIn || !hotelCheckOut) {
+                  toast.error("Please select check-in and check-out dates");
+                  return;
+                }
+                window.location.href = `/book?type=hotel&checkin=${hotelCheckIn}&checkout=${hotelCheckOut}&pet=${hotelPetType}`;
+              }}
+              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
+            >
+              Book Stay Now
+            </Button>
+          </div>
+
+          {/* CARD 2: GROOMING & SPA CHECKLIST */}
+          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl p-2 bg-[#D98CB3]/20 text-[#4E1B33] shrink-0">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">✂️ Grooming & Spa</h3>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">Professional Pet Care</span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                Pamper your pet with custom luxury treatments. Select from our menu of professional care packages:
+              </p>
+
+              {/* Grooming Checklists */}
+              <div className="space-y-1.5 pt-1">
+                {[
+                  { name: "Bath & Deep Cleaning", desc: "Organic aloe vera cleaning" },
+                  { name: "Hair Cut & Styling", desc: "Full styling and sanitary trim" },
+                  { name: "Nail Trimming & Filing", desc: "Gentle nail file care" },
+                  { name: "Ear Cleaning & Checkup", desc: "Prevents infections" }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-[#FFF5F9] transition-colors">
+                    <div className="h-4.5 w-4.5 rounded-full bg-[#D98CB3]/20 flex items-center justify-center text-[10px] text-[#4E1B33] font-black shrink-0">✓</div>
+                    <div>
+                      <p className="text-xs font-bold text-foreground leading-none">{item.name}</p>
+                      <p className="text-[8px] text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => {
+                window.location.href = `/book?type=grooming`;
+              }}
+              className="w-full bg-[#D98CB3] hover:bg-[#D98CB3]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
+            >
+              Book Spa Package
+            </Button>
+          </div>
+
+          {/* CARD 3: MONTHLY PETPAL BOX */}
+          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl p-2 bg-amber-500/10 text-amber-600 shrink-0">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-base font-bold text-foreground">📦 Monthly PetPal Box</h3>
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">Only $19.99 / Month</span>
+                </div>
+              </div>
+
+              <div className="relative rounded-2xl overflow-hidden h-28 border border-border/30 shadow-inner">
+                <img 
+                  src="https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400" 
+                  alt="PetPal Box" 
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+                <div className="absolute top-2 left-2 bg-[#D98CB3] text-white px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shadow">Best Seller</div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                A themed subscription box delivered to your door monthly. Filled with healthy treats, premium toys, custom accessories, and grooming samples customized for your pet.
+              </p>
+            </div>
+
+            <Button 
+              onClick={() => {
+                toast.success("Hooray! You've successfully subscribed to the Monthly PetPal Box!");
+              }}
+              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
+            >
+              Subscribe Now
+            </Button>
+          </div>
+
         </div>
       </section>
 
-      {/* NEW SECTION: PERSONALIZED PET JEWELRY SALE */}
+      {/* 9. PERSONALIZED PET JEWELRY SALE */}
       <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#EBC4D8]/30 via-white to-[#FFF5F9] text-foreground p-6 md:p-10 shadow-xl border border-border/40 hover-lift flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
         <div className="flex-1 space-y-6 text-left relative z-10">
@@ -708,102 +1000,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* NEW SECTION: FEATURED COLLECTION & PRODUCT TABS */}
-      <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="text-left space-y-1">
-            <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
-              Featured Collection 🎨
-            </h2>
-            <p className="text-xs text-muted-foreground font-semibold">Hand-crafted matching designs & luxury accessories</p>
-          </div>
-          
-          {/* Tab selectors for Trending / Best / New */}
-          <div className="flex items-center bg-[#4E1B33]/5 dark:bg-white/5 border border-border/60 p-1 rounded-full w-fit">
-            {[
-              { id: "trending", label: "Trending" },
-              { id: "best", label: "Best Sellers" },
-              { id: "new", label: "New Arrivals" }
-            ].map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setActiveShopTab(t.id as any)}
-                className={cn(
-                  "px-4 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer",
-                  activeShopTab === t.id 
-                    ? "bg-[#4E1B33] text-white shadow" 
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 4 Large Featured Cards */}
-        <div className="grid gap-6 grid-cols-2 lg:grid-cols-4">
-          {[
-            { 
-              title: "Matching Hoodies", 
-              desc: "Owner & Pet coordinates", 
-              img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400",
-              price: "$49.99"
-            },
-            { 
-              title: "Pet Necklaces", 
-              desc: "Custom brass collars", 
-              img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=400",
-              price: "$24.99"
-            },
-            { 
-              title: "Personalized Accessories", 
-              desc: "Name tags & bandanas", 
-              img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400",
-              price: "$14.99"
-            },
-            { 
-              title: "Pet Toys", 
-              desc: "Ergonomic play sets", 
-              img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=400",
-              price: "$19.99"
-            }
-          ].map((item, idx) => (
-            <Link 
-              key={idx} 
-              to="/shop" 
-              className="group relative rounded-[2.2rem] overflow-hidden hover-lift border border-border/30 aspect-[4/5] flex flex-col justify-end p-5 shadow-sm text-left"
-            >
-              {/* Card Image Cover */}
-              <img 
-                src={item.img} 
-                alt={item.title} 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              
-              {/* Bottom Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-              
-              {/* Card Text Content */}
-              <div className="relative z-10 space-y-2">
-                <div className="space-y-0.5">
-                  <h3 className="font-display text-base font-extrabold text-white leading-tight">{item.title}</h3>
-                  <p className="text-[10px] text-[#EBC4D8] font-medium leading-relaxed">{item.desc}</p>
-                </div>
-                <div className="flex items-center justify-between border-t border-white/10 pt-2 text-[10px] font-black text-white">
-                  <span className="bg-[#D98CB3] px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider">{item.price}</span>
-                  <span className="flex items-center gap-0.5 text-[#EBC4D8] group-hover:text-white transition-colors">
-                    Shop Now <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* NEW SECTION: INTERACTIVE UPLOADER */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-card border border-border/40 p-6 md:p-8 hover-lift shadow-xl text-left">
+      {/* 10. INTERACTIVE PHOTO UPLOADER */}
+      <section id="studio" className="relative overflow-hidden rounded-[2.5rem] bg-card border border-border/40 p-6 md:p-8 hover-lift shadow-xl text-left">
         <div className="absolute -right-24 -bottom-24 h-96 w-96 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
         
         <div className="grid gap-8 lg:grid-cols-12 items-center">
@@ -983,712 +1181,241 @@ function HomePage() {
         </div>
       </section>
 
-      {/* NEW SECTION: WHY CHOOSE PETPAL? */}
+      {/* 11. COMMUNITY PETS INSTAGRAM STYLE FEED */}
       <section className="space-y-6">
-        <div className="text-center space-y-1">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Social Board 🐶 🐱
+          </span>
           <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
-            Why Choose PetPal? 👑
+            Community Pets Instagram Feed
           </h2>
-          <p className="text-xs text-muted-foreground font-semibold">Crafted with premium specifications for you and your companion</p>
+          <p className="text-xs text-muted-foreground font-semibold">See what coordinates and tags our family members are sporting on the board</p>
         </div>
 
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
           {[
-            { 
-              title: "Premium Quality", 
-              desc: "Double-stitched organic cotton hoodies & high-grade custom accessories built to last.", 
-              icon: PawPrint, 
-              color: "bg-pink-500/10 text-pink-500" 
-            },
-            { 
-              title: "Fast Delivery", 
-              desc: "Fast express delivery options directly to your doorstep with tracking notifications.", 
-              icon: Clock, 
-              color: "bg-rose-500/10 text-rose-500" 
-            },
-            { 
-              title: "Personalized Designs", 
-              desc: "Upload photos, vectorize custom tag shapes, and configure exact matching prints.", 
-              icon: Sparkles, 
-              color: "bg-amber-500/10 text-amber-500" 
-            },
-            { 
-              title: "Made For Pet Lovers", 
-              desc: "Ergonomically fitted cuffs, collars, and materials that guarantee total pet comfort.", 
-              icon: Heart, 
-              color: "bg-pink-600/10 text-pink-600" 
-            }
-          ].map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div key={idx} className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between hover-lift min-h-[160px] text-left">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className={cn("rounded-xl p-2 shrink-0", item.color)}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="font-display text-sm font-bold text-foreground">{item.title}</h3>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed font-semibold">
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* NEW SECTION: CUSTOMER TESTIMONIALS */}
-      <section className="space-y-6">
-        <div className="text-center space-y-1">
-          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
-            Loved By Pet Parents ❤️
-          </h2>
-          <p className="text-xs text-muted-foreground font-semibold">Check out real reviews from our verified family members</p>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {[
-            { 
-              name: "Sarah & Albie", 
-              role: "Golden Owner", 
-              text: "The hoodie quality is amazing! The cotton feels premium, double-stitching is clean, and my dog is super comfortable. We get so many smiles!", 
-              img: "https://images.unsplash.com/photo-1544568100-847a948585b9?w=100&auto=format&fit=crop&q=80" 
-            },
-            { 
-              name: "Taqwa & Buddy", 
-              role: "Beagle Parent", 
-              text: "My dog and I got so many compliments at the park on our matching outfits. The custom vector tag necklace detail is gorgeous and fits perfectly.", 
-              img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100&auto=format&fit=crop&q=80" 
-            },
-            { 
-              name: "James & Bella", 
-              role: "Husky Lover", 
-              text: "Fast shipping, beautiful design, and the materials are very soft. Highly recommend matching sets for anyone who loves their best friend!", 
-              img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=100&auto=format&fit=crop&q=80" 
-            }
-          ].map((rev, idx) => (
-            <div key={idx} className="rounded-3xl bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm text-left relative">
-              <div className="space-y-4">
-                {/* 5 Stars */}
-                <div className="flex items-center gap-0.5 text-amber-500 text-sm">
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                  <Star className="h-3.5 w-3.5 fill-current" />
-                </div>
-                <p className="text-xs text-muted-foreground leading-relaxed italic font-medium">
-                  "{rev.text}"
-                </p>
-              </div>
-              <div className="flex items-center gap-3 border-t border-border/30 pt-4 mt-6">
-                <img src={rev.img} alt={rev.name} className="h-8 w-8 rounded-full object-cover border border-primary/20 shadow-inner" />
-                <div>
-                  <h4 className="text-xs font-bold text-foreground leading-tight">{rev.name}</h4>
-                  <p className="text-[9px] text-muted-foreground uppercase font-black tracking-wider">{rev.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 2. ECOSYSTEM STATISTICS SECTION */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
-          Ecosystem Statistics
-        </h2>
-        
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: "TOTAL PETS", value: `${totalPetsCount} Pet${totalPetsCount > 1 ? "s" : ""} 🐕`, desc: "Registered companions", to: "/pets", bg: "text-pink-600 dark:text-pink-400 hover:border-pink-500/30" },
-            { label: "VET BOOKINGS", value: `${appointmentsText} 📅`, desc: "Upcoming clinic visits", to: "/book", bg: "text-rose-600 dark:text-rose-400 hover:border-rose-500/30" },
-            { label: "AVERAGE WELLNESS", value: `${wellnessScore} ❤️`, desc: "License safety status", to: "/pets", bg: "text-amber-600 dark:text-amber-400 hover:border-amber-500/30" },
-            { label: "MONTHLY SPEND", value: `${monthlySpend} 💳`, desc: "Supplies & clinical services", to: "/shop", bg: "text-rose-500 dark:text-rose-300 hover:border-rose-400/30" },
-            { label: "VACCINES COMPLETED", value: `${vaccinesCompletion} 💉`, desc: "Immunization checklists", to: "/reminders", bg: "text-pink-500 dark:text-pink-300 hover:border-pink-400/30" },
-            { label: "ACTIVE WEIGHT", value: `${activeWeightText} ⚖️`, desc: "Recent weight record", to: "/pets", bg: "text-amber-500 dark:text-amber-300 hover:border-amber-400/30" },
-            { label: "SHOP ORDERS", value: `${shopOrdersCount} 🛍️`, desc: "Deliveries this month", to: "/shop", bg: "text-pink-600 dark:text-pink-400 hover:border-pink-500/30" },
-            { label: "BADGES UNLOCKED", value: `${badgesCount} 🏆`, desc: "Unlocked achievements", to: "/rewards", bg: "text-rose-600 dark:text-rose-400 hover:border-rose-500/30" }
-          ].map((stat, idx) => (
+            { img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&auto=format&fit=crop&q=80", likes: "1.2k", comments: "148" },
+            { img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&auto=format&fit=crop&q=80", likes: "982", comments: "94" },
+            { img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=200&auto=format&fit=crop&q=80", likes: "740", comments: "62" },
+            { img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=200&auto=format&fit=crop&q=80", likes: "2.1k", comments: "280" },
+            { img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=200&auto=format&fit=crop&q=80", likes: "1.5k", comments: "172" },
+            { img: "https://images.unsplash.com/photo-1522856283749-626210a309e1?w=200&auto=format&fit=crop&q=80", likes: "510", comments: "35" },
+            { img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=200&auto=format&fit=crop&q=80", likes: "390", comments: "21" },
+            { img: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=200&auto=format&fit=crop&q=80", likes: "1.8k", comments: "210" },
+            { img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=200&auto=format&fit=crop&q=80", likes: "2.4k", comments: "315" },
+            { img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&auto=format&fit=crop&q=80", likes: "1.6k", comments: "198" },
+            { img: "https://images.unsplash.com/photo-1517423568366-8b83523034fd?w=200&auto=format&fit=crop&q=80", likes: "2.2k", comments: "294" },
+            { img: "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=200&auto=format&fit=crop&q=80", likes: "1.9k", comments: "244" }
+          ].map((post, idx) => (
             <Link 
-              key={idx} 
-              to={stat.to} 
-              className={cn("group rounded-[1.8rem] bg-card border border-border/80 p-5 hover-lift flex flex-col justify-between min-h-[140px]", stat.bg)}
+              key={idx}
+              to="/community"
+              className="group relative aspect-square rounded-2xl overflow-hidden border border-border/30 shadow-sm"
             >
-              <div>
-                <span className="text-[9px] uppercase font-bold tracking-wider text-muted-foreground/80 block">{stat.label}</span>
-                <span className="font-display text-xl font-bold mt-2 block tracking-tight">{stat.value}</span>
-              </div>
-              <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-2 text-[10px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
-                <span>{stat.desc}</span>
-                <span className="flex items-center gap-0.5">
-                  view details <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                </span>
+              <img src={post.img} alt="Community pet" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 text-white text-[10px] font-black uppercase">
+                <span className="flex items-center gap-1">❤️ {post.likes}</span>
+                <span className="flex items-center gap-1">💬 {post.comments}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* 3. AI WELLNESS DIAGNOSTICS */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary animate-pulse" /> AI Wellness Diagnostics
-          </h2>
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            Real-Time Analysis
-          </span>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          
-          {/* Card 1: Health Status Assessment */}
-          <div className="rounded-[1.8rem] border border-emerald-200/50 bg-emerald-500/5 p-6 flex flex-col justify-between space-y-4 hover-lift">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="rounded-xl p-2 bg-emerald-500/10 text-emerald-600"><CheckCircle className="h-4.5 w-4.5" /></div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Health Status Assessment</h3>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Cardiovascular and digestive logs are fully normal. {petName}'s activity level is at 96% optimal capacity.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" /> Vitals sign optimal
-            </div>
-          </div>
-
-          {/* Card 2: Care Recommendation */}
-          <div className="rounded-[1.8rem] border border-amber-200/50 bg-amber-500/5 p-6 flex flex-col justify-between space-y-4 hover-lift">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="rounded-xl p-2 bg-amber-500/10 text-amber-600"><Activity className="h-4.5 w-4.5" /></div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Care Recommendation</h3>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {petName} shows a minor calorie deficit. Recommend adding 1.2kg/feeding adjustment or consult on dietary portions.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Provides guidance
-            </div>
-          </div>
-
-          {/* Card 3: Action Required Alert */}
-          <div className="rounded-[1.8rem] border border-rose-200/50 bg-rose-500/5 p-6 flex flex-col justify-between space-y-4 hover-lift">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="rounded-xl p-2 bg-rose-500/10 text-rose-600"><ShieldAlert className="h-4.5 w-4.5" /></div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-rose-800 dark:text-rose-300">Action Required Alert</h3>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Immunization schedule has pending inputs. Rabies vaccine booster check recommended within 5 days.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-600">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" /> High priority actions
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 4. UPCOMING ACTIVITIES TIMELINE */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
-          Upcoming Activities Timeline
-        </h2>
-
-        <div className="relative pl-8 border-l border-border/80 space-y-6 ml-4">
-          
-          {/* Timeline Item 1 */}
-          <div className="relative group">
-            <div className="absolute -left-[40px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 ring-4 ring-background transition-transform duration-500 group-hover:scale-125 shadow-sm" />
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border/50 rounded-2xl p-4 hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <h4 className="font-bold text-sm tracking-tight text-foreground flex flex-wrap items-center gap-2">
-                  💉 Rabies Immunization Booster Due
-                  <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[8px] font-black uppercase tracking-wider">Action Required</span>
-                </h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Critical clinical preventative booster cycle due for active pet profile. Required for municipal license compliance.
-                </p>
-              </div>
-              <div className="text-[10px] font-bold text-rose-500 uppercase flex items-center gap-1 shrink-0 self-start sm:self-center">
-                <Clock className="h-3.5 w-3.5" /> In 5 days (June 7)
-              </div>
-            </div>
-          </div>
-
-          {/* Timeline Item 2 */}
-          <div className="relative group">
-            <div className="absolute -left-[40px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-pink-500 ring-4 ring-background transition-transform duration-500 group-hover:scale-125 shadow-sm" />
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border/50 rounded-2xl p-4 hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <h4 className="font-bold text-sm tracking-tight text-foreground flex flex-wrap items-center gap-2">
-                  📅 Annual Veterinary General Checkup
-                  <span className="px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-600 dark:text-pink-400 text-[8px] font-black uppercase tracking-wider">Appointment</span>
-                </h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Routine diagnostics, weight tracking updates, dental scaling review, and physical health inspection.
-                </p>
-              </div>
-              <div className="text-[10px] font-bold text-pink-500 uppercase flex items-center gap-1 shrink-0 self-start sm:self-center">
-                <Clock className="h-3.5 w-3.5" /> In 8 days (June 10)
-              </div>
-            </div>
-          </div>
-
-          {/* Timeline Item 3 */}
-          <div className="relative group">
-            <div className="absolute -left-[40px] top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 ring-4 ring-background transition-transform duration-500 group-hover:scale-125 shadow-sm" />
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border/50 rounded-2xl p-4 hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <h4 className="font-bold text-sm tracking-tight text-foreground flex flex-wrap items-center gap-2">
-                  📦 Premium Food Subscription Auto-Ship
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[8px] font-black uppercase tracking-wider">Subscription</span>
-                </h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Automatic dispatch renewal for balanced salmon and chicken formula dry foods from PetPal stores.
-                </p>
-              </div>
-              <div className="text-[10px] font-bold text-amber-500 uppercase flex items-center gap-1 shrink-0 self-start sm:self-center">
-                <Clock className="h-3.5 w-3.5" /> In 12 days (June 12)
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* NEW SECTION: PREMIUM PET CARE & HOTEL HUB */}
+      {/* 12. SUCCESS STORIES */}
       <section className="space-y-6">
-        <div className="text-left space-y-1">
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#4E1B33]/10 border border-[#4E1B33]/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#4E1B33]">
-            Professional Pet Boarding & Spa Services 🏨 ✂️
+        <div className="text-center space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Care Journeys ❤️
           </span>
           <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
-            Boarding, Grooming & Subscription Box
+            Success Stories
           </h2>
-          <p className="text-xs text-muted-foreground font-semibold">Keep your best friend clean, happy, and cared for while you are away</p>
+          <p className="text-xs text-muted-foreground font-semibold">Preventative diagnostics and weight logs driving amazing outcomes</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3 text-left">
-          
-          {/* CARD 1: PET HOTEL BOARDING */}
-          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-xl p-2 bg-[#D98CB3]/20 text-[#4E1B33] shrink-0">
-                  <Calendar className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-base font-bold text-foreground">🏨 Pet Hotel & Boarding</h3>
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">$40 / Night</span>
-                </div>
-              </div>
-              
-              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
-                Traveling? Leave your pet in our safe, state-of-the-art environment with 24/7 care, daily walks, and live camera updates.
-              </p>
-
-              {/* Booking Search Form */}
-              <div className="space-y-3 pt-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black uppercase text-muted-foreground">Check-in</label>
-                    <input 
-                      type="date" 
-                      value={hotelCheckIn}
-                      onChange={(e) => setHotelCheckIn(e.target.value)}
-                      className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground"
-                    />
+          {[
+            {
+              title: "Max's Rescue Journey 🐶",
+              desc: "From severe malnourishment and anxiety to an active, glowing companion.",
+              before: "https://images.unsplash.com/photo-1534361960057-19889db9621e?w=200&auto=format&fit=crop&q=80",
+              after: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&auto=format&fit=crop&q=80",
+              tag: "Rescue Match"
+            },
+            {
+              title: "Oliver's Weight Recovery 🐱",
+              desc: "Lost 4.2kg of excess weight through our automated caloric deficit recommendations.",
+              before: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&auto=format&fit=crop&q=80",
+              after: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=200&auto=format&fit=crop&q=80",
+              tag: "Weight Control"
+            },
+            {
+              title: "Bella's Adoption Story 🐰",
+              desc: "Found her forever home and family match through our community board filters.",
+              before: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=200&auto=format&fit=crop&q=80",
+              after: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?w=200&auto=format&fit=crop&q=80",
+              tag: "Adoption"
+            }
+          ].map((story, idx) => (
+            <div key={idx} className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between hover-lift shadow-sm">
+              <div className="space-y-4">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[8px] font-black uppercase tracking-widest text-emerald-600 border border-emerald-500/20">
+                  {story.tag}
+                </span>
+                <h3 className="font-display text-base font-bold text-foreground leading-tight">{story.title}</h3>
+                
+                {/* Before / After side-by-side collage */}
+                <div className="grid grid-cols-2 gap-2 relative">
+                  <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-border/30">
+                    <img src={story.before} alt="Before" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-1.5 left-2 bg-black/60 text-white text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded">Before</span>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black uppercase text-muted-foreground">Check-out</label>
-                    <input 
-                      type="date" 
-                      value={hotelCheckOut}
-                      onChange={(e) => setHotelCheckOut(e.target.value)}
-                      className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground"
-                    />
+                  <div className="relative rounded-2xl overflow-hidden aspect-[4/3] border border-border/30">
+                    <img src={story.after} alt="After" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-1.5 left-2 bg-emerald-500 text-white text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded">After</span>
                   </div>
                 </div>
                 
-                <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase text-muted-foreground">Guest Pet Type</label>
-                  <select 
-                    value={hotelPetType}
-                    onChange={(e) => setHotelPetType(e.target.value)}
-                    className="w-full bg-[#4E1B33]/5 border border-border/60 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground shadow-sm"
-                  >
-                    <option value="dog">🐶 Dog Guest</option>
-                    <option value="cat">🐱 Cat Guest</option>
-                    <option value="bird">🐦 Bird Guest</option>
-                    <option value="rabbit">🐰 Rabbit Guest</option>
-                    <option value="fish">🐠 Fish Guest</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <Button 
-              onClick={() => {
-                if (!hotelCheckIn || !hotelCheckOut) {
-                  toast.error("Please select check-in and check-out dates");
-                  return;
-                }
-                window.location.href = `/book?type=hotel&checkin=${hotelCheckIn}&checkout=${hotelCheckOut}&pet=${hotelPetType}`;
-              }}
-              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
-            >
-              Book Stay Now
-            </Button>
-          </div>
-
-          {/* CARD 2: GROOMING & SPA CHECKLIST */}
-          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-xl p-2 bg-[#D98CB3]/20 text-[#4E1B33] shrink-0">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-base font-bold text-foreground">✂️ Grooming & Spa</h3>
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">Professional Pet Care</span>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
-                Pamper your pet with custom luxury treatments. Select from our menu of professional care packages:
-              </p>
-
-              {/* Grooming Checklists */}
-              <div className="space-y-1.5 pt-1">
-                {[
-                  { name: "Bath & Deep Cleaning", desc: "Organic aloe vera cleaning" },
-                  { name: "Hair Cut & Styling", desc: "Full styling and sanitary trim" },
-                  { name: "Nail Trimming & Filing", desc: "Gentle nail file care" },
-                  { name: "Ear Cleaning & Checkup", desc: "Prevents infections" }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-[#FFF5F9] transition-colors">
-                    <div className="h-4.5 w-4.5 rounded-full bg-[#D98CB3]/20 flex items-center justify-center text-[10px] text-[#4E1B33] font-black shrink-0">✓</div>
-                    <div>
-                      <p className="text-xs font-bold text-foreground leading-none">{item.name}</p>
-                      <p className="text-[8px] text-muted-foreground">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <Button 
-              onClick={() => {
-                window.location.href = `/book?type=grooming`;
-              }}
-              className="w-full bg-[#D98CB3] hover:bg-[#D98CB3]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
-            >
-              Book Spa Package
-            </Button>
-          </div>
-
-          {/* CARD 3: MONTHLY PETPAL BOX */}
-          <div className="rounded-[2.2rem] bg-card border border-border p-6 flex flex-col justify-between hover-lift shadow-sm relative overflow-hidden min-h-[350px]">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-xl p-2 bg-amber-500/10 text-amber-600 shrink-0">
-                  <ShoppingBag className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-base font-bold text-foreground">📦 Monthly PetPal Box</h3>
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#D98CB3]">Only $19.99 / Month</span>
-                </div>
-              </div>
-
-              <div className="relative rounded-2xl overflow-hidden h-28 border border-border/30 shadow-inner">
-                <img 
-                  src="https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400" 
-                  alt="PetPal Box" 
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-                <div className="absolute top-2 left-2 bg-[#D98CB3] text-white px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shadow">Best Seller</div>
-              </div>
-
-              <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
-                A themed subscription box delivered to your door monthly. Filled with healthy treats, premium toys, custom accessories, and grooming samples customized for your pet.
-              </p>
-            </div>
-
-            <Button 
-              onClick={() => {
-                toast.success("Hooray! You've successfully subscribed to the Monthly PetPal Box!");
-              }}
-              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-extrabold shadow-md mt-4 flex items-center justify-center gap-1.5"
-            >
-              Subscribe Now
-            </Button>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 5. INTERACTIVE SERVICES GRID */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
-          Interactive Services
-        </h2>
-
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          
-          {/* Service 1: Clinical Scheduler */}
-          <Link to="/book" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-pink-500/30 overflow-hidden min-h-[170px] text-left">
-            <div className="flex-1 p-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="rounded-full p-2 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                  <Calendar className="h-4.5 w-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground">Clinical Scheduler</h3>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Book vaccine shots, clinical checkups, or wellness reviews at certified animal hospitals.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-500 opacity-80 group-hover:opacity-100 transition-opacity">
-                <span>Open Schedule</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-            <div className="w-[38%] shrink-0 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=300" 
-                alt="Scheduler" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </Link>
-
-          {/* Service 2: Supplies Shop */}
-          <Link to="/shop" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-rose-400/30 overflow-hidden min-h-[170px] text-left">
-            <div className="flex-1 p-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="rounded-full p-2 bg-rose-400/10 text-rose-400 w-fit group-hover:rotate-12 transition-transform duration-500">
-                  <ShoppingBag className="h-4.5 w-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground">Supplies Shop</h3>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Order health food formulas, vitamin boosters, scratching posts, and accessories.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-rose-400 opacity-80 group-hover:opacity-100 transition-opacity">
-                <span>Browse Supplies</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-            <div className="w-[38%] shrink-0 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=300" 
-                alt="Shop" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </Link>
-
-          {/* Service 3: AI Chatbot */}
-          <Link to="/chat" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-pink-500/30 overflow-hidden min-h-[170px] text-left">
-            <div className="flex-1 p-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="rounded-full p-2 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                  <MessageCircle className="h-4.5 w-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground">AI Chatbot</h3>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Consult our smart clinical AI agent regarding symptom charts or daily behaviors.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-500 opacity-80 group-hover:opacity-100 transition-opacity">
-                <span>Ask Chatbot</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-            {/* Interactive HTML/CSS Mockup Chat widget */}
-            <div className="w-[40%] shrink-0 bg-secondary/30 relative p-3 flex flex-col justify-between overflow-hidden border-l border-border/10">
-              <div className="space-y-2">
-                <div className="flex items-center gap-1 justify-end">
-                  <div className="bg-[#FFF5F9] text-[7.5px] p-1.5 rounded-lg rounded-tr-none text-foreground font-bold shadow-sm scale-90 origin-right max-w-[80%] truncate">
-                    Healthy dog?
-                  </div>
-                  <div className="h-3.5 w-3.5 rounded-full bg-accent/20 flex items-center justify-center text-[7px] font-bold">👤</div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="h-3.5 w-3.5 rounded-full bg-emerald-500/20 flex items-center justify-center text-[7px]">🤖</div>
-                  <div className="bg-emerald-500/10 text-[7.5px] p-1.5 rounded-lg rounded-tl-none text-emerald-800 dark:text-emerald-300 font-bold scale-90 origin-left max-w-[80%] truncate">
-                    Vitals stable!
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white/90 dark:bg-card px-1.5 py-0.5 rounded-md text-[6.5px] font-bold shadow-sm flex items-center justify-between mt-1">
-                <span>AI Agent</span>
-                <span className="text-amber-500">★★★★★</span>
-              </div>
-            </div>
-          </Link>
-
-          {/* Service 4: Social Board */}
-          <Link to="/community" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-amber-400/30 overflow-hidden min-h-[170px] text-left">
-            <div className="flex-1 p-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="rounded-full p-2 bg-amber-400/10 text-amber-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                  <MessageSquare className="h-4.5 w-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground">Social Board</h3>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Engage with pet parents, swap healthy diet reviews, and share funny stories.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-amber-500 opacity-80 group-hover:opacity-100 transition-opacity">
-                <span>Visit Community</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-            <div className="w-[38%] shrink-0 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=300" 
-                alt="Social" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </Link>
-
-          {/* Service 5: Medical Records */}
-          <Link to="/pets" className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-pink-500/30 overflow-hidden min-h-[170px] text-left">
-            <div className="flex-1 p-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="rounded-full p-2 bg-pink-500/10 text-pink-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                  <FileText className="h-4.5 w-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground">Medical Records</h3>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Access full digital files of past checkups, clinical weights, and veterinary hospital.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-pink-500 opacity-80 group-hover:opacity-100 transition-opacity">
-                <span>Review Records</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-            <div className="w-[38%] shrink-0 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&q=80&w=300" 
-                alt="Records" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </Link>
-
-          {/* Service 6: Emergency Support */}
-          <button 
-            onClick={() => setShowEmergencyDialog(true)}
-            className="group flex justify-between rounded-[2rem] bg-card border border-border hover-lift hover:border-rose-500/30 overflow-hidden min-h-[170px] text-left w-full cursor-pointer"
-          >
-            <div className="flex-1 p-5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="rounded-full p-2 bg-rose-500/10 text-rose-500 w-fit group-hover:rotate-12 transition-transform duration-500">
-                  <PhoneCall className="h-4.5 w-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground">Emergency Support</h3>
-                  <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed line-clamp-3">Instant 24/7 access details to local trauma centers and veterinary hospitals.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1 text-[10px] font-bold text-rose-500 opacity-80 group-hover:opacity-100 transition-opacity">
-                <span>Get Urgent Info</span> <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-            <div className="w-[38%] shrink-0 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1527362950785-f487a7c1fe48?auto=format&fit=crop&q=80&w=300" 
-                alt="Emergency" 
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </button>
-
-        </div>
-      </section>
-
-      {/* 6. FEATURED COMPANIONS */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground flex items-center gap-1.5">
-            Featured Pets ❤️
-          </h2>
-          <span className="text-xs font-bold uppercase tracking-wider text-pink-500 hover:underline cursor-pointer">
-            View Community Pets
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { name: "Daisy", breed: "Golden Puppy", age: "3 months", health: "100%", status: "Playful", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&auto=format&fit=crop&q=80" },
-            { name: "Oliver", breed: "British Shorthair", age: "1 year", health: "98%", status: "Napping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop&q=80" },
-            { name: "Milo", breed: "Angora Rabbit", age: "6 months", health: "95%", status: "Eating", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&auto=format&fit=crop&q=80" },
-            { name: "Bella", breed: "Siberian Husky", age: "2 years", health: "97%", status: "Active", img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=400&auto=format&fit=crop&q=80" }
-          ].map((pet, idx) => (
-            <div key={idx} className="group relative overflow-hidden rounded-[2.2rem] glass-card border border-border/40 hover:shadow-xl transition-all duration-500 bg-card/65 flex flex-col justify-between hover-lift">
-              <div className="p-3.5 space-y-3">
-                <div className="relative overflow-hidden rounded-[1.6rem] aspect-square bg-secondary/30">
-                  <img 
-                    src={pet.img} 
-                    alt={pet.name} 
-                    className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-2.5 left-2.5">
-                    <span className="text-[8px] uppercase font-extrabold tracking-wider bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full">
-                      {pet.status}
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-1 px-1 text-left">
-                  <h3 className="font-display font-bold text-base text-foreground leading-tight">{pet.name}</h3>
-                  <p className="text-[9px] font-bold text-accent uppercase tracking-wider">{pet.breed} · {pet.age}</p>
-                </div>
-              </div>
-              <div className="p-3.5 pt-0 border-t border-border/20 flex items-center justify-between text-[10px] font-bold text-muted-foreground/80">
-                <span>Wellness Score</span>
-                <span className="text-emerald-500 font-extrabold">{pet.health}</span>
+                <p className="text-[11px] text-muted-foreground leading-relaxed font-semibold">
+                  {story.desc}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 7. CARETAKER ACHIEVEMENTS */}
-      <section className="space-y-4">
-        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-amber-500" /> Caretaker Achievements
-        </h2>
-
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          {[
-            { title: "Perfect Caretaker", medal: "GOLD MEDAL", desc: "12 months cycle fully registered and booster appointments completed.", color: "text-yellow-500 bg-yellow-500/10" },
-            { title: "Wellness Champion", medal: "GOLD MEDAL", desc: "Maintained diagnostic health index scores above 95% for 3 consecutive months.", color: "text-yellow-500 bg-yellow-500/10" },
-            { title: "AI Health Scholar", medal: "SILVER MEDAL", desc: "Addressed 5+ distinct preventative checkups or dietary consultations with AI diagnostics.", color: "text-slate-400 bg-slate-400/10" },
-            { title: "VIP Sponsor Patron", medal: "BRONZE MEDAL", desc: "Purchased 3+ premium supply formulas or grooming bundles from the official shop.", color: "text-amber-600 bg-amber-600/10" }
-          ].map((ach, idx) => (
-            <div key={idx} className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between min-h-[160px] hover-lift">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className={cn("rounded-xl p-2 shrink-0", ach.color)}>
-                    <Award className="h-5 w-5" />
+      {/* 13. CARETAKER ACHIEVEMENTS & TESTIMONIALS */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Achievements Card */}
+        <section className="space-y-4 text-left">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-amber-500" /> Caretaker Achievements
+          </h2>
+          <div className="grid gap-4 grid-cols-2">
+            {[
+              { title: "Perfect Caretaker", medal: "GOLD MEDAL", desc: "12 months cycle fully registered and booster appointments completed.", color: "text-yellow-500 bg-yellow-500/10" },
+              { title: "Wellness Champion", medal: "GOLD MEDAL", desc: "Maintained health index scores above 95% for 3 months.", color: "text-yellow-500 bg-yellow-500/10" }
+            ].map((ach, idx) => (
+              <div key={idx} className="rounded-3xl bg-card border border-border p-4 flex flex-col justify-between min-h-[140px] hover-lift">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className={cn("rounded-xl p-2 shrink-0", ach.color)}>
+                      <Award className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xs font-bold text-foreground leading-tight">{ach.title}</h3>
+                      <span className="text-[8px] font-extrabold uppercase tracking-widest text-muted-foreground">{ach.medal}</span>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display text-sm font-bold text-foreground">{ach.title}</h3>
-                    <span className="text-[8px] font-extrabold uppercase tracking-widest text-muted-foreground">{ach.medal}</span>
-                  </div>
+                  <p className="text-[9.5px] text-muted-foreground leading-tight">
+                    {ach.desc}
+                  </p>
                 </div>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  {ach.desc}
-                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Testimonials Card */}
+        <section className="space-y-4 text-left">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground flex items-center gap-1.5">
+            Loved By Pet Parents ❤️
+          </h2>
+          <div className="rounded-3xl bg-card border border-border p-5 flex flex-col justify-between min-h-[190px] shadow-sm relative">
+            <div className="space-y-3">
+              <div className="flex items-center gap-0.5 text-amber-500 text-xs">
+                <Star className="h-3.5 w-3.5 fill-current" />
+                <Star className="h-3.5 w-3.5 fill-current" />
+                <Star className="h-3.5 w-3.5 fill-current" />
+                <Star className="h-3.5 w-3.5 fill-current" />
+                <Star className="h-3.5 w-3.5 fill-current" />
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed italic font-medium">
+                "My dog and I got so many compliments at the park on our matching outfits. The custom vector tag necklace detail is gorgeous and fits perfectly."
+              </p>
+            </div>
+            <div className="flex items-center gap-3 border-t border-border/30 pt-3 mt-4">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100&auto=format&fit=crop&q=80" alt="Taqwa" className="h-7 w-7 rounded-full object-cover border border-primary/20 shadow-inner" />
+              <div>
+                <h4 className="text-xs font-bold text-foreground leading-none">Taqwa & Buddy</h4>
+                <p className="text-[8px] text-muted-foreground uppercase font-black tracking-wider mt-0.5">Beagle Parent</p>
               </div>
             </div>
+          </div>
+        </section>
+      </div>
+
+      {/* 14. ECOSYSTEM STATISTICS & TIMELINE */}
+      <div className="grid gap-6 md:grid-cols-2 text-left">
+        {/* Statistics Grid */}
+        <section className="space-y-4">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
+            Ecosystem Statistics
+          </h2>
+          <div className="grid gap-3 grid-cols-2">
+            {[
+              { label: "TOTAL PETS", value: `${totalPetsCount} Pet${totalPetsCount > 1 ? "s" : ""} 🐕`, desc: "Registered companions", to: "/pets", bg: "text-pink-600 hover:border-pink-500/30" },
+              { label: "VET BOOKINGS", value: `${appointmentsText} 📅`, desc: "Upcoming clinic visits", to: "/book", bg: "text-rose-600 hover:border-rose-500/30" },
+              { label: "AVERAGE WELLNESS", value: `${wellnessScore} ❤️`, desc: "License safety status", to: "/pets", bg: "text-amber-600 hover:border-amber-500/30" },
+              { label: "MONTHLY SPEND", value: `${monthlySpend} 💳`, desc: "Supplies & clinical services", to: "/shop", bg: "text-rose-500 hover:border-rose-400/30" }
+            ].map((stat, idx) => (
+              <Link 
+                key={idx} 
+                to={stat.to} 
+                className={cn("group rounded-2xl bg-card border border-border/80 p-4 hover-lift flex flex-col justify-between min-h-[110px]", stat.bg)}
+              >
+                <div>
+                  <span className="text-[8px] uppercase font-bold tracking-wider text-muted-foreground/80 block">{stat.label}</span>
+                  <span className="font-display text-base font-bold mt-1 block tracking-tight text-foreground">{stat.value}</span>
+                </div>
+                <div className="mt-2 flex items-center justify-between border-t border-border/40 pt-1.5 text-[8.5px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
+                  <span>{stat.desc}</span>
+                  <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Timeline Activities */}
+        <section className="space-y-4">
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
+            Upcoming Activities
+          </h2>
+          <div className="relative pl-6 border-l border-border/80 space-y-4 ml-2">
+            {[
+              { title: "Rabies Booster Due", date: "In 5 days", desc: "预防接种 compliance cycle.", color: "bg-rose-500" },
+              { title: "Annual Vet checkup", date: "In 8 days", desc: "Routine weight and diagnostic logs.", color: "bg-pink-500" }
+            ].map((act, idx) => (
+              <div key={idx} className="relative group">
+                <div className={cn("absolute -left-[30px] top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full ring-4 ring-background transition-transform duration-500 group-hover:scale-125 shadow-sm", act.color)} />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-card border border-border/50 rounded-xl p-3.5 hover:shadow-md transition-shadow">
+                  <div className="text-left space-y-0.5">
+                    <h4 className="font-bold text-xs text-foreground">{act.title}</h4>
+                    <p className="text-[9px] text-muted-foreground leading-tight">{act.desc}</p>
+                  </div>
+                  <span className="text-[8px] font-bold text-accent shrink-0 uppercase">{act.date}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* 15. INFINITE PET CAROUSEL MARQUEE */}
+      <section className="w-full overflow-hidden bg-[#4E1B33] text-white py-4 rounded-3xl shadow-lg relative z-10 border border-white/10 mt-8">
+        <div className="flex animate-marquee whitespace-nowrap gap-12 font-display text-sm font-extrabold uppercase tracking-widest">
+          {[
+            "🐶 Dogs", "🐱 Cats", "🐰 Rabbits", "🐠 Fish", "🐦 Birds", "🦎 Reptiles", "🐹 Hamsters",
+            "🐶 Dogs", "🐱 Cats", "🐰 Rabbits", "🐠 Fish", "🐦 Birds", "🦎 Reptiles", "🐹 Hamsters"
+          ].map((t, idx) => (
+            <span key={idx} className="flex items-center gap-2 select-none">
+              <span>{t}</span>
+              <span className="text-primary">•</span>
+            </span>
           ))}
         </div>
       </section>
