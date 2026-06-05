@@ -300,49 +300,225 @@ function HomePage() {
   return (
     <div className="space-y-12 transition-all duration-700 animate-in fade-in zoom-in-95">
       
-      {/* 1. NIKE/APPLE STYLE HERO SECTION */}
-      <section className="relative h-[480px] rounded-[2.5rem] overflow-hidden shadow-2xl hover-lift group border border-white/10 text-left">
-        {/* Cover image background */}
+      {/* 1. HERO SECTION: LIFESTYLE IMAGE & MATCH WITH YOUR PET */}
+      <section className="relative h-[560px] rounded-[3rem] overflow-hidden shadow-2xl hover-lift group border border-white/10 text-left">
+        {/* Cover image background (Human + Pet matching outfit) */}
         <img 
-          src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=1200" 
-          alt="Dog and Cat Hero" 
+          src="https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=1200" 
+          alt="Match With Your Pet Hero" 
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
         />
         {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
         
         {/* Decorative lights */}
-        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-primary/25 blur-3xl pointer-events-none" />
         
         {/* Text and CTAs */}
-        <div className="absolute inset-x-6 bottom-8 md:bottom-12 md:left-12 max-w-xl space-y-4 md:space-y-6 z-10">
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#D98CB3]/20 border border-[#D98CB3]/30 px-3.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#FFF5F9] animate-pulse">
-            🔥 Premium Pet Hub
+        <div className="absolute inset-x-6 bottom-12 md:bottom-16 md:left-16 max-w-xl space-y-5 md:space-y-7 z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/20 border border-pink-500/30 px-4 py-1 text-[11px] font-black uppercase tracking-widest text-[#FFF5F9] animate-pulse">
+            ✨ Premium Pet Fashion & Lifestyle
           </span>
-          <div className="space-y-2 md:space-y-3">
-            <h1 className="font-display text-4xl sm:text-6xl font-black text-white tracking-tight leading-none">
-              Everything Your Pet Needs 🐾
+          <div className="space-y-3">
+            <h1 className="font-display text-5xl sm:text-7xl font-black text-white tracking-tight leading-none">
+              Match With Your Pet 🐾
             </h1>
-            <p className="text-xs sm:text-sm text-[#EBC4D8] leading-relaxed font-semibold">
-              Ecosystem connecting pet profiles, veterinary clinical schedulers, premium supply stores, and smart AI wellness diagnostics in one dashboard.
+            <p className="text-sm sm:text-base text-[#EBC4D8] leading-relaxed font-semibold">
+              Celebrate your unique bond. Browse our handcrafted matching outfits, custom photo-engraved jewelry, and premium pet boarding services.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-6 font-extrabold shadow-lg hover:scale-105 transition-transform flex items-center gap-2" asChild>
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-8 py-7 font-black shadow-lg hover:scale-105 transition-transform flex items-center gap-2 text-sm" asChild>
               <Link to="/shop">
-                Shop Now <ShoppingBag className="h-4.5 w-4.5 text-primary" />
+                Shop Collection <ShoppingBag className="h-5 w-5 text-primary" />
               </Link>
             </Button>
-            <Button variant="outline" className="border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-full px-6 py-6 font-extrabold hover:scale-105 transition-transform flex items-center gap-2" asChild>
+            <Button variant="outline" className="border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-full px-8 py-7 font-black hover:scale-105 transition-transform flex items-center gap-2 text-sm" asChild>
               <Link to="/pets">
-                Explore Pets <ChevronRight className="h-4.5 w-4.5" />
+                Explore Pets <ChevronRight className="h-5 w-5" />
               </Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* 2. WELCOME HEADER & LOYALTY GRID */}
+      {/* 2. PET FASHION COLLECTION (LIFESTYLE PHOTOS) */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Style Catalog 🐕 🐈
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Pet Fashion Collection
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Coordinate your style with luxury outfits designed for both of you</p>
+        </div>
+
+        <div className="grid gap-6 grid-cols-2 lg:grid-cols-5 text-left">
+          {[
+            { title: "Matching Hoodies", label: "Owner & Dog Cozy Set", img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=400" },
+            { title: "Coordinated Bandanas", label: "Cat & Owner matching details", img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&q=80&w=400" },
+            { title: "Matching Pajamas", label: "Nighttime snuggle coordinates", img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400" },
+            { title: "Weekend Coordinates", label: "Couple & Dog outfit sets", img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=400" },
+            { title: "Knitwear Collection", label: "Luxury cozy knitted sweaters", img: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=400" }
+          ].map((item, idx) => (
+            <Link 
+              key={idx} 
+              to="/shop" 
+              className="group relative rounded-[2rem] overflow-hidden hover-lift border border-border/30 aspect-[4/5] flex flex-col justify-end p-4 shadow-sm"
+            >
+              <img 
+                src={item.img} 
+                alt={item.title} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+              <div className="relative z-10 space-y-1">
+                <h3 className="font-display text-sm font-black text-white leading-tight">{item.title}</h3>
+                <p className="text-[8px] text-[#EBC4D8] font-semibold leading-relaxed">{item.label}</p>
+                <div className="pt-1 text-[8px] font-black text-[#D98CB3] uppercase tracking-wider flex items-center gap-0.5">
+                  Shop Outfit <ChevronRight className="h-2.5 w-2.5" />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* 3. SUMMER PROMO BANNER (50% OFF) */}
+      <section className="relative h-[240px] rounded-[2.5rem] overflow-hidden shadow-xl border border-white/15 group text-left">
+        <img 
+          src="https://images.unsplash.com/photo-1513360309081-36f5e878fc9e?auto=format&fit=crop&q=80&w=1200" 
+          alt="Summer Collection" 
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-transparent" />
+        
+        <div className="absolute inset-y-0 left-6 sm:left-12 flex flex-col justify-center text-left space-y-2.5 max-w-md z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/20 border border-pink-500/30 px-3 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#FFF5F9]">
+            🌸 Fresh Summer Arrivals
+          </span>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-white tracking-tight leading-none">
+            50% Summer Sale! 🌸
+          </h2>
+          <p className="text-[11px] text-[#EBC4D8] font-semibold leading-relaxed">
+            Get half price on all custom coordinates, lightweight breathable sweaters, and pastel name pendants. Limited time only.
+          </p>
+          <div className="pt-2">
+            <Button size="sm" className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full font-black text-[10px] px-6 py-4 shadow-md" asChild>
+              <Link to="/shop">Explore Collection</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. ACCESSORIES CATALOG (PETS WEARING ITEMS) */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
+            Premium Supplies 🛍️
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Shop Premium Accessories
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">Hand-crafted items pictured on our adorable pet models</p>
+        </div>
+
+        <div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          {[
+            { name: "Cat Luxury Necklace", price: 16.99, img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003", label: "Cat Necklace" },
+            { name: "Paw Print Necklace", price: 24.99, img: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003", label: "Paw Necklace" },
+            { name: "Personalized Collar", price: 14.99, img: "https://images.unsplash.com/photo-1608096299210-db7e38487075?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003", label: "Personalized Collar" },
+            { name: "Custom Name Tag", price: 12.99, img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003", label: "Custom Name Tag" },
+            { name: "Luxury Pet Bed", price: 49.99, img: "https://images.unsplash.com/photo-1541599540903-216a46ca1ad0?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000001", label: "Luxury Pet Bed" },
+            { name: "Crystal Cat Bowl", price: 19.99, img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003", label: "Crystal Cat Bowl" }
+          ].map((item, idx) => (
+            <div key={idx} className="group relative rounded-[2.2rem] overflow-hidden border border-border/30 bg-card p-4 flex flex-col justify-between hover-lift shadow-sm text-left">
+              <div className="relative rounded-2xl overflow-hidden aspect-square bg-secondary/35 mb-3 shadow-inner">
+                <img 
+                  src={item.img} 
+                  alt={item.name} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <span className="absolute top-2 left-2 bg-black/60 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full">{item.label}</span>
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-display text-xs font-bold text-foreground truncate">{item.name}</h3>
+                <div className="flex items-center gap-0.5 text-amber-500 text-[9px]">
+                  <Star className="h-2.5 w-2.5 fill-current" />
+                  <Star className="h-2.5 w-2.5 fill-current" />
+                  <Star className="h-2.5 w-2.5 fill-current" />
+                  <Star className="h-2.5 w-2.5 fill-current" />
+                  <Star className="h-2.5 w-2.5 fill-current" />
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-border/20 text-[10px] mt-1">
+                  <span className="font-mono font-black text-[#D98CB3]">${item.price.toFixed(2)}</span>
+                  <button 
+                    onClick={async () => {
+                      if (!user) {
+                        toast.error("Please login to shop products");
+                        return;
+                      }
+                      await addToCart(user.id, item.id);
+                      toast.success(`Added ${item.name} to your shopping cart!`);
+                    }}
+                    className="text-[8.5px] font-black uppercase text-primary hover:text-[#4E1B33] transition-colors cursor-pointer"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. 3-COLUMN FEATURE CARDS (Outfits, Accessories, Pet Hotel) */}
+      <section className="grid gap-6 md:grid-cols-3 text-left">
+        {[
+          {
+            title: "Matching Outfits",
+            desc: "Discover coordinated hoodies and pajama sets matching you and your pet.",
+            img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=400",
+            btnText: "Shop Outfits",
+            link: "/shop"
+          },
+          {
+            title: "Custom Accessories",
+            desc: "Engrave your pet's photo and name onto beautiful custom tags and necklaces.",
+            img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=400",
+            btnText: "Design Jewelry",
+            link: "/shop"
+          },
+          {
+            title: "Pet Hotel Boarding",
+            desc: "Leave your pets in our state-of-the-art boarding suite with active play tracking.",
+            img: "https://images.unsplash.com/photo-1541599540903-216a46ca1ad0?auto=format&fit=crop&q=80&w=400",
+            btnText: "Book Hotel",
+            link: "/book"
+          }
+        ].map((feat, idx) => (
+          <div key={idx} className="group relative rounded-[2.5rem] overflow-hidden aspect-[4/3] border border-border/30 hover-lift shadow-lg flex flex-col justify-end p-6">
+            <img 
+              src={feat.img} 
+              alt={feat.title} 
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+            <div className="relative z-10 space-y-2">
+              <h3 className="font-display text-xl font-black text-white">{feat.title}</h3>
+              <p className="text-[10px] text-[#EBC4D8] font-semibold leading-relaxed">{feat.desc}</p>
+              <div className="pt-2">
+                <Button size="sm" className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full font-black text-[9px] px-4 py-2" asChild>
+                  <Link to={feat.link}>{feat.btnText}</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* 6. WELCOME HEADER & LOYALTY GRID */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Welcome Header */}
         <div className="md:col-span-2 bg-card/45 backdrop-blur-md rounded-[2rem] border border-border/40 p-6 flex flex-col justify-between hover-lift text-left min-h-[140px]">
@@ -384,7 +560,7 @@ function HomePage() {
         </div>
       </div>
 
-      {/* 3. HAPPY PET GALLERY */}
+      {/* 8. HAPPY PET GALLERY (DIVERSE SPECIES INSTEAD OF DUPLICATIONS) */}
       <section className="space-y-4">
         <div className="text-left space-y-1">
           <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
@@ -393,17 +569,17 @@ function HomePage() {
           <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
             Happy Pet Gallery
           </h2>
-          <p className="text-xs text-muted-foreground font-semibold">Moments of pure joy and companionship captured from our family members</p>
+          <p className="text-xs text-muted-foreground font-semibold">Meet the happy species of our active dashboard community</p>
         </div>
 
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
           {[
-            { title: "Dog Playing", img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=600" },
-            { title: "Cat Sleeping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600" },
-            { title: "Milo Rabbit", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=600" },
-            { title: "Family Pet", img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=600" },
-            { title: "Sleepy Kitten", img: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&q=80&w=600" },
-            { title: "Dog in Park", img: "https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=600" }
+            { title: "Daisy the Dog", img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=600" },
+            { title: "Oliver the Cat", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=600" },
+            { title: "Milo the Rabbit", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=600" },
+            { title: "Sunny the Bird", img: "https://images.unsplash.com/photo-1522856283749-626210a309e1?auto=format&fit=crop&q=80&w=600" },
+            { title: "Finny the Fish", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&q=80&w=600" },
+            { title: "Pip the Hamster", img: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&q=80&w=600" }
           ].map((item, idx) => (
             <div key={idx} className="group relative rounded-[2rem] overflow-hidden aspect-[4/3] border border-border/30 shadow-md">
               <img 
@@ -422,7 +598,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 4. FEATURED PETS */}
+      {/* 9. FEATURED PETS (DIVERSIFIED CARDS) */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="text-left space-y-1">
@@ -432,7 +608,7 @@ function HomePage() {
             <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
               Featured Pets
             </h2>
-            <p className="text-xs text-muted-foreground font-semibold">Meet the newest registered additions to our loving community</p>
+            <p className="text-xs text-muted-foreground font-semibold">Adoring, playful registered animals ready to connect</p>
           </div>
           <span className="text-xs font-bold uppercase tracking-wider text-pink-500 hover:underline cursor-pointer">
             View All
@@ -441,10 +617,10 @@ function HomePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { name: "Daisy", breed: "Golden Puppy", age: "3 months", health: "100%", status: "Playful", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop&q=80" },
-            { name: "Oliver", breed: "British Shorthair", age: "1 year", health: "98%", status: "Napping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&auto=format&fit=crop&q=80" },
-            { name: "Milo", breed: "Angora Rabbit", age: "6 months", health: "95%", status: "Eating", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&auto=format&fit=crop&q=80" },
-            { name: "Bella", breed: "Siberian Husky", age: "2 years", health: "97%", status: "Active", img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=600&auto=format&fit=crop&q=80" }
+            { name: "Daisy", breed: "Golden Puppy 🐶", age: "3 months", health: "100%", status: "Playful", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop&q=80" },
+            { name: "Oliver", breed: "British Shorthair 🐱", age: "1 year", health: "98%", status: "Napping", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&auto=format&fit=crop&q=80" },
+            { name: "Milo", breed: "Angora Rabbit 🐰", age: "6 months", health: "95%", status: "Eating", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&auto=format&fit=crop&q=80" },
+            { name: "Bubbles", breed: "Budgie Parakeet 🐦", age: "8 months", health: "97%", status: "Singing", img: "https://images.unsplash.com/photo-1522856283749-626210a309e1?w=600&auto=format&fit=crop&q=80" }
           ].map((pet, idx) => (
             <div key={idx} className="group relative overflow-hidden rounded-[2.5rem] bg-card border border-border/40 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between hover-lift">
               
@@ -459,7 +635,7 @@ function HomePage() {
 
               <div className="p-4 space-y-4">
                 {/* 30% larger Image aspect-square with hover zoom */}
-                <div className="relative overflow-hidden rounded-[2rem] aspect-square bg-secondary/30 shadow-inner">
+                <div className="relative overflow-hidden rounded-[2rem] aspect-square bg-secondary/35 shadow-inner">
                   <img 
                     src={pet.img} 
                     alt={pet.name} 
@@ -487,140 +663,6 @@ function HomePage() {
                 </Button>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. SUMMER PROMO BANNER */}
-      <section className="relative h-[220px] rounded-[2.5rem] overflow-hidden shadow-xl border border-white/15 group text-left">
-        <img 
-          src="https://images.unsplash.com/photo-1513360309081-36f5e878fc9e?auto=format&fit=crop&q=80&w=1200" 
-          alt="Summer Collection" 
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/35 to-transparent" />
-        
-        <div className="absolute inset-y-0 left-6 sm:left-12 flex flex-col justify-center text-left space-y-2 max-w-md z-10">
-          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/20 border border-pink-500/30 px-3 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#FFF5F9]">
-            🌸 Fresh Arrivals
-          </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-white tracking-tight leading-none">
-            Summer Collection 2026 🌸
-          </h2>
-          <p className="text-[11px] text-[#EBC4D8] font-semibold leading-relaxed">
-            Elevate your best friend's style with our matching coordinates and limited-edition pastel floral pendants.
-          </p>
-          <div className="pt-2">
-            <Button size="sm" className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full font-black text-[10px] px-5 py-3.5 shadow-md" asChild>
-              <Link to="/shop">Explore Collection</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. ACCESSORIES SHOP CATALOG */}
-      <section className="space-y-6">
-        <div className="text-left space-y-1">
-          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
-            Premium Supplies 🛍️
-          </span>
-          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
-            Shop Premium Accessories
-          </h2>
-          <p className="text-xs text-muted-foreground font-semibold">Hand-crafted items designed for ultimate pet comfort and luxury</p>
-        </div>
-
-        <div className="grid gap-6 grid-cols-2 md:grid-cols-4">
-          {[
-            { name: "Luxury Collar", price: 16.99, img: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
-            { name: "Leather Leash", price: 14.99, img: "https://images.unsplash.com/photo-1608096299210-db7e38487075?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
-            { name: "Orthopedic Bed", price: 49.99, img: "https://images.unsplash.com/photo-1541599540903-216a46ca1ad0?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000001" },
-            { name: "Rubber Toy Bone", price: 9.99, img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-7075-400d-800d-000000000001" },
-            { name: "Ceramic Food Bowl", price: 12.99, img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
-            { name: "Comfort Carrier Bag", price: 39.99, img: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000001" },
-            { name: "Winter Cozy Jacket", price: 29.99, img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-aacc-400d-800d-000000000003" },
-            { name: "Home Grooming Kit", price: 24.99, img: "https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=300", id: "d06da0d1-9700-400d-800d-000000000001" }
-          ].map((item, idx) => (
-            <div key={idx} className="group relative rounded-[2.2rem] overflow-hidden border border-border/30 bg-card p-4 flex flex-col justify-between hover-lift shadow-sm text-left">
-              <div className="relative rounded-2xl overflow-hidden aspect-square bg-secondary/35 mb-4 shadow-inner">
-                <img 
-                  src={item.img} 
-                  alt={item.name} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="space-y-2">
-                <div>
-                  <h3 className="font-display text-sm font-bold text-foreground truncate">{item.name}</h3>
-                  <div className="flex items-center gap-0.5 text-amber-500 text-[10px] mt-0.5">
-                    <Star className="h-3 w-3 fill-current" />
-                    <Star className="h-3 w-3 fill-current" />
-                    <Star className="h-3 w-3 fill-current" />
-                    <Star className="h-3 w-3 fill-current" />
-                    <Star className="h-3 w-3 fill-current" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-2 border-t border-border/20 text-xs">
-                  <span className="font-mono font-black text-[#D98CB3]">${item.price.toFixed(2)}</span>
-                  <button 
-                    onClick={async () => {
-                      if (!user) {
-                        toast.error("Please login to shop products");
-                        return;
-                      }
-                      await addToCart(user.id, item.id);
-                      toast.success(`Added ${item.name} to your shopping cart!`);
-                    }}
-                    className="text-[9px] font-black uppercase text-primary hover:text-[#4E1B33] transition-colors cursor-pointer"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 7. PET FASHION COLLECTION */}
-      <section className="space-y-6">
-        <div className="text-left space-y-1">
-          <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
-            Style Catalog 🐕 🐈
-          </span>
-          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
-            Pet Fashion Collection
-          </h2>
-          <p className="text-xs text-muted-foreground font-semibold">Make heads turn with premium coordinates and winter clothing sets</p>
-        </div>
-
-        <div className="grid gap-6 grid-cols-2 lg:grid-cols-5 text-left">
-          {[
-            { title: "Winter Jacket", label: "Cozy warm padding", img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=300" },
-            { title: "Bandana Kit", label: "Soft cotton print", img: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&q=80&w=300" },
-            { title: "Pastel Hoodie", label: "Matching coordinates", img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=300" },
-            { title: "Winter Clothes", label: "Knitted wool wear", img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=300" },
-            { title: "Summer Clothes", label: "Breathable shirts", img: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=300" }
-          ].map((item, idx) => (
-            <Link 
-              key={idx} 
-              to="/shop" 
-              className="group relative rounded-[2rem] overflow-hidden hover-lift border border-border/30 aspect-[4/5] flex flex-col justify-end p-4 shadow-sm"
-            >
-              <img 
-                src={item.img} 
-                alt={item.title} 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-              <div className="relative z-10 space-y-1">
-                <h3 className="font-display text-sm font-black text-white leading-tight">{item.title}</h3>
-                <p className="text-[8px] text-[#EBC4D8] font-semibold leading-relaxed">{item.label}</p>
-                <div className="pt-1 text-[8px] font-black text-[#D98CB3] uppercase tracking-wider flex items-center gap-0.5">
-                  Shop Outfit <ChevronRight className="h-2.5 w-2.5" />
-                </div>
-              </div>
-            </Link>
           ))}
         </div>
       </section>
@@ -1181,7 +1223,122 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 11. COMMUNITY PETS INSTAGRAM STYLE FEED */}
+      {/* 11. HUGE FULL-WIDTH MIDDLE FAMILY BANNER (🐶❤️👨 VIBE) */}
+      <section className="relative h-[360px] rounded-[3rem] overflow-hidden shadow-2xl border border-white/15 group text-left">
+        <img 
+          src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=1200" 
+          alt="More Than A Pet, Family" 
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-103"
+        />
+        {/* Soft berry dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#4E1B33]/95 via-black/45 to-transparent" />
+        
+        <div className="absolute inset-y-0 left-8 sm:left-16 flex flex-col justify-center text-left space-y-4 max-w-lg z-10 text-white">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-pink-500/20 border border-pink-500/30 px-3.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#FFF5F9]">
+            ❤️ The PetPal Promise
+          </span>
+          <h2 className="font-display text-4xl sm:text-5xl font-black text-white tracking-tight leading-none">
+            More Than A Pet, Family.
+          </h2>
+          <p className="text-xs sm:text-sm text-[#EBC4D8] font-semibold leading-relaxed">
+            Celebrate the absolute center of your home. Get coordinates customized for the perfect family photoshoot, matching tag collars, and check-ups to keep them happy forever.
+          </p>
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-5 font-black text-[10px] shadow-lg" onClick={() => handleJewelryPetChange("mock-dog")}>
+              Design Custom Tag
+            </Button>
+            <Button variant="outline" className="border-white/30 bg-white/10 hover:bg-white/20 text-white rounded-full px-6 py-5 font-black text-[10px]" asChild>
+              <Link to="/shop">View Lookbook</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* 12. TRENDING THIS WEEK 🔥 */}
+      <section className="space-y-6">
+        <div className="text-left space-y-1">
+          <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/10 border border-orange-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-orange-600">
+            Hot Right Now 🔥
+          </span>
+          <h2 className="font-display text-3xl font-black text-foreground tracking-tight">
+            Trending This Week
+          </h2>
+          <p className="text-xs text-muted-foreground font-semibold">The absolute favorites chosen by our community members</p>
+        </div>
+
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 text-left">
+          {[
+            {
+              title: "Best Seller Collar 🐶",
+              desc: "Genuine leather comfort-collar modeled by Buddy.",
+              img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400",
+              badge: "Collar Tag",
+              id: "d06da0d1-aacc-400d-800d-000000000003"
+            },
+            {
+              title: "Top Matching Hoodie 🐶❤️👩",
+              desc: "Owner & pet pastel coordinates as modeled by Taqwa.",
+              img: "https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&q=80&w=400",
+              badge: "Matching Set",
+              id: "d06da0d1-aacc-400d-800d-000000000001"
+            },
+            {
+              title: "Most Loved Necklace 🐱💎",
+              desc: "Custom photo-engraved tag as modeled by Oliver.",
+              img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400",
+              badge: "Crystal Tags",
+              id: "d06da0d1-aacc-400d-800d-000000000003"
+            },
+            {
+              title: "Pet Hotel Package 🏨🐾",
+              desc: "Full luxury suite stay with active camera updates.",
+              img: "https://images.unsplash.com/photo-1541599540903-216a46ca1ad0?auto=format&fit=crop&q=80&w=400",
+              badge: "Hotel Boarding",
+              link: "/book?type=hotel"
+            }
+          ].map((item, idx) => (
+            <div key={idx} className="group relative overflow-hidden rounded-[2.5rem] bg-card border border-border/40 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between hover-lift">
+              <div className="p-4 flex items-center justify-between border-b border-border/20 bg-[#FFF5F9]/30">
+                <h3 className="font-display font-black text-sm text-[#4E1B33]">{item.title}</h3>
+                <span className="text-[8px] font-black uppercase bg-[#D98CB3] text-white px-2 py-0.5 rounded-full">{item.badge}</span>
+              </div>
+              <div className="p-4 space-y-4">
+                <div className="relative overflow-hidden rounded-[1.8rem] aspect-square bg-secondary/35 shadow-inner">
+                  <img 
+                    src={item.img} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-105"
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-semibold">{item.desc}</p>
+              </div>
+              <div className="p-4 pt-0">
+                {item.link ? (
+                  <Button className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-xl py-4.5 font-black text-xs" asChild>
+                    <Link to={item.link}>Book Suite Now</Link>
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={async () => {
+                      if (!user) {
+                        toast.error("Please login to shop trending items");
+                        return;
+                      }
+                      await addToCart(user.id, item.id!);
+                      toast.success(`Successfully added ${item.title} to your cart!`);
+                    }}
+                    className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-xl py-4.5 font-black text-xs"
+                  >
+                    Quick Add to Cart
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 13. COMMUNITY PETS INSTAGRAM STYLE FEED */}
       <section className="space-y-6">
         <div className="text-left space-y-1">
           <span className="inline-flex items-center gap-1 rounded-full bg-pink-500/10 border border-pink-500/20 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-pink-600">
