@@ -98,6 +98,23 @@ function HomePage() {
   // AI recommendations state
   const [selectedRecs, setSelectedRecs] = useState<string[]>(["hoodie", "jewelry", "spa"]);
 
+  // Custom Jewelry State
+  const [selectedJewelryPetId, setSelectedJewelryPetId] = useState("mock-dog");
+  const [jewelryEngravingText, setJewelryEngravingText] = useState("Buddy");
+  const [jewelryType, setJewelryType] = useState<"silver" | "gold" | "ceramic">("silver");
+
+  const handleJewelryPetChange = (petId: string) => {
+    setSelectedJewelryPetId(petId);
+    if (petId === "mock-dog") {
+      setJewelryEngravingText("Buddy");
+      return;
+    }
+    const petObj = pets.find(x => x.id === petId);
+    if (petObj) {
+      setJewelryEngravingText(petObj.name);
+    }
+  };
+
   // Shop Categories Tabs State
   const [activeShopTab, setActiveShopTab] = useState<"trending" | "best" | "new">("trending");
 
@@ -191,6 +208,13 @@ function HomePage() {
         .eq("owner_id", user.id);
       const petsData = (p ?? []) as Pet[];
       setPets(petsData);
+      if (petsData.length > 0) {
+        setSelectedJewelryPetId(petsData[0].id);
+        setJewelryEngravingText(petsData[0].name);
+      } else {
+        setSelectedJewelryPetId("mock-dog");
+        setJewelryEngravingText("Buddy");
+      }
 
       // 2. Fetch recommendations
       const speciesSet = Array.from(new Set(petsData.map((x) => x.species.toLowerCase())));
@@ -534,23 +558,153 @@ function HomePage() {
           </div>
         </div>
         
-        {/* Right side: 4 small card previews */}
-        <div className="w-full md:w-[48%] shrink-0 grid grid-cols-2 gap-4">
-          {[
-            { name: "Silver Dog Engraving", img: "https://images.unsplash.com/photo-1611085583191-a3b1a30a5a40?auto=format&fit=crop&q=80&w=200", desc: "Fine silver pendant" },
-            { name: "Cat Charm Bracelet", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=200", desc: "Custom face engraving" },
-            { name: "Monogram Pet Medal", img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=200", desc: "Deep engraved brass" },
-            { name: "Owner & Pet Gift Set", img: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?auto=format&fit=crop&q=80&w=200", desc: "Matching pendant kit" }
-          ].map((item, idx) => (
-            <div key={idx} className="group relative rounded-2xl overflow-hidden border border-border/30 aspect-square flex flex-col justify-end p-3 shadow-sm bg-white">
-              <img src={item.img} alt={item.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#4E1B33]/95 via-black/20 to-transparent" />
-              <div className="relative z-10 text-left">
-                <p className="text-[9px] font-black text-white leading-tight truncate">{item.name}</p>
-                <p className="text-[8px] text-[#EBC4D8] leading-none mt-0.5">{item.desc}</p>
+        {/* Right side: Personalized Pet Jewelry Customizer */}
+        <div className="w-full md:w-[52%] shrink-0 bg-card/85 backdrop-blur-md border border-border/60 rounded-[2rem] p-5 sm:p-6 shadow-2xl flex flex-col lg:flex-row gap-6 relative overflow-hidden text-left">
+          
+          {/* Mockup Preview Area */}
+          <div className="flex-1 bg-gradient-to-b from-[#4E1B33]/5 to-[#4E1B33]/15 border border-border/40 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[240px] relative overflow-hidden shadow-inner">
+            
+            {/* The necklace chain hanging down */}
+            <div className="absolute top-0 w-0.5 h-20 bg-gradient-to-b from-[#B593A1] to-slate-400 z-10" />
+            
+            {/* Hanging Ring link */}
+            <div className="absolute top-20 w-4 h-4 rounded-full border-2 border-slate-300 bg-transparent z-10" />
+
+            {/* The Pendant */}
+            <div className="relative z-20 mt-14 flex items-center justify-center transition-all duration-500 hover:scale-105">
+              {jewelryType === "silver" && (
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-slate-100 via-slate-200 to-slate-400 border-2 border-slate-300 shadow-xl flex flex-col items-center justify-center p-3 text-center">
+                  {/* Animal icon or outline */}
+                  <PawPrint className="h-8 w-8 text-slate-500 opacity-60 mb-1" />
+                  <span className="text-[10px] font-bold font-mono tracking-wider text-slate-700 uppercase max-w-[80px] truncate">
+                    {jewelryEngravingText || "Buddy"}
+                  </span>
+                </div>
+              )}
+              {jewelryType === "gold" && (
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-100 via-yellow-400 to-amber-600 border-2 border-yellow-300 shadow-xl flex flex-col items-center justify-center p-3 text-center">
+                  <PawPrint className="h-8 w-8 text-yellow-800 opacity-60 mb-1" />
+                  <span className="text-[10px] font-bold font-mono tracking-wider text-yellow-900 uppercase max-w-[80px] truncate">
+                    {jewelryEngravingText || "Buddy"}
+                  </span>
+                </div>
+              )}
+              {jewelryType === "ceramic" && (
+                <div className="w-24 h-24 rounded-full bg-white border-4 border-[#D98CB3] shadow-2xl flex flex-col items-center justify-center p-2 text-center ring-4 ring-pink-100 relative">
+                  {/* Colorful hand-painted circle detail */}
+                  <div className="absolute inset-1 rounded-full border border-pink-200 border-dashed pointer-events-none" />
+                  <span className="text-xl">🐱</span>
+                  <span className="text-[9px] font-black tracking-tight text-[#4E1B33] mt-1 max-w-[75px] truncate font-display">
+                    {jewelryEngravingText || "Buddy"}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Pet Photo Inset Badge & connecting pointer line */}
+            <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-white/95 dark:bg-[#1F1216]/95 border border-border/60 px-2 py-1 rounded-full shadow-md z-30">
+              <div className="h-7 w-7 rounded-full overflow-hidden border border-[#D98CB3] shadow-inner bg-[#4E1B33]/5 flex items-center justify-center">
+                <img 
+                  src={
+                    selectedJewelryPetId && selectedJewelryPetId !== "mock-dog"
+                      ? (PET_IMAGE_MAP[pets.find(x => x.id === selectedJewelryPetId)?.species.toLowerCase() || ""] || DEFAULT_PET_PHOTO)
+                      : "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=100"
+                  } 
+                  alt="Pet preview" 
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span className="text-[7.5px] font-black uppercase tracking-wider text-[#4E1B33] dark:text-[#FEE2E2]">
+                Your Pet's Portrait
+              </span>
+            </div>
+
+            {/* SVG Connector pointer line mimicking the design */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 opacity-70">
+              <path d="M 90 200 L 115 150" stroke="#B593A1" strokeWidth="1.5" strokeDasharray="3" fill="none" />
+            </svg>
+          </div>
+
+          {/* Form controls */}
+          <div className="w-full lg:w-[48%] flex flex-col justify-between gap-4">
+            <div className="space-y-3">
+              <div>
+                <h4 className="text-xs font-black uppercase text-[#4E1B33] dark:text-pink-300">Live Jewelry Designer</h4>
+                <p className="text-[9px] text-muted-foreground font-semibold mt-0.5 leading-tight">Create an engraved heirloom with your pet's name & details.</p>
+              </div>
+
+              {/* Pet selection dropdown */}
+              <div className="space-y-1">
+                <label className="text-[8px] font-black uppercase text-muted-foreground block">Select Pet Companion</label>
+                <select 
+                  value={selectedJewelryPetId}
+                  onChange={(e) => handleJewelryPetChange(e.target.value)}
+                  className="w-full bg-[#4E1B33]/5 border border-border/50 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground font-semibold"
+                >
+                  {pets.map(p => (
+                    <option key={p.id} value={p.id}>🐾 {p.name}</option>
+                  ))}
+                  <option value="mock-dog">🐾 Custom Pet Name...</option>
+                </select>
+              </div>
+
+              {/* Engraving name text input */}
+              <div className="space-y-1">
+                <label className="text-[8px] font-black uppercase text-muted-foreground block">Engraved Text / Name</label>
+                <input 
+                  type="text" 
+                  maxLength={12}
+                  value={jewelryEngravingText}
+                  onChange={(e) => setJewelryEngravingText(e.target.value)}
+                  placeholder="e.g. Buddy"
+                  className="w-full bg-[#4E1B33]/5 border border-border/50 rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:border-primary text-foreground font-semibold"
+                />
+              </div>
+
+              {/* Style selector */}
+              <div className="space-y-1">
+                <label className="text-[8px] font-black uppercase text-muted-foreground block">Style / Material</label>
+                <div className="grid grid-cols-3 gap-1.5 text-center">
+                  {[
+                    { id: "silver", label: "Silver Tag", price: "$24.99" },
+                    { id: "gold", label: "Gold Charm", price: "$29.99" },
+                    { id: "ceramic", label: "3D Ceramic", price: "$34.99" }
+                  ].map(style => (
+                    <button
+                      key={style.id}
+                      type="button"
+                      onClick={() => setJewelryType(style.id as any)}
+                      className={cn(
+                        "py-1.5 px-1 rounded-xl text-[8.5px] font-black border transition-all cursor-pointer",
+                        jewelryType === style.id
+                          ? "border-[#4E1B33] bg-[#4E1B33] text-white shadow-sm"
+                          : "border-border/60 hover:bg-secondary/40 text-muted-foreground"
+                      )}
+                    >
+                      <span className="block leading-none">{style.label}</span>
+                      <span className="block mt-0.5 text-[7px] opacity-75">{style.price}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          ))}
+
+            <Button 
+              onClick={async () => {
+                if (!user) {
+                  toast.error("Please login to purchase custom jewelry");
+                  return;
+                }
+                // Add the custom tag collar product to cart
+                await addToCart(user.id, "d06da0d1-aacc-400d-800d-000000000003"); // custom collar product id
+                toast.success(`Hooray! Added custom ${jewelryType} name tag jewelry engraved for "${jewelryEngravingText}" to your shopping cart!`);
+              }}
+              className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-4 text-xs font-extrabold shadow-md flex items-center justify-center gap-1.5"
+            >
+              <Sparkles className="h-3.5 w-3.5" /> Order Engraved Tag
+            </Button>
+          </div>
+
         </div>
       </section>
 
