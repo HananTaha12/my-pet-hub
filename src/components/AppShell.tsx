@@ -500,46 +500,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      {/* Floating Action Buttons */}
-      <div className="fixed bottom-24 right-6 md:bottom-6 z-40 flex flex-col gap-3">
-        {/* Emergency Button */}
-        <button
-          onClick={() => setEmergencyOpen(true)}
-          title="Emergency Vet Support"
-          className="w-12 h-12 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all animate-pulse relative group cursor-pointer"
-        >
-          <ShieldAlert className="h-5 w-5" />
-          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
-            🚨 Emergency Support
-          </span>
-        </button>
 
-        {/* Chat AI Button */}
-        <Link
-          to="/chat"
-          title="Consult AI Vet"
-          className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all relative group cursor-pointer"
-        >
-          <Sparkles className="h-5 w-5" />
-          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
-            🤖 Chat AI Vet
-          </span>
-        </Link>
-
-        {/* WhatsApp Button */}
-        <a
-          href="https://wa.me/1234567890"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="WhatsApp Support"
-          className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all animate-pulse-subtle relative group cursor-pointer"
-        >
-          <Phone className="h-5 w-5" />
-          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
-            💬 WhatsApp Live
-          </span>
-        </a>
-      </div>
     </div>
   );
 }
