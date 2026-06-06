@@ -41,6 +41,9 @@ export async function addToCart(userId: string, productId: string, qty = 1) {
   } else {
     await supabase.from("cart_items").insert({ user_id: userId, product_id: productId, quantity: qty });
   }
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("cart-updated", { detail: { openDrawer: true } }));
+  }
 }
 
 export async function setCartQuantity(userId: string, productId: string, quantity: number) {
@@ -48,5 +51,8 @@ export async function setCartQuantity(userId: string, productId: string, quantit
     await supabase.from("cart_items").delete().eq("user_id", userId).eq("product_id", productId);
   } else {
     await supabase.from("cart_items").update({ quantity }).eq("user_id", userId).eq("product_id", productId);
+  }
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("cart-updated", { detail: { openDrawer: false } }));
   }
 }

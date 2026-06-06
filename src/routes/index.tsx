@@ -22,7 +22,12 @@ import {
   Brain, 
   PhoneCall,
   MessageSquare,
-  BookOpen
+  BookOpen,
+  X,
+  Minus,
+  Plus,
+  Trash2,
+  Eye
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -30,6 +35,22 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { EmergencyModal } from "@/components/EmergencyModal";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,52 +66,65 @@ function Landing() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Carousel & Contact states
-  const [slide, setSlide] = useState(0);
+  // Emergency & Cart Drawer States
+  const [emergencyOpen, setEmergencyOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState<{ id: string; name: string; price: number; quantity: number; img: string }[]>([]);
+
+  // Contact States
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactMsg, setContactMsg] = useState("");
   const [sending, setSending] = useState(false);
 
-  const SLIDES = [
-    {
-      badge: "Healthcare 🩺",
-      title: "Track Your Pet's Health",
-      subtitle: "All-in-one digital medical passport, automatic vaccine cycle notifications, and active weight tracking.",
-      img: "https://images.unsplash.com/photo-1581888227599-779811939961?w=1200&auto=format&fit=crop&q=80"
-    },
-    {
-      badge: "Diagnostics 🤖",
-      title: "AI Veterinary Assistant",
-      subtitle: "Consult our advanced guided symptom checker wizard regarding active physiological wellness levels instantly.",
-      img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1200&auto=format&fit=crop&q=80"
-    },
-    {
-      badge: "Emergency 🚨",
-      title: "Emergency Care 24/7",
-      subtitle: "Locate near clinics, verify open hours, check distances, and review acute trauma protocols.",
-      img: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200&auto=format&fit=crop&q=80"
-    },
-    {
-      badge: "Community ❤️",
-      title: "Recent Pet Adoptions",
-      subtitle: "Browse local shelter profiles and adopt a new companion directly through verified channels.",
-      img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&auto=format&fit=crop&q=80"
-    },
-    {
-      badge: "Premium ✨",
-      title: "Grooming & Supplies Shop",
-      subtitle: "Buy organic salmon recipe foods, interactive chewing toys, and cozy orthopedic beds.",
-      img: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=1200&auto=format&fit=crop&q=80"
-    }
-  ];
+  // Countdown timer states
+  const [days, setDays] = useState(3);
+  const [hours, setHours] = useState(12);
+  const [minutes, setMinutes] = useState(44);
+  const [seconds, setSeconds] = useState(59);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setSlide(prev => (prev + 1) % 5);
-    }, 5500);
+      setSeconds((prev) => {
+        if (prev > 0) return prev - 1;
+        setMinutes((m) => {
+          if (m > 0) return m - 1;
+          setHours((h) => {
+            if (h > 0) return h - 1;
+            setDays((d) => {
+              if (d > 0) return d - 1;
+              clearInterval(timer);
+              return 0;
+            });
+            return 23;
+          });
+          return 59;
+        });
+        return 59;
+      });
+    }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleAddToCart = (id: string, name: string, price: number, img: string) => {
+    setCartItems((prev) => {
+      const existing = prev.find((x) => x.id === id);
+      if (existing) {
+        return prev.map((x) => x.id === id ? { ...x, quantity: x.quantity + 1 } : x);
+      }
+      return [...prev, { id, name, price, quantity: 1, img }];
+    });
+    setCartOpen(true);
+    toast.success(`${name} added to cart! 🐾`);
+  };
+
+  const handleUpdateQty = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      setCartItems((prev) => prev.filter((x) => x.id !== id));
+    } else {
+      setCartItems((prev) => prev.map((x) => x.id === id ? { ...x, quantity } : x));
+    }
+  };
 
   useEffect(() => {
     if (!loading && user) navigate({ to: "/home" });
@@ -109,8 +143,20 @@ function Landing() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden selection:bg-accent selection:text-accent-foreground font-sans">
+    <div className="relative min-h-screen overflow-x-hidden selection:bg-[#4E1B33] selection:text-white font-sans bg-background">
       
+      {/* Auto-Scrolling Marquee Promo Announcement Bar */}
+      <div className="w-full bg-[#4E1B33] text-white py-2.5 overflow-hidden border-b border-white/10 relative z-50 shadow-md">
+        <div className="animate-marquee whitespace-nowrap flex gap-16 text-[10px] sm:text-xs font-black uppercase tracking-wider">
+          <span>🔥 SUMMER SALE - UP TO 50% OFF! USE CODE: <strong className="underline">SUMMER50</strong></span>
+          <span>🚚 FREE SHIPPING ON ALL ORDERS OVER $75!</span>
+          <span>🎁 GET 200 BONUS LOYALTY POINTS ON YOUR NEXT BOOKING!</span>
+          <span>🔥 SUMMER SALE - UP TO 50% OFF! USE CODE: <strong className="underline">SUMMER50</strong></span>
+          <span>🚚 FREE SHIPPING ON ALL ORDERS OVER $75!</span>
+          <span>🎁 GET 200 BONUS LOYALTY POINTS ON YOUR NEXT BOOKING!</span>
+        </div>
+      </div>
+
       {/* Top Navbar */}
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
@@ -130,6 +176,18 @@ function Landing() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              title="Open Cart"
+            >
+              <ShoppingBag className="h-5 w-5" />
+              {cartItems.reduce((acc, it) => acc + it.quantity, 0) > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-[#4E1B33] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center border border-background">
+                  {cartItems.reduce((acc, it) => acc + it.quantity, 0)}
+                </span>
+              )}
+            </button>
             {user ? (
               <Link to="/home" className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/15 hover:scale-105 active:scale-95 transition-all">
                 Go to Dashboard
@@ -148,54 +206,132 @@ function Landing() {
         </div>
       </header>
 
-      {/* 1. HERO SLIDER SECTION (Under Navbar directly) */}
-      <section className="mx-auto max-w-7xl px-6 pt-6">
-        <div className="relative h-64 md:h-[400px] w-full overflow-hidden rounded-[2.5rem] bg-muted shadow-2xl group/carousel">
-          {SLIDES.map((s, idx) => (
-            <div 
-              key={idx}
-              className={cn(
-                "absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out flex flex-col justify-end p-6 md:p-12 text-white text-left",
-                slide === idx ? "opacity-100 scale-100 z-10 animate-in fade-in zoom-in-95 duration-500" : "opacity-0 scale-95 pointer-events-none z-0"
-              )}
-            >
+      {/* 1. IMMERSIVE HERO SECTION (Carousel) */}
+      <section className="relative w-full h-[580px] md:h-[650px] overflow-hidden border-b border-border/20">
+        <Carousel opts={{ loop: true }} className="w-full h-full">
+          <CarouselContent className="h-full">
+            {/* Slide 1 */}
+            <CarouselItem className="relative w-full h-[580px] md:h-[650px] flex items-center justify-center text-center px-6">
               <img 
-                src={s.img} 
-                alt={s.title} 
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-[5500ms] ease-linear scale-105 group-hover/carousel:scale-100" 
+                src="/hero_cat.png" 
+                alt="Luxury Cat" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[15000ms] hover:scale-110"
+                style={{ objectPosition: "center 40%" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
-              <div className="relative z-10 space-y-2 md:space-y-4 max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <span className="inline-flex rounded-full bg-primary/25 backdrop-blur-md px-3 py-1 text-[9px] font-black uppercase tracking-wider text-primary border border-primary/30 w-max">
-                  {s.badge}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#4E1B33]/80 via-[#4E1B33]/40 to-background/95 backdrop-blur-[2px]" />
+              <div className="relative z-10 max-w-4xl space-y-6 animate-in fade-in zoom-in-95 duration-1000">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#D4AF37] text-black text-[10px] font-black uppercase tracking-widest px-4 py-1.5 shadow-lg border border-[#D4AF37]/20">
+                  ✨ The Royal Treatment
                 </span>
-                <h2 className="font-display text-3xl md:text-5xl font-black tracking-tight leading-tight">
-                  {s.title}
-                </h2>
-                <p className="text-white/80 text-xs md:text-sm font-semibold leading-relaxed max-w-lg">
-                  {s.subtitle}
+                <h1 className="font-display text-4xl sm:text-7xl font-black text-white tracking-tight leading-none">
+                  Luxury Care <span className="block text-[#D4AF37]">For Felines</span>
+                </h1>
+                <p className="text-xs sm:text-base text-[#F5F5DC]/90 max-w-xl mx-auto font-semibold leading-relaxed">
+                  Pamper your cat with our premium selection of velvet beds, diamond-studded collars, and organic treats.
                 </p>
-                <Button asChild size="lg" className="rounded-full bg-primary text-white font-bold hover:scale-105 transition-transform w-max px-6 py-6 text-xs uppercase tracking-wider shadow-lg shadow-primary/20">
-                  <Link to="/signup">Start Free Journey</Link>
-                </Button>
+                <div className="flex flex-wrap justify-center gap-4 pt-2">
+                  <Link to="/signup" className="rounded-full bg-[#D4AF37] text-black hover:bg-[#F5F5DC] px-8 py-4 text-xs font-black uppercase tracking-wider shadow-2xl hover:scale-105 transition-all">
+                    Shop Collection 🛍️
+                  </Link>
+                </div>
+              </div>
+            </CarouselItem>
+
+
+
+            {/* Slide 3 */}
+            <CarouselItem className="relative w-full h-[580px] md:h-[650px] flex items-center justify-center text-center px-6">
+              <img 
+                src="/matching_trio_outfit.png" 
+                alt="Matching Outfits" 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[15000ms] hover:scale-110"
+                style={{ objectPosition: "center 82%" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#4E1B33]/85 via-[#4E1B33]/40 to-background/95 backdrop-blur-[2px]" />
+              <div className="relative z-10 max-w-4xl space-y-6 animate-in fade-in zoom-in-95 duration-1000">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white text-[#4E1B33] text-[10px] font-black uppercase tracking-widest px-4 py-1.5 shadow-lg border border-white/20">
+                  💖 Exclusive Coordinations
+                </span>
+                <h1 className="font-display text-4xl sm:text-7xl font-black text-white tracking-tight leading-none">
+                  Matching <span className="block text-[#F5F5DC]">Elegance</span>
+                </h1>
+                <p className="text-xs sm:text-base text-[#FFF5F9]/90 max-w-xl mx-auto font-semibold leading-relaxed">
+                  Step out in style with perfectly coordinated premium outfits for you and your best friend.
+                </p>
+                <div className="flex flex-wrap justify-center gap-4 pt-2">
+                  <Link to="/signup" className="rounded-full bg-[#4E1B33] text-white border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black px-8 py-4 text-xs font-black uppercase tracking-wider shadow-2xl hover:scale-105 transition-all">
+                    Explore Looks ✨
+                  </Link>
+                </div>
+              </div>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious className="left-4 bg-black/20 text-white border-white/20 hover:bg-black/50 hidden md:flex" />
+          <CarouselNext className="right-4 bg-black/20 text-white border-white/20 hover:bg-black/50 hidden md:flex" />
+        </Carousel>
+      </section>
+
+      {/* 2. ELEGANT DISCOUNT & COUNTDOWN TIMER BLOCK */}
+      <section className="relative z-20 -mt-16 max-w-5xl mx-auto px-6">
+        <div className="bg-card/95 backdrop-blur-xl rounded-[2.5rem] border border-border/50 shadow-2xl overflow-hidden flex flex-col md:flex-row items-stretch">
+          <div className="w-full md:w-5/12 h-56 md:h-auto relative overflow-hidden bg-primary/5">
+             <img src="/scottish_fold.png" alt="Smiling Scottish Fold" className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105" />
+             <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-transparent via-transparent to-card/95" />
+          </div>
+          <div className="w-full md:w-7/12 flex flex-col md:flex-row items-center justify-between gap-6 p-8 text-center md:text-left relative z-10">
+            <div className="space-y-2.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent text-accent-foreground text-[9px] font-black uppercase tracking-widest px-3 py-1 shadow-sm border border-accent/20">
+                🔥 Special Offer
+              </span>
+              <h3 className="font-display text-4xl font-black text-[#4E1B33] dark:text-white leading-none">
+                50% OFF <span className="block text-[#D4AF37]">Everything</span>
+              </h3>
+              <p className="text-xs text-muted-foreground font-medium max-w-xs mx-auto md:mx-0">
+                Give your companion the luxury they deserve before the timer runs out!
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-3.5 text-[#D4AF37] bg-secondary/30 p-4 rounded-3xl border border-border/50 shadow-inner">
+              <div className="flex flex-col items-center">
+                <span className="font-display text-3xl font-light">{days < 10 ? `0${days}` : days}</span>
+                <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Days</span>
+              </div>
+              <span className="text-xl font-light mb-4 opacity-50">:</span>
+              <div className="flex flex-col items-center">
+                <span className="font-display text-3xl font-light">{hours < 10 ? `0${hours}` : hours}</span>
+                <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Hours</span>
+              </div>
+              <span className="text-xl font-light mb-4 opacity-50">:</span>
+              <div className="flex flex-col items-center">
+                <span className="font-display text-3xl font-light">{minutes < 10 ? `0${minutes}` : minutes}</span>
+                <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Mins</span>
+              </div>
+              <span className="text-xl font-light mb-4 opacity-50">:</span>
+              <div className="flex flex-col items-center">
+                <span className="font-display text-3xl font-light text-primary">{seconds < 10 ? `0${seconds}` : seconds}</span>
+                <span className="text-[8px] font-bold text-primary uppercase tracking-widest mt-1">Secs</span>
               </div>
             </div>
-          ))}
-          
-          {/* Slider Dots */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            {SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setSlide(idx)}
-                className={cn(
-                  "h-2.5 rounded-full transition-all duration-300",
-                  slide === idx ? "w-8 bg-primary" : "w-2.5 bg-white/45 hover:bg-white/70"
-                )}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
-            ))}
           </div>
+        </div>
+      </section>
+
+      {/* Trusted By Stats */}
+      <section className="mx-auto max-w-7xl px-6 py-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {[
+            { label: "Happy Pets", value: "10,000+", icon: "🐶", desc: "Registered companions" },
+            { label: "Vet Rating", value: "4.9 ★", icon: "⭐", desc: "Top-tier healthcare" },
+            { label: "Completed Orders", value: "5,000+", icon: "🛍️", desc: "Delivered fashion" },
+            { label: "Partner Clinics", value: "250+", icon: "🏥", desc: "Trauma emergency network" }
+          ].map((stat, idx) => (
+            <div key={idx} className="bg-card/40 border border-border/40 rounded-[2rem] p-5 shadow-sm hover-lift text-center backdrop-blur-sm">
+              <div className="text-3xl mb-2">{stat.icon}</div>
+              <h3 className="text-2xl font-black text-[#4E1B33] dark:text-white leading-none">{stat.value}</h3>
+              <p className="text-[10px] font-bold text-primary mt-1 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-[9px] text-muted-foreground mt-0.5 font-semibold">{stat.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -231,6 +367,128 @@ function Landing() {
                 {cat.emoji} {cat.label}
               </span>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Best Sellers Section */}
+      <section className="mx-auto max-w-7xl px-6 py-12 text-center space-y-6">
+        <div className="space-y-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary">⚡ Hot Deals</span>
+          <h2 className="font-display text-3xl font-extrabold text-foreground flex items-center justify-center gap-2">
+            🔥 Best Sellers
+          </h2>
+          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto">
+            High-converting luxury coordinates and hand-engraved jewelry tags.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto pt-4 text-left">
+          {[
+            {
+              id: "best-1",
+              name: "Pearl Neck Charm on Cat",
+              desc: "Premium pearls worn by Oliver",
+              price: 39.99,
+              oldPrice: 79.99,
+              discount: "50% OFF",
+              img: "/cat_luxury_necklace.png"
+            },
+            {
+              id: "best-2",
+              name: "Matching Owner & Dog Cozy Hoodies",
+              desc: "100% cotton coordinate set",
+              price: 59.99,
+              oldPrice: 119.99,
+              discount: "50% OFF",
+              img: "/matching_hoodies.png"
+            },
+            {
+              id: "best-3",
+              name: "Coordinated Cat & Owner Bandanas",
+              desc: "Soft linen neckwear matching set",
+              price: 24.99,
+              oldPrice: 49.99,
+              discount: "50% OFF",
+              img: "/matching_bandanas.png"
+            },
+            {
+              id: "best-4",
+              name: "Luxury Soft Velvet Bed",
+              desc: "Orthopedic memory foam mattress",
+              price: 49.99,
+              oldPrice: 99.99,
+              discount: "50% OFF",
+              img: "/luxury_pet_bed.png"
+            }
+          ].map((prod) => (
+            <div key={prod.id} className="group overflow-hidden rounded-[2.2rem] bg-card border border-border/40 hover:border-[#D4AF37]/50 hover:shadow-2xl transition-all duration-700 flex flex-col justify-between hover:-translate-y-2">
+              <div className="p-3.5 space-y-4">
+                <div className="relative overflow-hidden rounded-[1.6rem] bg-neutral-100 dark:bg-neutral-900 aspect-square flex items-center justify-center">
+                  <img 
+                    src={prod.img} 
+                    alt={prod.name} 
+                    className="w-[85%] h-[85%] object-contain transition-transform duration-700 group-hover:scale-110 drop-shadow-xl" 
+                  />
+                  <div className="absolute top-3 left-3 flex flex-col gap-2">
+                    <span className="text-[9px] uppercase font-black tracking-widest bg-accent text-accent-foreground px-2.5 py-1 rounded-full shadow-md">
+                      {prod.discount}
+                    </span>
+                  </div>
+                  {/* Quick View Button */}
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md text-black p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#D4AF37] hover:text-white cursor-pointer z-10">
+                        <Eye className="h-4 w-4" />
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle className="font-display text-2xl">{prod.name}</DialogTitle>
+                        <DialogDescription>
+                          {prod.desc}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex flex-col items-center gap-4 py-4">
+                        <img src={prod.img} alt={prod.name} className="w-48 h-48 object-contain drop-shadow-2xl" />
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl font-black text-primary">${prod.price.toFixed(2)}</span>
+                          <span className="text-lg font-semibold text-muted-foreground line-through">${prod.oldPrice.toFixed(2)}</span>
+                        </div>
+                        <Button 
+                          onClick={() => handleAddToCart(prod.id, prod.name, prod.price, prod.img)}
+                          className="w-full bg-[#4E1B33] text-white hover:bg-[#D4AF37] hover:text-black font-bold py-6 text-lg rounded-xl transition-colors cursor-pointer"
+                        >
+                          <ShoppingBag className="mr-2 h-5 w-5" /> Add To Cart
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div className="space-y-1.5 px-1 text-center">
+                  <h3 className="font-display font-bold text-lg text-foreground leading-tight group-hover:text-[#D4AF37] transition-colors truncate">
+                    {prod.name}
+                  </h3>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{prod.desc}</p>
+                  <div className="flex items-baseline justify-center gap-2 pt-1">
+                    <span className="text-xl font-black text-primary">${prod.price.toFixed(2)}</span>
+                    <span className="text-xs font-semibold text-muted-foreground line-through">${prod.oldPrice.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-3.5 pt-0 space-y-2">
+                <button 
+                  onClick={() => handleAddToCart(prod.id, prod.name, prod.price, prod.img)}
+                  className="w-full rounded-2xl py-4 font-black uppercase tracking-wider text-[10px] bg-[#4E1B33] text-white hover:bg-[#D4AF37] hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <ShoppingBag className="h-4 w-4" /> Quick Add
+                </button>
+                <div className="flex items-center justify-center gap-3 pt-1 text-[8px] font-bold text-muted-foreground uppercase">
+                  <span className="flex items-center gap-0.5"><Shield className="h-3 w-3 text-[#D4AF37]"/> Secure</span>
+                  <span className="flex items-center gap-0.5"><Check className="h-3 w-3 text-[#D4AF37]"/> Free Ship</span>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </section>
@@ -297,7 +555,7 @@ function Landing() {
         <div className="grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
           {[
             { name: "Bella", breed: "Husky Puppy", age: "2 months", img: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?w=500&auto=format&fit=crop&q=80" },
-            { name: "Oliver", breed: "British Shorthair", age: "1 year", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=80" },
+            { name: "Oliver", breed: "British Shorthair", age: "1 year", img: "/oliver.jpg" },
             { name: "Milo", breed: "Angora Rabbit", age: "6 months", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=500&auto=format&fit=crop&q=80" }
           ].map((pet, idx) => (
             <div key={idx} className="group overflow-hidden rounded-[2.2rem] bg-card border border-border hover:shadow-xl transition-all duration-500 flex flex-col justify-between hover-lift">
@@ -325,48 +583,43 @@ function Landing() {
         </div>
       </section>
 
-      {/* 4. RECENT COMMUNITY POSTS (Instagram Style) */}
+      {/* 4. RECENT COMMUNITY POSTS (#PetPalCommunity Feed) */}
       <section className="mx-auto max-w-7xl px-6 py-16 space-y-8 text-center">
         <div className="space-y-1">
           <span className="text-[10px] font-black uppercase tracking-widest text-primary">Instagram for Pets</span>
-          <h2 className="font-display text-3xl font-extrabold text-foreground">Recent Community Feed</h2>
-          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto">See how members are caring for their animal companions on our social boards.</p>
+          <h2 className="font-display text-3xl font-extrabold text-foreground">#PetPalCommunity</h2>
+          <p className="text-xs text-muted-foreground/80 max-w-md mx-auto">See how members are styling and caring for their animal companions on our social boards.</p>
         </div>
 
-        <div className="grid gap-6 grid-cols-2 md:grid-cols-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
           {[
-            { img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&auto=format&fit=crop&q=80", likes: 142, comments: 24, tag: "🐶 Playtime" },
-            { img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=80", likes: 98, comments: 16, tag: "🐱 Napping" },
-            { img: "https://images.unsplash.com/photo-1522856283749-626210a309e1?w=500&auto=format&fit=crop&q=80", likes: 74, comments: 10, tag: "🐦 Singing" },
-            { img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=500&auto=format&fit=crop&q=80", likes: 110, comments: 18, tag: "🐰 Eating" }
-          ].map((post, idx) => (
-            <div key={idx} className="group relative overflow-hidden rounded-[2.2rem] aspect-[4/5] bg-muted shadow-sm hover:shadow-xl transition-all duration-500 hover-lift border border-border/40">
-              <img 
-                src={post.img} 
-                alt={`Community Post ${idx + 1}`}
-                className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-105"
-                loading="lazy"
-              />
-              {/* Badge */}
-              <div className="absolute top-3 left-3 z-10">
-                <span className="text-[8px] font-extrabold uppercase bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full">
-                  {post.tag}
-                </span>
-              </div>
-              {/* Overlay likes / comments */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6 text-white">
-                <div className="flex items-center gap-6 text-xs font-black">
-                  <div className="flex items-center gap-1.5 hover:scale-110 transition-transform cursor-pointer">
-                    <Heart className="h-4.5 w-4.5 fill-white text-white" />
-                    <span>{post.likes}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 hover:scale-110 transition-transform cursor-pointer">
-                    <MessageSquare className="h-4.5 w-4.5 fill-white text-white" />
-                    <span>{post.comments}</span>
-                  </div>
-                </div>
+            "/matching_coordinates.png",
+            "/matching_knitwear.png",
+            "/matching_pajamas.png",
+            "/custom_name_tag.png",
+            "/personalized_collar.png",
+            "/crystal_cat_bowl.png",
+            "/pet_hotel.png",
+            "/pet_grooming.png"
+          ].map((img, idx) => (
+            <div key={idx} className="group relative aspect-square overflow-hidden rounded-3xl border border-border/40 bg-muted hover-lift shadow-sm">
+              <img src={img} alt={`Community Feed ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-[#4E1B33]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-black gap-1.5 pointer-events-none">
+                ❤️ Like & Share
               </div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Brand Directory */}
+      <section className="mx-auto max-w-7xl px-6 py-10 border-t border-border/25">
+        <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/50 text-center mb-6">Featured Partners & Brands</p>
+        <div className="flex flex-wrap items-center justify-center gap-12 md:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all">
+          {["ROYAL CANIN", "PURINA", "HILL'S", "WHISKAS", "PEDIGREE"].map((brand) => (
+            <span key={brand} className="font-display text-lg sm:text-2xl font-black tracking-widest text-[#4E1B33] dark:text-[#EBC4D8] pointer-events-none">
+              {brand}
+            </span>
           ))}
         </div>
       </section>
@@ -455,14 +708,27 @@ function Landing() {
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <span className="text-xs font-black text-primary uppercase tracking-widest">Testimonials</span>
             <h2 className="font-display text-4xl font-extrabold tracking-tight">Loved by Pet Parents</h2>
-            <p className="text-xs sm:text-sm text-muted-foreground/70">Here is what our community of veterinarians and pet owners are saying.</p>
+            <p className="text-xs sm:text-sm text-muted-foreground/70">Read what members of the PetPal family say about our products and care services.</p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
             {[
-              { name: "Hanan Taha", role: "Cat Mother", rating: 5, quote: "Whiskers absolutely loves the salmon kibble from PetPal shop! The ordering is super fast, and I get loyalty points to unlock treats." },
-              { name: "Dr. Sarah Connor", role: "Veterinarian Doctor", rating: 5, quote: "As a clinician, PetPal's health records make consulting patients a breeze. Owners have vaccination schedules logged, making checkups safe and quick." },
-              { name: "Tareq Jibril", role: "Retriever Owner", rating: 5, quote: "The 4-step Vet scheduler is incredibly smooth. I book slots, verify the pricing, and simulate checkouts with receipts instantly. Truly graduation-level project!" }
+              {
+                name: "Sarah Johnson",
+                role: "Dog Mom (Buddy's Owner)",
+                rating: 5,
+                avatar: "👩",
+                petAvatar: "🐶",
+                quote: "PetPal changed my life. My dog Buddy absolutely loves the grooming service. Every coordinate set we bought fits perfectly and looks incredible in photos!"
+              },
+              {
+                name: "Michael Adams",
+                role: "Cat Dad (Oliver's Owner)",
+                rating: 5,
+                avatar: "👨",
+                petAvatar: "🐱",
+                quote: "Best pet products I've ever purchased. The luxury cat necklaces and engraved tags are premium grade, and the AI Vet chat helped us sort out diet issues instantly."
+              }
             ].map((t, i) => (
               <div key={i} className="rounded-3xl border border-border bg-card/60 p-6 space-y-4 hover-lift">
                 <div className="flex text-amber-400 gap-0.5">
@@ -470,15 +736,18 @@ function Landing() {
                     <Star key={r} className="h-4 w-4 fill-current" />
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground/90 leading-relaxed italic">"{t.quote}"</p>
-                <div className="border-t border-border/40 pt-3 flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-[10px] text-primary">
-                    {t.name.split(" ")[0][0]}
+                <p className="text-xs text-muted-foreground/95 leading-relaxed italic">"{t.quote}"</p>
+                <div className="border-t border-border/40 pt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-lg border border-primary/20">
+                      {t.avatar}
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-xs font-bold text-[#4E1B33] dark:text-[#FFF5F9]">{t.name}</h4>
+                      <p className="text-[10px] text-muted-foreground">{t.role}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground/90">{t.name}</h4>
-                    <p className="text-[10px] text-muted-foreground">{t.role}</p>
-                  </div>
+                  <span className="text-xl">{t.petAvatar}</span>
                 </div>
               </div>
             ))}
@@ -687,6 +956,167 @@ function Landing() {
           </div>
         </div>
       </footer>
+
+      {/* Newsletter Signup */}
+      <section className="bg-gradient-to-b from-background to-secondary/30 py-20 border-t border-border/25 text-center">
+        <div className="mx-auto max-w-4xl px-6 space-y-6">
+          <span className="text-xs font-black text-primary uppercase tracking-widest">Newsletter</span>
+          <h2 className="font-display text-4xl font-extrabold text-[#4E1B33]">Join The PetPal Family</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground/80 max-w-md mx-auto">Get exclusive discounts, styling tips, and advanced veterinary alerts straight to your inbox.</p>
+          
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              toast.success("Thank you for subscribing! Check your inbox for your 15% discount code! 📩🐾");
+            }}
+            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto pt-2"
+          >
+            <Input required type="email" placeholder="Enter your email address" className="rounded-full py-6 px-5" />
+            <Button type="submit" className="rounded-full bg-[#4E1B33] text-white hover:bg-[#4E1B33]/90 font-black py-6 px-8 uppercase tracking-wider text-xs cursor-pointer">
+              Subscribe
+            </Button>
+          </form>
+        </div>
+      </section>
+
+      {/* Sliding Cart Drawer (Logged Out experience) */}
+      {cartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity animate-fade-in"
+            onClick={() => setCartOpen(false)}
+          />
+          {/* Drawer Panel */}
+          <div className="relative w-full max-w-md bg-[#FFF5F9] dark:bg-[#1A0B13] h-full shadow-2xl flex flex-col z-10 border-l border-border animate-in slide-in-from-right duration-300 text-left">
+            <div className="flex items-center justify-between p-5 border-b border-border bg-[#4E1B33] text-white">
+              <h3 className="font-display text-lg font-black flex items-center gap-2">
+                <ShoppingBag className="h-5 w-5 text-accent animate-pulse" /> Shopping Cart
+              </h3>
+              <button 
+                onClick={() => setCartOpen(false)}
+                className="text-white/80 hover:text-white rounded-full p-1.5 hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar">
+              {cartItems.length === 0 ? (
+                <div className="h-64 flex flex-col items-center justify-center text-center text-muted-foreground gap-3">
+                  <ShoppingBag className="h-10 w-10 text-muted-foreground/35" />
+                  <p className="text-sm font-semibold">Your cart is currently empty.</p>
+                  <Button onClick={() => setCartOpen(false)} variant="outline" className="rounded-full text-xs font-bold px-5 py-4 border-border/80 hover:bg-[#4E1B33]/5">
+                    Continue Shopping
+                  </Button>
+                </div>
+              ) : (
+                cartItems.map((item) => (
+                  <div key={item.id} className="flex gap-3 rounded-2xl border border-border bg-card/60 p-3 items-center hover:shadow-md transition-shadow">
+                    <img src={item.img} alt={item.name} className="h-14 w-14 rounded-xl object-cover border border-border/40 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-xs text-foreground truncate">{item.name}</p>
+                      <p className="text-[11px] font-black text-primary mt-0.5">${item.price.toFixed(2)}</p>
+                    </div>
+                    <div className="flex items-center gap-1 border border-border/60 rounded-full px-2 py-0.5 bg-background shrink-0">
+                      <button 
+                        onClick={() => handleUpdateQty(item.id, item.quantity - 1)}
+                        className="text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                      >
+                        <Minus className="h-2.5 w-2.5" />
+                      </button>
+                      <span className="w-5 text-center text-xs font-black">{item.quantity}</span>
+                      <button 
+                        onClick={() => handleUpdateQty(item.id, item.quantity + 1)}
+                        className="text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                      >
+                        <Plus className="h-2.5 w-2.5" />
+                      </button>
+                    </div>
+                    <button 
+                      onClick={() => handleUpdateQty(item.id, 0)}
+                      className="text-muted-foreground hover:text-red-500 transition-colors p-1 cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cartItems.length > 0 && (
+              <div className="p-5 border-t border-border bg-card/40 space-y-4">
+                <div className="flex items-center justify-between text-sm font-bold text-foreground">
+                  <span>Subtotal</span>
+                  <span className="text-lg font-black text-primary">${cartItems.reduce((acc, it) => acc + it.price * it.quantity, 0).toFixed(2)}</span>
+                </div>
+                <div className="grid gap-2">
+                  <Button 
+                    onClick={() => {
+                      setCartOpen(false);
+                      navigate({ to: "/signup" });
+                    }}
+                    className="w-full py-6 font-black uppercase tracking-wider rounded-full shadow-lg bg-[#4E1B33] text-white hover:bg-[#4E1B33]/90 hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer"
+                  >
+                    Register to Checkout
+                  </Button>
+                  <Button 
+                    onClick={() => setCartOpen(false)} 
+                    variant="outline" 
+                    className="w-full py-6 font-black uppercase tracking-wider rounded-full border-border/80 hover:bg-[#4E1B33]/5 cursor-pointer"
+                  >
+                    Keep Shopping
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+        {/* Emergency Button */}
+        <button
+          onClick={() => setEmergencyOpen(true)}
+          title="Emergency Vet Support"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all animate-pulse relative group cursor-pointer"
+        >
+          <ShieldAlert className="h-5 w-5" />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            🚨 Emergency Support
+          </span>
+        </button>
+
+        {/* Chat AI Button */}
+        <Link
+          to="/signup"
+          title="Consult AI Vet"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all relative group cursor-pointer"
+        >
+          <Sparkles className="h-5 w-5" />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            🤖 Chat AI Vet
+          </span>
+        </Link>
+
+        {/* WhatsApp Button */}
+        <a
+          href="https://wa.me/1234567890"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="WhatsApp Support"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all animate-pulse-subtle relative group cursor-pointer"
+        >
+          <Phone className="h-5 w-5" />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            💬 WhatsApp Live
+          </span>
+        </a>
+      </div>
+
+      {/* Emergency Dialog */}
+      <EmergencyModal open={emergencyOpen} onOpenChange={setEmergencyOpen} />
 
     </div>
   );

@@ -1,17 +1,26 @@
-import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, LogOut, Heart, MapPin, Sparkles, Users, Settings as SettingsIcon, Search, BookOpen, Activity } from "lucide-react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { 
+  Home, Calendar, ShoppingBag, MessageCircle, User, Bell, PawPrint, ShieldCheck, 
+  LogOut, Heart, MapPin, Sparkles, Users, Settings as SettingsIcon, Search, 
+  BookOpen, Activity, X, Trash2, Plus, Minus, ShieldAlert, Phone, Eye
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import type { ReactNode } from "react";
+import { useState, useEffect } from "react";
+import { EmergencyModal } from "@/components/EmergencyModal";
+import { Button } from "@/components/ui/button";
+import { fetchCart, setCartQuantity, type CartLine } from "@/lib/cart";
 
 const ownerNav = [
   { to: "/home", label: "Dashboard", icon: Home },
+  { to: "/book", label: "Book Vet", icon: Calendar },
   { to: "/shop", label: "Shop", icon: ShoppingBag },
   { to: "/book?type=hotel", label: "Pet Hotel", icon: Calendar },
   { to: "/book?type=grooming", label: "Grooming", icon: Calendar },
-  { to: "/home#studio", label: "Design Studio", icon: Sparkles },
+  { to: "/studio", label: "Design Studio", icon: Sparkles },
 ] as const;
 
 const sideExtra = [
@@ -27,13 +36,47 @@ const sideExtra = [
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 
-import { useState, useEffect } from "react";
-import { EmergencyModal } from "@/components/EmergencyModal";
-
 export function AppShell({ children }: { children: ReactNode }) {
-  const { isStaff, signOut } = useAuth();
+  const { user, isStaff, signOut } = useAuth();
+  const navigate = useNavigate();
   const [emergencyOpen, setEmergencyOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState<CartLine[]>([]);
   const location = useLocation();
+
+  const loadCart = async () => {
+    if (user) {
+      try {
+        const items = await fetchCart(user.id);
+        setCartItems(items);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    loadCart();
+
+    const handleCartUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      loadCart();
+      if (customEvent.detail?.openDrawer) {
+        setCartOpen(true);
+      }
+    };
+
+    window.addEventListener("cart-updated", handleCartUpdate);
+    return () => window.removeEventListener("cart-updated", handleCartUpdate);
+  }, [user]);
+
+  const handleUpdateQty = async (productId: string, quantity: number) => {
+    if (user) {
+      await setCartQuantity(user.id, productId, quantity);
+      loadCart();
+    }
+  };
 
   // Smart active route check that handles search params (e.g. ?type=hotel)
   const isActive = (to: string) => {
@@ -51,19 +94,22 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Sticky Promo Announcement Bar */}
-      <div className="w-full bg-gradient-to-r from-[#D98CB3] via-[#4E1B33] to-[#D98CB3] text-white py-2 px-4 text-center text-[10px] sm:text-xs font-extrabold flex items-center justify-between border-b border-white/15 relative z-50 shadow-md">
-        <div className="flex-1 flex items-center justify-center gap-1.5 sm:gap-4 flex-wrap">
-          <span className="flex items-center gap-1">🐾 <strong>Special Offer!</strong> 20% OFF on Matching Hoodies for You & Your Best Friend!</span>
-          <span className="bg-white/10 border border-white/10 px-2 py-0.5 rounded text-[9px] font-mono tracking-widest uppercase">Use Code: <strong>PET20</strong></span>
-          <span className="text-[9px] opacity-75 font-semibold hidden lg:inline">• Limited Time Only</span>
+      {/* Auto-Scrolling Marquee Promo Announcement Bar */}
+      <div className="w-full bg-gradient-to-r from-[#4E1B33] via-[#7C2D55] to-[#4E1B33] text-white py-3 overflow-hidden border-b border-white/10 relative z-50 shadow-lg">
+        <div className="animate-marquee whitespace-nowrap flex gap-20 text-xs sm:text-sm font-black uppercase tracking-wider">
+          <span className="flex items-center gap-2">🔥 <span className="text-[#EBC4D8]">SUMMER SALE</span> UP TO <span className="text-yellow-300 underline">50% OFF</span> — USE CODE: <strong className="bg-white/20 px-2 py-0.5 rounded-full text-white">SUMMER50</strong></span>
+          <span className="text-[#D98CB3]">✦</span>
+          <span className="flex items-center gap-2">🚚 FREE SHIPPING OVER <span className="text-yellow-300">$75</span></span>
+          <span className="text-[#D98CB3]">✦</span>
+          <span className="flex items-center gap-2">🎁 BONUS REWARDS ON EVERY ORDER</span>
+          <span className="text-[#D98CB3]">✦</span>
+          <span className="flex items-center gap-2">🔥 <span className="text-[#EBC4D8]">SUMMER SALE</span> UP TO <span className="text-yellow-300 underline">50% OFF</span> — USE CODE: <strong className="bg-white/20 px-2 py-0.5 rounded-full text-white">SUMMER50</strong></span>
+          <span className="text-[#D98CB3]">✦</span>
+          <span className="flex items-center gap-2">🚚 FREE SHIPPING OVER <span className="text-yellow-300">$75</span></span>
+          <span className="text-[#D98CB3]">✦</span>
+          <span className="flex items-center gap-2">🎁 BONUS REWARDS ON EVERY ORDER</span>
+          <span className="text-[#D98CB3]">✦</span>
         </div>
-        <Link 
-          to="/shop" 
-          className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-3.5 py-1 text-[10px] font-black transition-all duration-300 shadow-md hover:scale-105 shrink-0 ml-2"
-        >
-          Shop Now
-        </Link>
       </div>
 
       {/* Desktop top bar */}
@@ -84,14 +130,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          {/* Search bar matching mockup */}
-          <div className="relative hidden lg:block w-72">
+          {/* Enhanced Search bar */}
+          <div className="relative hidden lg:block w-96">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
             <input
               type="text"
-              placeholder="Search..."
-              className="w-full bg-[#3D1426] text-white placeholder-white/40 border border-white/10 rounded-full py-1.5 pl-4 pr-10 text-xs focus:outline-none focus:border-white/20"
+              placeholder="Search products, services, pets..."
+              className="w-full bg-[#3D1426] text-white placeholder-white/40 border border-white/10 rounded-full py-2.5 pl-11 pr-5 text-sm focus:outline-none focus:border-white/30 focus:bg-[#4A1F33] transition-all"
             />
-            <Search className="absolute right-3.5 top-2.5 h-3.5 w-3.5 text-white/40" />
           </div>
 
           <nav className="flex items-center gap-4">
@@ -124,6 +170,30 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </Link>
               )}
             </div>
+            {/* Wishlist button */}
+            <Link
+              to="/favorites"
+              className="relative p-2 rounded-full text-[#FFF5F9]/80 hover:text-white hover:bg-white/10 transition-colors flex items-center gap-1.5"
+              title="Wishlist"
+            >
+              <Heart className="h-5 w-5" />
+              <span className="bg-pink-500 text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center border border-[#4E1B33]">3</span>
+            </Link>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 text-[#FFF5F9] transition-colors border border-white/10"
+              title="Open Cart"
+            >
+              <ShoppingBag className="h-4.5 w-4.5" />
+              <span className="text-xs font-black">
+                🛒 {cartItems.reduce((acc, it) => acc + it.quantity, 0) > 0 ? cartItems.reduce((acc, it) => acc + it.quantity, 0) : ""}
+              </span>
+              {cartItems.reduce((acc, it) => acc + it.quantity, 0) > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#D98CB3] to-[#B5386B] text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#4E1B33] shadow-lg">
+                  {cartItems.reduce((acc, it) => acc + it.quantity, 0)}
+                </span>
+              )}
+            </button>
             <NotificationsBell className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
             <ThemeToggle className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
             <button
@@ -153,6 +223,23 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="flex items-center h-8 rounded-full bg-red-500/25 border border-red-500/30 px-2.5 text-[10px] font-black text-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm"
           >
             🚨 Emergency
+          </button>
+          {/* Mobile Wishlist */}
+          <Link to="/favorites" className="relative p-2 rounded-full text-[#FFF5F9]/80 hover:text-white hover:bg-white/10 transition-colors" title="Wishlist">
+            <Heart className="h-5 w-5" />
+            <span className="absolute -top-0.5 -right-0.5 bg-pink-500 text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center border border-[#4E1B33]">3</span>
+          </Link>
+          <button
+            onClick={() => setCartOpen(true)}
+            className="relative p-2 rounded-full text-[#FFF5F9]/80 hover:text-white hover:bg-white/10 transition-colors"
+            title="Open Cart"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {cartItems.reduce((acc, it) => acc + it.quantity, 0) > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-gradient-to-r from-[#D98CB3] to-[#B5386B] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center border border-[#4E1B33]">
+                {cartItems.reduce((acc, it) => acc + it.quantity, 0)}
+              </span>
+            )}
           </button>
           <NotificationsBell className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
           <ThemeToggle className="text-[#FFF5F9]/80 hover:text-white hover:bg-white/10" />
@@ -313,6 +400,146 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Emergency Dialog */}
       <EmergencyModal open={emergencyOpen} onOpenChange={setEmergencyOpen} />
+
+      {/* Sliding Cart Drawer */}
+      {cartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity animate-fade-in"
+            onClick={() => setCartOpen(false)}
+          />
+          {/* Drawer Panel */}
+          <div className="relative w-full max-w-md bg-[#FFF5F9] dark:bg-[#1A0B13] h-full shadow-2xl flex flex-col z-10 border-l border-border animate-in slide-in-from-right duration-300 text-left">
+            <div className="flex items-center justify-between p-5 border-b border-border bg-[#4E1B33] text-white">
+              <h3 className="font-display text-lg font-black flex items-center gap-2">
+                <ShoppingBag className="h-5 w-5 text-accent animate-pulse" /> Shopping Cart
+              </h3>
+              <button 
+                onClick={() => setCartOpen(false)}
+                className="text-white/80 hover:text-white rounded-full p-1.5 hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar">
+              {cartItems.length === 0 ? (
+                <div className="h-64 flex flex-col items-center justify-center text-center text-muted-foreground gap-3">
+                  <ShoppingBag className="h-10 w-10 text-muted-foreground/35" />
+                  <p className="text-sm font-semibold">Your cart is currently empty.</p>
+                  <Button onClick={() => setCartOpen(false)} variant="outline" className="rounded-full text-xs font-bold px-5 py-4 border-border/80 hover:bg-[#4E1B33]/5">
+                    Continue Shopping
+                  </Button>
+                </div>
+              ) : (
+                cartItems.map((item) => (
+                  <div key={item.product_id} className="flex gap-3 rounded-2xl border border-border bg-card/60 p-3 items-center hover:shadow-md transition-shadow">
+                    {item.image_url ? (
+                      <img src={item.image_url} alt={item.name} className="h-14 w-14 rounded-xl object-cover border border-border/40 shrink-0" />
+                    ) : (
+                      <div className="h-14 w-14 rounded-xl bg-secondary flex items-center justify-center text-2xl font-bold shrink-0">📦</div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-xs text-foreground truncate">{item.name}</p>
+                      <p className="text-[11px] font-black text-primary mt-0.5">${item.unit_price.toFixed(2)}</p>
+                    </div>
+                    <div className="flex items-center gap-1 border border-border/60 rounded-full px-2 py-0.5 bg-background shrink-0">
+                      <button 
+                        onClick={() => handleUpdateQty(item.product_id, item.quantity - 1)}
+                        className="text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                      >
+                        <Minus className="h-2.5 w-2.5" />
+                      </button>
+                      <span className="w-5 text-center text-xs font-black">{item.quantity}</span>
+                      <button 
+                        onClick={() => handleUpdateQty(item.product_id, item.quantity + 1)}
+                        className="text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                      >
+                        <Plus className="h-2.5 w-2.5" />
+                      </button>
+                    </div>
+                    <button 
+                      onClick={() => handleUpdateQty(item.product_id, 0)}
+                      className="text-muted-foreground hover:text-red-500 transition-colors p-1 cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cartItems.length > 0 && (
+              <div className="p-5 border-t border-border bg-card/40 space-y-4">
+                <div className="flex items-center justify-between text-sm font-bold text-foreground">
+                  <span>Subtotal</span>
+                  <span className="text-lg font-black text-primary">${cartItems.reduce((acc, it) => acc + it.unit_price * it.quantity, 0).toFixed(2)}</span>
+                </div>
+                <div className="grid gap-2">
+                  <Button 
+                    onClick={() => {
+                      setCartOpen(false);
+                      navigate({ to: "/checkout" });
+                    }}
+                    className="w-full py-6 font-black uppercase tracking-wider rounded-full shadow-lg bg-[#4E1B33] text-white hover:bg-[#4E1B33]/90 hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer"
+                  >
+                    Secure Checkout
+                  </Button>
+                  <Button 
+                    onClick={() => setCartOpen(false)} 
+                    variant="outline" 
+                    className="w-full py-6 font-black uppercase tracking-wider rounded-full border-border/80 hover:bg-[#4E1B33]/5 cursor-pointer"
+                  >
+                    Keep Shopping
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-24 right-6 md:bottom-6 z-40 flex flex-col gap-3">
+        {/* Emergency Button */}
+        <button
+          onClick={() => setEmergencyOpen(true)}
+          title="Emergency Vet Support"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all animate-pulse relative group cursor-pointer"
+        >
+          <ShieldAlert className="h-5 w-5" />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            🚨 Emergency Support
+          </span>
+        </button>
+
+        {/* Chat AI Button */}
+        <Link
+          to="/chat"
+          title="Consult AI Vet"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all relative group cursor-pointer"
+        >
+          <Sparkles className="h-5 w-5" />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            🤖 Chat AI Vet
+          </span>
+        </Link>
+
+        {/* WhatsApp Button */}
+        <a
+          href="https://wa.me/1234567890"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="WhatsApp Support"
+          className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all animate-pulse-subtle relative group cursor-pointer"
+        >
+          <Phone className="h-5 w-5" />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+            💬 WhatsApp Live
+          </span>
+        </a>
+      </div>
     </div>
   );
 }

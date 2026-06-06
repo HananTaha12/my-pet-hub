@@ -1,9 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useLocation } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createNotification } from "@/lib/notify";
 import { awardPoints } from "@/lib/loyalty";
 import { toast } from "sonner";
-import { Star, Shield, ArrowRight, ArrowLeft, CreditCard, CheckCircle2, ShoppingBag } from "lucide-react";
+import { Star, Shield, ArrowRight, ArrowLeft, CreditCard, CheckCircle2, ShoppingBag, Syringe } from "lucide-react";
 
 export const Route = createFileRoute("/book")({
   head: () => ({ meta: [{ title: "Book Appointment — PetPal" }] }),
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/book")({
 });
 
 interface Service { id: string; name: string; description: string | null; duration_minutes: number; price: number }
-interface Pet { id: string; name: string }
+interface Pet { id: string; name: string; species: string }
 
 interface Specialist {
   id: string;
@@ -55,12 +56,29 @@ const groomingServiceObj: Service = {
   price: 35
 };
 
+const groomingServices: Service[] = [
+  { id: "groom-bath", name: "🛁 Bath & Blow Dry", description: "Gentle wash, blow dry, brushing, and fragrance", duration_minutes: 45, price: 20 },
+  { id: "groom-haircut", name: "✂️ Haircut & Styling", description: "Breed-specific clip, sanitary trim, and brush out", duration_minutes: 60, price: 30 },
+  { id: "groom-nails", name: "💅 Nail Trimming & Ear Care", description: "Claw clipping, nail filing, ear cleaning, and hair care", duration_minutes: 20, price: 15 },
+  { id: "groom-deshed", name: "🧴 De-Shedding Treatment", description: "Special undercoat blowout and brushing using specialty shampoos", duration_minutes: 50, price: 25 },
+  { id: "groom-full", name: "👑 VIP Grooming & Spa", description: "Full styling, bath, nails, teeth brushing, and mud bath treatment", duration_minutes: 90, price: 45 },
+];
+
 function Book() {
   const { user } = useAuth();
   const navigate = useNavigate();
   
   // Wizard state
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get("type");
+      if (type === "hotel" || type === "grooming") {
+        return 2;
+      }
+    }
+    return 1;
+  });
   const [loading, setLoading] = useState(false);
 
   // Form selections
@@ -96,42 +114,86 @@ function Book() {
     (async () => {
       const [{ data: s }, { data: p }] = await Promise.all([
         supabase.from("services").select("*").eq("active", true),
-        supabase.from("pets").select("id, name").eq("owner_id", user.id),
+        supabase.from("pets").select("id, name, species").eq("owner_id", user.id),
       ]);
       
       const dbServices = (s ?? []) as Service[];
       
-      // Check if DB already contains these services
-      const hasHotel = dbServices.some(item => item.name.toLowerCase().includes("hotel") || item.name.toLowerCase().includes("boarding") || item.id === hotelServiceId);
-      const hasGrooming = dbServices.some(item => item.name.toLowerCase().includes("grooming") || item.name.toLowerCase().includes("spa") || item.id === groomingServiceId);
+      // Filter out generic database hotel and grooming to avoid duplicates
+      const filteredDbServices = dbServices.filter(item => 
+        !item.name.toLowerCase().includes("grooming") &&
+        !item.name.toLowerCase().includes("spa") &&
+        !item.name.toLowerCase().includes("hotel") &&
+        !item.name.toLowerCase().includes("boarding")
+      );
       
-      const updatedServices = [...dbServices];
-      if (!hasHotel) updatedServices.push(hotelServiceObj);
-      if (!hasGrooming) updatedServices.push(groomingServiceObj);
+      const updatedServices = [...filteredDbServices];
+      updatedServices.push(hotelServiceObj);
+      updatedServices.push(...groomingServices);
 
       setServices(updatedServices);
       setPets((p ?? []) as Pet[]);
       
       if (p?.length) setPetId(p[0].id);
-
-      // Check URL query parameters
-      const params = new URLSearchParams(window.location.search);
-      const type = params.get("type");
-      const checkinVal = params.get("checkin");
-      const checkoutVal = params.get("checkout");
-      
-      if (checkinVal) setCheckInDate(checkinVal);
-      if (checkoutVal) setCheckOutDate(checkoutVal);
-      
-      if (type === "hotel") {
-        setServiceId(hotelServiceId);
-      } else if (type === "grooming") {
-        setServiceId(groomingServiceId);
-      } else if (updatedServices.length) {
-        setServiceId(updatedServices[0].id);
-      }
     })();
   }, [user]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!services.length) return;
+
+    const params = new URLSearchParams(location.search);
+    const type = params.get("type");
+    const checkinVal = params.get("checkin");
+    const checkoutVal = params.get("checkout");
+    const dateVal = params.get("date");
+    const packageVal = params.get("package");
+    const petSpeciesVal = params.get("pet");
+
+    if (checkinVal) setCheckInDate(checkinVal);
+    if (checkoutVal) setCheckOutDate(checkoutVal);
+    if (dateVal) setDate(dateVal);
+    if (packageVal) {
+      setNotes(`Selected Package: ${packageVal}`);
+    } else {
+      setNotes("");
+    }
+
+    if (petSpeciesVal && pets.length) {
+      const matchingPet = pets.find(item => item.species.toLowerCase() === petSpeciesVal.toLowerCase());
+      if (matchingPet) {
+        setPetId(matchingPet.id);
+      }
+    }
+
+    if (type === "hotel") {
+      setServiceId(hotelServiceId);
+      setStep(2);
+    } else if (type === "grooming") {
+      const firstGrooming = services.find(item => item.id.startsWith("groom-"));
+      setServiceId(firstGrooming?.id || "groom-bath");
+      setStep(2);
+    } else {
+      const firstClinical = services.find((s) => {
+        const nameLower = s.name.toLowerCase();
+        return (
+          !nameLower.includes("groom") &&
+          !nameLower.includes("spa") &&
+          !nameLower.includes("hair") &&
+          !nameLower.includes("bath") &&
+          !nameLower.includes("nail") &&
+          !nameLower.includes("hotel") &&
+          !nameLower.includes("boarding") &&
+          !nameLower.includes("stay") &&
+          s.id !== hotelServiceId &&
+          s.id !== groomingServiceId
+        );
+      });
+      setServiceId(firstClinical?.id || services[0]?.id || "");
+      setStep(1);
+    }
+  }, [location.search, services, pets]);
 
   useEffect(() => {
     (async () => {
@@ -153,10 +215,6 @@ function Book() {
     return out;
   }, [date]);
 
-  const activeSpecialist = useMemo(() => {
-    return SPECIALISTS.find((s) => s.id === specialistId) ?? SPECIALISTS[0];
-  }, [specialistId]);
-
   const activeService = useMemo(() => {
     return services.find((s) => s.id === serviceId);
   }, [services, serviceId]);
@@ -165,7 +223,134 @@ function Book() {
     return pets.find((p) => p.id === petId);
   }, [pets, petId]);
 
-  const isHotel = serviceId === hotelServiceId;
+  const isGrooming = useMemo(() => {
+    if (!serviceId) return false;
+    return (
+      serviceId.startsWith("groom-") ||
+      serviceId === groomingServiceId ||
+      activeService?.name.toLowerCase().includes("groom") ||
+      activeService?.name.toLowerCase().includes("spa")
+    );
+  }, [serviceId, activeService]);
+
+  const isHotel = useMemo(() => {
+    if (!serviceId) return false;
+    return (
+      serviceId === hotelServiceId ||
+      activeService?.name.toLowerCase().includes("hotel") ||
+      activeService?.name.toLowerCase().includes("boarding")
+    );
+  }, [serviceId, activeService]);
+
+  const activeSpecialist = useMemo(() => {
+    if (isHotel) {
+      return { id: "hotel-staff", name: "Boarding Caretaker Staff", role: "Hotel Service Team", avatar: "🏨", rating: 5.0 };
+    }
+    if (isGrooming) {
+      return { id: "groomer-staff", name: "Professional Pet Groomer", role: "Grooming Service Team", avatar: "✂️", rating: 4.9 };
+    }
+    return SPECIALISTS.find((s) => s.id === specialistId) ?? SPECIALISTS[0];
+  }, [specialistId, serviceId, isHotel, isGrooming]);
+
+  const activePetVaccines = useMemo(() => {
+    if (!activePet) return [];
+    const sp = activePet.species?.toLowerCase() || "dog";
+    switch (sp) {
+      case "cat":
+        return [
+          { name: "FVRCP (Feline Distemper)", status: "completed", date: "Jan 2026" },
+          { name: "Rabies Vaccine Booster", status: "completed", date: "Feb 2026" },
+          { name: "FeLV (Feline Leukemia)", status: "due", date: "Due in 12 Days" },
+        ];
+      case "rabbit":
+      case "bunny":
+        return [
+          { name: "Myxomatosis Vaccine", status: "completed", date: "Nov 2025" },
+          { name: "RVHD1 Booster Shot", status: "completed", date: "Dec 2025" },
+          { name: "RVHD2 Booster Shot", status: "due", date: "Due in 15 Days" },
+        ];
+      case "dog":
+      default:
+        return [
+          { name: "Rabies Booster Shot", status: "completed", date: "Oct 2025" },
+          { name: "DHPP (Distemper & Parvo)", status: "completed", date: "Nov 2025" },
+          { name: "Bordetella (Kennel Cough)", status: "due", date: "Due in 5 Days" },
+        ];
+    }
+  }, [activePet]);
+
+  const activePetTreatments = useMemo(() => {
+    if (!activePet) return [];
+    const sp = activePet.species?.toLowerCase() || "dog";
+    switch (sp) {
+      case "cat":
+        return [
+          { name: "Broad-Spectrum Deworming", status: "completed", date: "Mar 2026" },
+          { name: "Flea & Tick Pipette", status: "due", date: "Due in 10 Days" },
+        ];
+      case "rabbit":
+      case "bunny":
+        return [
+          { name: "Parasite Control Check", status: "completed", date: "Jan 2026" },
+          { name: "Nail Trim & Grooming", status: "completed", date: "Feb 2026" },
+        ];
+      case "dog":
+      default:
+        return [
+          { name: "Heartworm Prevention", status: "completed", date: "Apr 2026" },
+          { name: "Flea & Tick Chews", status: "due", date: "Due in 3 Days" },
+        ];
+    }
+  }, [activePet]);
+
+  const vaccinesCompletion = useMemo(() => {
+    if (!activePet) return "0%";
+    const sp = activePet.species?.toLowerCase() || "dog";
+    return sp === "cat" ? "90%" : sp === "rabbit" ? "75%" : "85%";
+  }, [activePet]);
+
+  const pageTheme = useMemo(() => {
+    if (isHotel) {
+      return {
+        title: "Pet Hotel Boarding Stays",
+        subtitle: "Reserve a state-of-the-art boarding suite with 24/7 care, daily play trackers, and live camera updates.",
+        badge: "Hotel Suite Reservation",
+        bannerImg: "/pet_hotel.png",
+        bannerPosition: "center",
+        accentClass: "bg-[#4E1B33]/20 text-[#4E1B33]",
+        btnClass: "bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white hover:scale-[1.02] active:scale-[0.98] transition-transform",
+        serviceLabel: "Boarding Suite Option",
+        dateLabel: "Check-In / Out Stay Dates",
+        cardTint: "bg-[#FFF5F9]/30 border-[#4E1B33]/15",
+      };
+    }
+    if (isGrooming) {
+      return {
+        title: "Professional Grooming & Spa",
+        subtitle: "Pamper your pet with professional organic baths, styling, sanitary trims, and nail filing.",
+        badge: "Professional Spa Reservation",
+        bannerImg: "/pet_grooming.png",
+        bannerPosition: "center",
+        accentClass: "bg-[#D98CB3]/20 text-[#D98CB3] dark:text-pink-300",
+        btnClass: "bg-[#D98CB3] hover:bg-[#D98CB3]/90 text-white hover:scale-[1.02] active:scale-[0.98] transition-transform",
+        serviceLabel: "Spa Treatment Package",
+        dateLabel: "Grooming Session Date",
+        cardTint: "bg-[#FFF5F9]/30 border-pink-500/15",
+      };
+    }
+    return {
+      title: "Vet Scheduler & Checkout",
+      subtitle: "Book diagnostic consultations, preventative vaccinations, and check-ups with our veterinarians.",
+      badge: "Clinical Appointment Booking",
+      bannerImg: "/vet_clinic_banner.png",
+      bannerPosition: "center 30%",
+      accentClass: "bg-accent/10 text-accent",
+      btnClass: "bg-primary hover:bg-primary/90 text-white hover:scale-[1.02] active:scale-[0.98] transition-transform",
+      serviceLabel: "Clinical Service",
+      dateLabel: "Clinic Appointment Date",
+      cardTint: "bg-card/60 border-border/40",
+    };
+  }, [isHotel, isGrooming]);
 
   const hotelNights = useMemo(() => {
     if (!isHotel) return 0;
@@ -265,8 +450,10 @@ function Book() {
     await Promise.all([
       createNotification({
         userId: user.id,
-        title: "Appointment booked & paid",
-        body: `${svc?.name ?? "Service"} with ${activeSpecialist.name} for ${pet?.name ?? "your pet"} on ${new Date(slot).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}. +50 pts!`,
+        title: isHotel ? "Boarding stay booked & paid" : "Appointment booked & paid",
+        body: isHotel 
+          ? `${svc?.name ?? "Hotel Boarding"} for ${pet?.name ?? "your pet"} from ${checkInDate} to ${checkOutDate}. +50 pts!`
+          : `${svc?.name ?? "Service"} with ${activeSpecialist.name} for ${pet?.name ?? "your pet"} on ${new Date(slot).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}. +50 pts!`,
         type: "appointment",
         link: "/appointments",
       }),
@@ -298,8 +485,10 @@ function Book() {
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-12 transition-all duration-500 animate-in fade-in">
       <div className="text-center space-y-2">
-        <span className="text-xs font-bold text-accent uppercase tracking-widest">Appointment Booking</span>
-        <h1 className="font-display text-4xl font-semibold tracking-tight">Vet Scheduler & Checkout</h1>
+        <span className="text-xs font-bold text-accent uppercase tracking-widest">{pageTheme.badge}</span>
+        <h1 className="font-display text-4xl font-semibold tracking-tight">
+          {serviceId === hotelServiceId ? "Pet Hotel Boarding" : serviceId === groomingServiceId ? "Pet Grooming Spa" : "Vet Scheduler & Checkout"}
+        </h1>
       </div>
 
       {/* Progress indicator */}
@@ -324,7 +513,31 @@ function Book() {
         ))}
       </div>
 
-      <div className="glass-card rounded-[2.5rem] p-6 sm:p-8 border-border/40 shadow-2xl bg-card/60">
+      <div className={cn("glass-card rounded-[2.5rem] p-0 border shadow-2xl overflow-hidden transition-all duration-500", pageTheme.cardTint)}>
+        {/* Dynamic Service Hero Banner */}
+        <div className="relative h-48 sm:h-60 w-full overflow-hidden border-b border-border/30 shadow-inner">
+          <img 
+            src={pageTheme.bannerImg} 
+            alt={pageTheme.title} 
+            className="w-full h-full object-cover transition-transform duration-750 hover:scale-103"
+            style={{ objectPosition: pageTheme.bannerPosition }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute bottom-5 left-6 sm:left-8 text-left text-white space-y-1.5 max-w-xl">
+            <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-widest text-[#FFF5F9] bg-white/20 border border-white/30 backdrop-blur-sm">
+              {pageTheme.badge}
+            </span>
+            <h2 className="font-display text-2xl sm:text-3xl font-black text-white tracking-tight leading-none">
+              {pageTheme.title}
+            </h2>
+            <p className="text-[10px] sm:text-xs text-[#EBC4D8] font-semibold leading-relaxed">
+              {pageTheme.subtitle}
+            </p>
+          </div>
+        </div>
+
+        {/* Form Body wrapper to pad all the steps */}
+        <div className="p-6 sm:p-8">
         
         {/* Step 1: Specialist Selection */}
         {step === 1 && (
@@ -355,7 +568,7 @@ function Book() {
               ))}
             </div>
             <div className="flex justify-end pt-4 border-t border-border/30">
-              <Button onClick={() => setStep(2)} className="rounded-xl px-6">
+              <Button onClick={() => setStep(2)} className={cn("rounded-xl px-6", pageTheme.btnClass)}>
                 Next Step <ArrowRight className="ml-1.5 h-4 w-4" />
               </Button>
             </div>
@@ -365,104 +578,261 @@ function Book() {
         {/* Step 2: Appointment Details */}
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="space-y-1">
+            <div className="space-y-1 text-left">
               <h2 className="font-display text-2xl font-bold tracking-tight">Configure Visit Details</h2>
               <p className="text-xs text-muted-foreground">Select pet companion, service category, date, and availability slots.</p>
             </div>
             
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <Label>Pet Companion</Label>
-                <Select value={petId} onValueChange={setPetId}>
-                  <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    {pets.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1">
-                <Label>Clinical Service</Label>
-                <Select value={serviceId} onValueChange={setServiceId}>
-                  <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    {services.map((s) => <SelectItem key={s.id} value={s.id}>{s.name} · ${Number(s.price).toFixed(0)}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <div className={cn("grid gap-6", (!isHotel && !isGrooming) ? "md:grid-cols-3" : "grid-cols-1")}>
+              
+              {/* Form Fields Column */}
+              <div className={cn("space-y-6 text-left", (!isHotel && !isGrooming) ? "md:col-span-2" : "")}>
+                
+                {/* Dynamic alert and rewards */}
+                {!isHotel && !isGrooming && (
+                  <div className="space-y-3">
+                    {activePetVaccines.some(v => v.status === "due") && (
+                      <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3.5 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5 text-left transition-all duration-300 animate-in slide-in-from-top-2">
+                        <span className="text-base shrink-0">⚠️</span>
+                        <div className="space-y-0.5">
+                          <span className="font-black block uppercase text-[10px] tracking-wider text-amber-700 dark:text-amber-400">Booster Immunization Alert</span>
+                          <p className="font-semibold text-[11px] leading-relaxed">
+                            {activePet?.name} is due for <strong>{activePetVaccines.find(v => v.status === "due")?.name}</strong>. Book this consultation to receive the shot!
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3.5 text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between text-left transition-all duration-300">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-base">✨</span>
+                        <div>
+                          <span className="font-black block uppercase text-[10px] tracking-wider text-emerald-700 dark:text-emerald-400">PetPoints Rewards</span>
+                          <p className="font-semibold text-[11px]">You'll earn <strong>+50 PetPoints</strong> instantly upon checkout!</p>
+                        </div>
+                      </div>
+                      <span className="bg-emerald-600 text-white font-black text-[9px] uppercase px-2 py-1 rounded-full shrink-0 shadow-sm">
+                        +50 PTS
+                      </span>
+                    </div>
+                  </div>
+                )}
 
-            {isHotel ? (
-              <div className="grid gap-4 sm:grid-cols-2">
+                {/* Selected Specialist Info Badge */}
+                <div className="flex items-center justify-between border border-border/30 rounded-2xl p-3.5 bg-card text-left shadow-inner">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{activeSpecialist.avatar}</span>
+                    <div>
+                      <span className="text-[9px] font-black uppercase text-muted-foreground block tracking-wider">Assigned Professional</span>
+                      <span className="font-bold text-sm text-foreground">{activeSpecialist.name}</span>
+                      <span className="text-xs text-muted-foreground block font-medium">{activeSpecialist.role}</span>
+                    </div>
+                  </div>
+                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-2.5 py-1 flex items-center gap-1">
+                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 animate-pulse" />
+                    <span className="text-[11px] font-bold text-amber-700">{activeSpecialist.rating.toFixed(1)}</span>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <Label>Pet Companion</Label>
+                    <Select value={petId} onValueChange={setPetId}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        {pets.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label>{pageTheme.serviceLabel}</Label>
+                    <Select value={serviceId} onValueChange={setServiceId}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        {services
+                          .filter((s) => {
+                            if (isHotel) return s.id === hotelServiceId || s.name.toLowerCase().includes("hotel") || s.name.toLowerCase().includes("boarding");
+                            if (isGrooming) return s.id.startsWith("groom-") || s.name.toLowerCase().includes("groom") || s.name.toLowerCase().includes("spa") || s.name.toLowerCase().includes("hair") || s.name.toLowerCase().includes("bath") || s.name.toLowerCase().includes("nail");
+                            
+                            const nameLower = s.name.toLowerCase();
+                            return (
+                              !nameLower.includes("groom") &&
+                              !nameLower.includes("spa") &&
+                              !nameLower.includes("hair") &&
+                              !nameLower.includes("bath") &&
+                              !nameLower.includes("nail") &&
+                              !nameLower.includes("hotel") &&
+                              !nameLower.includes("boarding") &&
+                              !nameLower.includes("stay") &&
+                              s.id !== hotelServiceId &&
+                              s.id !== groomingServiceId
+                            );
+                          })
+                          .map((s) => (
+                            <SelectItem key={s.id} value={s.id}>
+                              {s.name} · ${Number(s.price).toFixed(0)}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {isHotel ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <Label>Check-In Date</Label>
+                      <input 
+                        type="date" 
+                        value={checkInDate} 
+                        onChange={(e) => setCheckInDate(e.target.value)} 
+                        className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Check-Out Date</Label>
+                      <input 
+                        type="date" 
+                        value={checkOutDate} 
+                        onChange={(e) => setCheckOutDate(e.target.value)} 
+                        className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <Label>{pageTheme.dateLabel}</Label>
+                    <input 
+                      type="date" 
+                      value={date} 
+                      onChange={(e) => setDate(e.target.value)} 
+                      className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
+                    />
+                  </div>
+                )}
+
+                {!isHotel && (
+                  <div className="space-y-2">
+                    <Label>Available Time Slots</Label>
+                    <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                      {slots.map((s) => {
+                        const isTaken = taken.has(s.iso);
+                        const active = slot === s.iso;
+                        return (
+                          <button 
+                            type="button"
+                            key={s.iso} 
+                            disabled={isTaken} 
+                            onClick={() => setSlot(s.iso)}
+                            className={`rounded-xl border px-2 py-2.5 text-xs font-bold transition-all duration-300 ${
+                              isTaken 
+                                ? "cursor-not-allowed border-border text-muted-foreground/30 line-through bg-muted/10" 
+                                : active 
+                                  ? "border-accent bg-accent text-accent-foreground shadow-md shadow-accent/20" 
+                                  : "border-border hover:bg-secondary bg-card"
+                            }`}
+                          >
+                            {s.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-1">
-                  <Label>Check-In Date</Label>
-                  <input 
-                    type="date" 
-                    value={checkInDate} 
-                    onChange={(e) => setCheckInDate(e.target.value)} 
-                    className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label>Check-Out Date</Label>
-                  <input 
-                    type="date" 
-                    value={checkOutDate} 
-                    onChange={(e) => setCheckOutDate(e.target.value)} 
-                    className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
-                  />
+                  <Label>Special Instructions / Notes</Label>
+                  <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Describe symptoms, requirements, allergies..." className="rounded-xl min-h-[80px]" />
                 </div>
               </div>
-            ) : (
-              <div className="space-y-1">
-                <Label>Appointment Date</Label>
-                <input 
-                  type="date" 
-                  value={date} 
-                  onChange={(e) => setDate(e.target.value)} 
-                  className="block w-full rounded-xl border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:border-accent" 
-                />
-              </div>
-            )}
 
-            {!isHotel && (
-              <div className="space-y-2">
-                <Label>Available Time Slots</Label>
-                <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                  {slots.map((s) => {
-                    const isTaken = taken.has(s.iso);
-                    const active = slot === s.iso;
-                    return (
-                      <button 
-                        type="button"
-                        key={s.iso} 
-                        disabled={isTaken} 
-                        onClick={() => setSlot(s.iso)}
-                        className={`rounded-xl border px-2 py-2.5 text-xs font-bold transition-all duration-300 ${
-                          isTaken 
-                            ? "cursor-not-allowed border-border text-muted-foreground/30 line-through bg-muted/10" 
-                            : active 
-                              ? "border-accent bg-accent text-accent-foreground shadow-md shadow-accent/20" 
-                              : "border-border hover:bg-secondary bg-card"
-                        }`}
-                      >
-                        {s.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+              {/* Sidebar Column (Only for Clinical Services) */}
+              {!isHotel && !isGrooming && (
+                <div className="space-y-4 rounded-3xl border border-border/40 p-5 bg-[#FFF5F9]/30 dark:bg-black/10 backdrop-blur-sm self-start text-left shadow-sm">
+                  <div className="space-y-1">
+                    <h3 className="font-display text-base font-black text-[#4E1B33] dark:text-pink-200 flex items-center gap-1.5 leading-none">
+                      🩺 {activePet?.name}'s Medical Records
+                    </h3>
+                    <p className="text-[10px] text-muted-foreground font-semibold">
+                      Vaccination and deworming schedule summary.
+                    </p>
+                  </div>
 
-            <div className="space-y-1">
-              <Label>Special Instructions / Notes</Label>
-              <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Describe symptoms, requirements, allergies..." className="rounded-xl min-h-[80px]" />
+                  {/* Immunization compliance */}
+                  <div className="space-y-1.5 border-t border-border/20 pt-3">
+                    <div className="flex justify-between text-[10px] font-bold text-muted-foreground">
+                      <span>Immunization Compliance</span>
+                      <span className="text-[#D98CB3] font-black">{vaccinesCompletion}</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-secondary dark:bg-black/20 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-pink-500 to-[#4E1B33] rounded-full" style={{ width: vaccinesCompletion }} />
+                    </div>
+                  </div>
+
+                  {/* Vaccinations Checklist */}
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block">Vaccinations Checklist</span>
+                    <div className="space-y-1.5">
+                      {activePetVaccines.map((vac, idx) => (
+                        <div key={idx} className="flex items-center justify-between border border-border/30 rounded-xl p-2 bg-white/50 dark:bg-black/20 text-[11px]">
+                          <div className="space-y-0.5 max-w-[130px]">
+                            <span className="font-bold text-foreground block truncate">{vac.name}</span>
+                            <span className="text-[9px] text-muted-foreground block">{vac.status === "completed" ? "Administered" : "Upcoming"}</span>
+                          </div>
+                          <span className={cn(
+                            "text-[8px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0",
+                            vac.status === "completed" 
+                              ? "text-emerald-600 bg-emerald-500/10 border-emerald-500/20" 
+                              : "text-amber-600 bg-amber-500/10 border-amber-500/20 animate-pulse"
+                          )}>
+                            {vac.status === "completed" ? "Done 🟢" : vac.date}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Preventative Treatments Checklist */}
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block">Treatments & Deworming</span>
+                    <div className="space-y-1.5">
+                      {activePetTreatments.map((tr, idx) => (
+                        <div key={idx} className="flex items-center justify-between border border-border/30 rounded-xl p-2 bg-white/50 dark:bg-black/20 text-[11px]">
+                          <div className="space-y-0.5 max-w-[130px]">
+                            <span className="font-bold text-foreground block truncate">{tr.name}</span>
+                            <span className="text-[9px] text-muted-foreground block">{tr.status === "completed" ? "Administered" : "Upcoming"}</span>
+                          </div>
+                          <span className={cn(
+                            "text-[8px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0",
+                            tr.status === "completed" 
+                              ? "text-emerald-600 bg-emerald-500/10 border-emerald-500/20" 
+                              : "text-amber-600 bg-amber-500/10 border-amber-500/20 animate-pulse"
+                          )}>
+                            {tr.status === "completed" ? "Done 🟢" : tr.date}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
             </div>
 
             <div className="flex justify-between pt-4 border-t border-border/30">
-              <Button variant="outline" onClick={() => setStep(1)} className="rounded-xl px-6">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  if (isHotel || isGrooming) {
+                    navigate({ to: "/home" });
+                  } else {
+                    setStep(1);
+                  }
+                }} 
+                className="rounded-xl px-6"
+              >
                 <ArrowLeft className="mr-1.5 h-4 w-4" /> Back
               </Button>
-              <Button onClick={() => validateStep2() && setStep(3)} className="rounded-xl px-6">
+              <Button onClick={() => validateStep2() && setStep(3)} className={cn("rounded-xl px-6", pageTheme.btnClass)}>
                 Continue to Payment <ArrowRight className="ml-1.5 h-4 w-4" />
               </Button>
             </div>
@@ -550,7 +920,7 @@ function Book() {
               <Button variant="outline" disabled={loading} onClick={() => setStep(2)} className="rounded-xl px-6">
                 <ArrowLeft className="mr-1.5 h-4 w-4" /> Back
               </Button>
-              <Button onClick={submitBooking} disabled={loading} className="rounded-xl px-6 shadow-lg shadow-accent/20">
+              <Button onClick={submitBooking} disabled={loading} className={cn("rounded-xl px-6 shadow-lg shadow-accent/20", pageTheme.btnClass)}>
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" /> Processing Payment...
@@ -575,7 +945,13 @@ function Book() {
             </div>
             <div className="space-y-2">
               <h2 className="font-display text-3xl font-bold tracking-tight">Booking Confirmed!</h2>
-              <p className="text-xs text-muted-foreground">Your appointment with {activeSpecialist.name} is scheduled successfully.</p>
+              <p className="text-xs text-muted-foreground">
+                {isHotel 
+                  ? `Your stay at Pet Hotel for ${activePet?.name} is successfully scheduled.`
+                  : isGrooming
+                    ? `Your grooming appointment with ${activeSpecialist.name} for ${activePet?.name} is scheduled.`
+                    : `Your appointment with ${activeSpecialist.name} for ${activePet?.name} is scheduled.`}
+              </p>
             </div>
 
             {/* Receipt Invoice block */}
@@ -593,7 +969,9 @@ function Book() {
               <div className="p-5 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-wider">Specialist</span>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-wider">
+                      {isHotel ? "Boarding Service" : isGrooming ? "Groomer" : "Specialist"}
+                    </span>
                     <p className="font-semibold text-foreground/90 mt-0.5">{activeSpecialist.name}</p>
                     <p className="text-[10px] text-muted-foreground">{activeSpecialist.role}</p>
                   </div>
@@ -605,9 +983,15 @@ function Book() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-wider">Scheduled Time</span>
-                    <p className="font-semibold text-foreground/90 mt-0.5">{new Date(slot).toLocaleDateString()}</p>
-                    <p className="text-[10px] text-accent font-bold mt-0.5">{new Date(slot).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-wider">
+                      {isHotel ? "Check-In / Out" : "Scheduled Time"}
+                    </span>
+                    <p className="font-semibold text-foreground/90 mt-0.5">
+                      {isHotel ? `${checkInDate} to ${checkOutDate}` : new Date(slot).toLocaleDateString()}
+                    </p>
+                    <p className="text-[10px] text-accent font-bold mt-0.5">
+                      {isHotel ? `${hotelNights} Nights` : new Date(slot).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
                   </div>
                   <div>
                     <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-wider">Transaction Status</span>
@@ -644,7 +1028,7 @@ function Book() {
             </div>
           </div>
         )}
-
+        </div>
       </div>
     </div>
   );
