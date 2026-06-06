@@ -1930,21 +1930,24 @@ function HomePage() {
       <EmergencyModal open={showEmergencyDialog} onOpenChange={setShowEmergencyDialog} />
 
       {/* FLOATING AI ASSISTANT CHAT WIDGET */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <>
         {/* Chat Bubble Button */}
         {!showMiniChat && (
           <button
             onClick={() => setShowMiniChat(true)}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-[#D98CB3] to-[#4E1B33] text-white shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer animate-bounce-slow border border-white/20"
+            className="fixed bottom-[276px] right-6 md:bottom-[204px] z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#D98CB3] to-[#4E1B33] text-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer animate-bounce-slow border border-white/20 group"
             title="Ask PetPal AI Coach"
           >
-            <Bot className="h-7 w-7 text-white" />
+            <Bot className="h-5 w-5 text-white" />
+            <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">
+              🤖 PetPal AI Coach
+            </span>
           </button>
         )}
 
         {/* Chat Drawer Popup */}
         {showMiniChat && (
-          <div className="w-80 sm:w-96 h-[450px] bg-card/95 backdrop-blur-md border border-border/80 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+          <div className="fixed bottom-24 right-6 md:bottom-6 z-50 w-80 sm:w-96 h-[450px] bg-card/95 backdrop-blur-md border border-border/80 rounded-[2rem] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#D98CB3] to-[#4E1B33] px-5 py-4 flex items-center justify-between text-white">
               <div className="flex items-center gap-2.5">
@@ -2014,7 +2017,7 @@ function HomePage() {
             </form>
           </div>
         )}
-      </div>
+      </>
 
     </div>
   );
