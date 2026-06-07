@@ -867,217 +867,137 @@ function HomePage() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Column 1: Health Summary & Vitals */}
-          <div className={cn("rounded-[2.5rem] border p-6 flex flex-col justify-between text-left transition-all duration-500 shadow-sm relative overflow-hidden", petTheme.bgTint)}>
-            <div className="absolute right-0 top-0 w-32 h-32 bg-red-500/5 dark:bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex justify-center">
+          {/* Health Summary & Vitals (حالة الحيوان) */}
+          <div className={cn("w-full max-w-5xl rounded-[2rem] border p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 transition-all duration-500 shadow-md relative overflow-hidden backdrop-blur-md", 
+            petSpecies === "cat" ? "bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20" :
+            petSpecies === "rabbit" || petSpecies === "bunny" ? "bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent border-emerald-500/20" :
+            petSpecies === "bird" ? "bg-gradient-to-br from-sky-500/10 via-sky-500/5 to-transparent border-sky-500/20" :
+            "bg-gradient-to-br from-pink-500/10 via-pink-500/5 to-transparent border-pink-500/20"
+          )}>
+            {/* Soft decorative glow */}
+            <div className={cn("absolute right-0 top-0 w-32 h-32 rounded-full blur-3xl opacity-15 pointer-events-none",
+              petSpecies === "cat" ? "bg-purple-500" :
+              petSpecies === "rabbit" || petSpecies === "bunny" ? "bg-emerald-500" :
+              petSpecies === "bird" ? "bg-sky-500" :
+              "bg-pink-500"
+            )} />
             
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-lg font-black text-foreground">{petName}'s Vitals</h3>
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[8.5px] font-bold text-emerald-600 dark:text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" /> Stable
+            {/* Left Part: Name, Status & Wellness Ring with Profile Photo inside */}
+            <div className="flex items-center gap-4 relative z-10 shrink-0">
+              <div className="relative h-16 w-16 flex items-center justify-center shrink-0 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.04)]">
+                <svg className="w-full h-full transform -rotate-90 absolute inset-0 z-10" viewBox="0 0 100 100">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    className="stroke-muted dark:stroke-black/10"
+                    strokeWidth="8"
+                    fill="transparent"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    className={cn("pet-transition", 
+                      petSpecies === "dog" ? "stroke-red-500" : 
+                      petSpecies === "cat" ? "stroke-purple-500" : 
+                      "stroke-emerald-500"
+                    )}
+                    strokeWidth="8"
+                    fill="transparent"
+                    strokeDasharray="251.2"
+                    strokeDashoffset={251.2 - (251.2 * (petSpecies === "cat" ? 98 : petSpecies === "rabbit" ? 95 : 96)) / 100}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                
+                {/* Profile Photo nested inside wellness ring */}
+                <div className="absolute inset-[6px] rounded-full overflow-hidden border border-white dark:border-black/20 shadow-inner z-0">
+                  <img src={petPhoto} alt={petName} className="h-full w-full object-cover" />
+                </div>
+
+                {/* Small overlay badge for health score */}
+                <span className={cn("absolute -bottom-1 -right-1 z-20 text-[8px] font-black px-1.5 py-0.5 rounded-full text-white shadow-md border border-white/20",
+                  petSpecies === "dog" ? "bg-red-500" : 
+                  petSpecies === "cat" ? "bg-purple-500" : 
+                  "bg-emerald-500"
+                )}>
+                  {petSpecies === "cat" ? "98%" : petSpecies === "rabbit" ? "95%" : "96%"}
                 </span>
               </div>
-
-              {/* Circular wellness percentage ring */}
-              <div className="flex items-center gap-4">
-                <div className="relative h-20 w-20 flex items-center justify-center shrink-0">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      className="stroke-muted dark:stroke-black/20"
-                      strokeWidth="8"
-                      fill="transparent"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      className={cn("pet-transition", petSpecies === "dog" ? "stroke-red-500" : petSpecies === "cat" ? "stroke-purple-500" : "stroke-emerald-500")}
-                      strokeWidth="8"
-                      fill="transparent"
-                      strokeDasharray="251.2"
-                      strokeDashoffset={251.2 - (251.2 * (petSpecies === "cat" ? 98 : petSpecies === "rabbit" ? 95 : 96)) / 100}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute flex flex-col items-center">
-                    <span className="text-lg font-display font-black text-foreground">{petSpecies === "cat" ? "98%" : petSpecies === "rabbit" ? "95%" : "96%"}</span>
-                    <span className="text-[7.5px] text-muted-foreground font-bold uppercase tracking-wider">Health</span>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5 text-xs text-muted-foreground font-semibold">
-                  <div className="flex items-center gap-1.5">
-                    <Activity className="h-3.5 w-3.5 text-red-500/70" />
-                    <span>Heart Rate: <strong className="text-foreground">94 bpm</strong></span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Scale className="h-3.5 w-3.5 text-amber-500/70" />
-                    <span>Weight: <strong className="text-foreground">{activeWeightText}</strong></span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-border/20 pt-4 space-y-1">
-                <span className="text-[9px] font-black uppercase text-muted-foreground tracking-widest block">Next Vaccine</span>
-                <div className="flex items-center gap-1.5 text-xs">
-                  <Syringe className="h-3.5 w-3.5 text-pink-500/70 animate-pulse shrink-0" />
-                  <span className="truncate font-semibold text-foreground">
-                    {activePetVaccines.find(v => v.status === "due")?.name || "None scheduled"}
-                  </span>
-                </div>
-                <span className="text-[10px] text-muted-foreground font-medium block">
-                  {activePetVaccines.find(v => v.status === "due")?.date || "up-to-date"}
+              
+              <div className="text-left space-y-0.5">
+                <h3 className="font-display text-lg font-black text-foreground">{petName}'s Health</h3>
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[8.5px] font-bold text-emerald-600 dark:text-emerald-400 shadow-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping shrink-0" /> Stable
                 </span>
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 pt-5">
+            {/* Middle Part: Vitals & Vaccines */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 flex-1 relative z-10 w-full lg:w-auto">
+              {/* Divider for desktop */}
+              <div className="hidden lg:block w-[1px] h-10 bg-border/20 self-center mx-2" />
+              
+              {/* Vitals metrics */}
+              <div className="grid grid-cols-2 gap-3 flex-1 max-w-md">
+                <div className="bg-white/45 dark:bg-black/20 border border-white/50 dark:border-white/5 px-3 py-2 rounded-xl flex items-center justify-between gap-3 shadow-sm min-h-[52px]">
+                  <div className="text-left">
+                    <span className="text-[7.5px] font-black text-muted-foreground uppercase tracking-wider block">Heart Rate</span>
+                    <span className="text-base font-display font-black text-foreground">94</span>
+                    <span className="text-[9px] font-semibold text-muted-foreground ml-0.5">bpm</span>
+                  </div>
+                  <Activity className="h-4.5 w-4.5 text-red-500 animate-heartbeat shrink-0" />
+                </div>
+
+                <div className="bg-white/45 dark:bg-black/20 border border-white/50 dark:border-white/5 px-3 py-2 rounded-xl flex items-center justify-between gap-3 shadow-sm min-h-[52px]">
+                  <div className="text-left">
+                    <span className="text-[7.5px] font-black text-muted-foreground uppercase tracking-wider block">Weight</span>
+                    <span className="text-base font-display font-black text-foreground">{activeWeightText.replace("kg", "")}</span>
+                    <span className="text-[9px] font-semibold text-muted-foreground ml-0.5">kg</span>
+                  </div>
+                  <Scale className="h-4.5 w-4.5 text-amber-500 shrink-0" />
+                </div>
+              </div>
+
+              {/* Vaccine alert capsule */}
+              <div className="bg-white/45 dark:bg-black/20 border border-white/50 dark:border-white/5 rounded-xl px-4 py-2 flex items-center gap-3 shadow-sm flex-1 max-w-sm min-h-[52px]">
+                <div className="h-7 w-7 rounded-lg bg-pink-500/10 flex items-center justify-center shrink-0">
+                  <Syringe className="h-4 w-4 text-pink-500 animate-pulse-subtle" />
+                </div>
+                <div className="text-left min-w-0 flex-1">
+                  <span className="text-[7.5px] font-black text-muted-foreground uppercase tracking-wider block">Vaccine Due</span>
+                  <h5 className="text-xs font-bold text-foreground leading-tight truncate">
+                    {activePetVaccines.find(v => v.status === "due")?.name || "None"}
+                  </h5>
+                  <span className="text-[8.5px] font-bold text-amber-600 dark:text-amber-400 block truncate">
+                    {activePetVaccines.find(v => v.status === "due")?.date || "Up to date"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Part: Buttons */}
+            <div className="flex items-center gap-2 relative z-10 shrink-0 w-full lg:w-auto">
               <Button
-                className="w-full bg-[#4E1B33] hover:bg-[#4E1B33]/90 text-white rounded-full py-5 text-xs font-black shadow-sm flex items-center justify-center gap-1.5"
+                variant="outline"
+                className="w-11 h-11 shrink-0 border-white/50 dark:border-white/5 bg-white/45 hover:bg-white/70 dark:bg-black/20 dark:hover:bg-black/40 text-foreground rounded-xl flex items-center justify-center p-0 shadow-sm"
                 onClick={() => {
                   toast.info(`Standard veterinary medical record for ${petName} downloaded successfully!`);
                 }}
+                title="Download Medical Passport"
               >
-                Medical Passport 📄
+                <FileText className="h-4.5 w-4.5 text-muted-foreground" />
               </Button>
               <Button
-                className={cn("w-full text-white rounded-full py-5 text-xs font-black shadow-md flex items-center justify-center gap-1.5", petTheme.primaryButton)}
+                className={cn("flex-1 lg:flex-initial text-white rounded-xl h-11 px-5 text-xs font-black shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-102 transition-transform", petTheme.primaryButton)}
                 asChild
               >
                 <Link to="/book">
-                  Book Vet Visit <Calendar className="h-3.5 w-3.5" />
+                  Book Vet Visit <Calendar className="h-4 w-4" />
                 </Link>
               </Button>
-            </div>
-          </div>
-
-          {/* Column 2: Daily Care Routine Checklist */}
-          <div className={cn("rounded-[2.5rem] border p-6 flex flex-col justify-between text-left transition-all duration-500 shadow-sm relative overflow-hidden", petTheme.bgTint)}>
-            <div className="space-y-4 w-full">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ListTodo className="h-5 w-5 text-primary" />
-                  <h3 className="font-display text-lg font-black text-foreground">Daily Routine</h3>
-                </div>
-                <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest", petTheme.badge)}>
-                  {petSpecies}
-                </span>
-              </div>
-
-              <p className="text-[11px] text-muted-foreground font-semibold leading-relaxed">
-                Complete daily tasks to maintain {petName}'s optimal health index.
-              </p>
-
-              {/* Checklist completion progress bar */}
-              <div className="space-y-1.5 pt-2">
-                <div className="flex justify-between items-center text-xs font-bold text-foreground">
-                  <span>Completion Rate</span>
-                  <span className={petTheme.text}>{checklistCompletionPercentage}%</span>
-                </div>
-                <div className="w-full bg-muted dark:bg-black/20 rounded-full h-2 overflow-hidden">
-                  <div 
-                    className={cn("h-full rounded-full transition-all duration-500 ease-out", 
-                      petSpecies === "dog" ? "bg-red-500" : petSpecies === "cat" ? "bg-purple-500" : "bg-emerald-500"
-                    )}
-                    style={{ width: `${checklistCompletionPercentage}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Checklist list */}
-              <div className="space-y-2 pt-3">
-                {activePetTasks.map((task) => {
-                  const isChecked = activeCheckedMap[task] || false;
-                  return (
-                    <button
-                      key={task}
-                      onClick={() => handleToggleTask(task)}
-                      className={cn(
-                        "w-full flex items-start gap-3 p-2.5 rounded-xl border text-left text-xs font-semibold transition-all duration-300 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer",
-                        isChecked 
-                          ? "bg-white/60 dark:bg-card/60 border-border/80 text-muted-foreground line-through" 
-                          : "bg-white/30 dark:bg-card/30 border-transparent text-foreground"
-                      )}
-                    >
-                      <div className="mt-0.5 shrink-0">
-                        {isChecked ? (
-                          <CheckSquare className={cn("h-4 w-4", petTheme.text)} />
-                        ) : (
-                          <Square className="h-4 w-4 text-muted-foreground/60" />
-                        )}
-                      </div>
-                      <span className="leading-tight">{task}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="pt-4 text-center">
-              <span className="text-[9.5px] text-muted-foreground/80 font-bold uppercase tracking-wider">
-                {checklistCompletionPercentage === 100 ? "🎉 All tasks done! Good job!" : "Keep up the great care!"}
-              </span>
-            </div>
-          </div>
-
-          {/* Column 3: Weather & Activity Timeline */}
-          <div className={cn("rounded-[2.5rem] border p-6 flex flex-col justify-between text-left transition-all duration-500 shadow-sm relative overflow-hidden", petTheme.bgTint)}>
-            <div className="space-y-5">
-              {/* Weather Widget */}
-              <div className="bg-white/40 dark:bg-card/40 border border-border/40 rounded-2xl p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CloudSun className="h-5 w-5 text-amber-500" />
-                    <div>
-                      <h4 className="text-xs font-black text-foreground">Outdoor Conditions</h4>
-                      <p className="text-[9px] text-muted-foreground/80 font-bold leading-none">{weatherData.location}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="font-mono text-sm font-black text-foreground">{weatherData.temp}°C</span>
-                    <p className="text-[8px] text-muted-foreground font-black uppercase tracking-wider leading-none">{weatherData.condition}</p>
-                  </div>
-                </div>
-
-                <div className={cn("rounded-xl p-2.5 text-[10.5px] font-semibold leading-relaxed border border-transparent", walkRecommendation.color)}>
-                  <span className="font-bold block mb-0.5 uppercase text-[9px] tracking-wider">{walkRecommendation.status}</span>
-                  {walkRecommendation.advice}
-                </div>
-              </div>
-
-              {/* Timeline */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <History className="h-4.5 w-4.5 text-primary" />
-                  <h3 className="font-display text-base font-black text-foreground">Recent Activity Logs</h3>
-                </div>
-
-                <div className="relative pl-4 border-l border-border/80 space-y-3.5 ml-1.5">
-                  {petActivities.map((act, idx) => (
-                    <div key={idx} className="relative group">
-                      <div className={cn("absolute -left-[22px] top-1 flex h-2 w-2 items-center justify-center rounded-full ring-4 ring-background transition-transform duration-500 group-hover:scale-125 shadow-sm", act.color)} />
-                      <div className="text-left space-y-0.5">
-                        <div className="flex justify-between items-center gap-1.5">
-                          <h4 className="font-bold text-xs text-foreground leading-none">{act.title}</h4>
-                          <span className="text-[7.5px] font-bold text-muted-foreground uppercase shrink-0">{act.date}</span>
-                        </div>
-                        <p className="text-[9.5px] text-muted-foreground leading-tight">{act.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <div className="pt-4 flex justify-end">
-              <Link to="/pets" className="text-[9px] font-black uppercase tracking-widest text-[#4E1B33] dark:text-pink-300 hover:underline flex items-center gap-0.5">
-                View Full Log <ChevronRight className="h-3 w-3" />
-              </Link>
             </div>
           </div>
         </div>
@@ -1203,9 +1123,10 @@ function HomePage() {
           {
             title: "Matching Outfits",
             desc: "Discover coordinated hoodies and pajama sets matching you and your pet.",
-            img: "https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=400",
-            btnText: "Shop Outfits",
-            link: "/shop"
+            img: "/matching_outfits_card.png",
+            btnText: "Explore Collections",
+            link: "/shop",
+            isFullCard: true
           },
           {
             title: "Custom Accessories",
@@ -1228,16 +1149,29 @@ function HomePage() {
               alt={feat.title} 
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-            <div className="relative z-10 space-y-2">
-              <h3 className="font-display text-xl font-black text-white">{feat.title}</h3>
-              <p className="text-[10px] text-[#EBC4D8] font-semibold leading-relaxed">{feat.desc}</p>
-              <div className="pt-2">
-                <Button size="sm" className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full font-black text-[9px] px-4 py-2" asChild>
-                  <Link to={feat.link}>{feat.btnText}</Link>
-                </Button>
-              </div>
-            </div>
+            {feat.isFullCard ? (
+              <Link to={feat.link} className="absolute inset-0 z-20" aria-label={feat.title} />
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="relative z-10 space-y-2">
+                  <h3 className="font-display text-xl font-black text-white">{feat.title}</h3>
+                  <p className="text-[10px] text-[#EBC4D8] font-semibold leading-relaxed">{feat.desc}</p>
+                  <div className="pt-2">
+                    <Button 
+                      size="sm" 
+                      className={cn(
+                        "rounded-full font-black text-[9px] px-4 py-2 transition-colors duration-300", 
+                        feat.btnClass || "bg-[#FFF5F9] text-[#4E1B33] hover:bg-white"
+                      )} 
+                      asChild
+                    >
+                      <Link to={feat.link}>{feat.btnText}</Link>
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </section>
@@ -1707,22 +1641,22 @@ function HomePage() {
             {
               title: "Max's Rescue Journey 🐶",
               desc: "From severe malnourishment and anxiety to an active, glowing companion.",
-              before: "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=200&auto=format&fit=crop&q=80",
-              after: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&auto=format&fit=crop&q=80",
+              before: "/max_before.png",
+              after: "/max_after.png",
               tag: "Rescue Match"
             },
             {
-              title: "Oliver's Weight Recovery 🐱",
+              title: "Oliver's Weight Recovery (B. Shorthair) 🐱",
               desc: "Lost 4.2kg of excess weight through our automated caloric deficit recommendations.",
-              before: "https://images.unsplash.com/photo-1511275539165-cc46b1ee8960?w=200&auto=format&fit=crop&q=80",
-              after: "https://images.unsplash.com/photo-1526336024430-6fbb6e361c30?w=200&auto=format&fit=crop&q=80",
+              before: "/oliver_before.png",
+              after: "/oliver_after.png",
               tag: "Weight Control"
             },
             {
               title: "Bella's Adoption Story 🐰",
               desc: "Found her forever home and family match through our community board filters.",
-              before: "https://images.unsplash.com/photo-1415369629372-26f2fe60c467?w=200&auto=format&fit=crop&q=80",
-              after: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=200&auto=format&fit=crop&q=80",
+              before: "/bella_before.png",
+              after: "/bella_after.png",
               tag: "Adoption"
             }
           ].map((story, idx) => (
