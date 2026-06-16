@@ -1361,8 +1361,8 @@ function HomePage() {
             Celebrate the absolute center of your home. Get coordinates customized for the perfect family photoshoot, matching tag collars, and check-ups to keep them happy forever.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-5 font-black text-[10px] shadow-lg" onClick={() => handleJewelryPetChange("mock-dog")}>
-              Design Custom Tag
+            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-5 font-black text-[10px] shadow-lg" asChild>
+              <Link to="/studio">Design Custom Tag</Link>
             </Button>
             <Button variant="outline" className="border-white/30 bg-white/10 hover:bg-white/20 text-white rounded-full px-6 py-5 font-black text-[10px]" asChild>
               <Link to="/shop">View Lookbook</Link>
