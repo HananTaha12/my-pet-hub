@@ -1126,21 +1126,24 @@ function HomePage() {
             img: "/matching_outfits_card.png",
             btnText: "Explore Collections",
             link: "/shop",
-            isFullCard: true
+            isFullCard: true,
+            btnClass: undefined as string | undefined
           },
           {
             title: "Custom Accessories",
             desc: "Engrave your pet's photo and name onto beautiful custom tags and necklaces.",
             img: "/custom_name_tag.png",
             btnText: "Design Jewelry",
-            link: "/studio"
+            link: "/studio",
+            btnClass: undefined as string | undefined
           },
           {
             title: "Pet Hotel Boarding",
             desc: "Leave your pets in our state-of-the-art boarding suite with active play tracking.",
             img: "/pet_hotel.png",
             btnText: "Book Hotel",
-            link: "/book?type=hotel"
+            link: "/book?type=hotel",
+            btnClass: undefined as string | undefined
           }
         ].map((feat, idx) => (
           <div key={idx} className="group relative rounded-[2.5rem] overflow-hidden aspect-[4/3] border border-border/30 hover-lift shadow-lg flex flex-col justify-end p-6">
