@@ -1126,21 +1126,24 @@ function HomePage() {
             img: "/matching_outfits_card.png",
             btnText: "Explore Collections",
             link: "/shop",
-            isFullCard: true
+            isFullCard: true,
+            btnClass: undefined as string | undefined
           },
           {
             title: "Custom Accessories",
             desc: "Engrave your pet's photo and name onto beautiful custom tags and necklaces.",
             img: "/custom_name_tag.png",
             btnText: "Design Jewelry",
-            link: "/studio"
+            link: "/studio",
+            btnClass: undefined as string | undefined
           },
           {
             title: "Pet Hotel Boarding",
             desc: "Leave your pets in our state-of-the-art boarding suite with active play tracking.",
             img: "/pet_hotel.png",
             btnText: "Book Hotel",
-            link: "/book?type=hotel"
+            link: "/book?type=hotel",
+            btnClass: undefined as string | undefined
           }
         ].map((feat, idx) => (
           <div key={idx} className="group relative rounded-[2.5rem] overflow-hidden aspect-[4/3] border border-border/30 hover-lift shadow-lg flex flex-col justify-end p-6">
@@ -1358,8 +1361,8 @@ function HomePage() {
             Celebrate the absolute center of your home. Get coordinates customized for the perfect family photoshoot, matching tag collars, and check-ups to keep them happy forever.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-5 font-black text-[10px] shadow-lg" onClick={() => handleJewelryPetChange("mock-dog")}>
-              Design Custom Tag
+            <Button className="bg-[#FFF5F9] text-[#4E1B33] hover:bg-white rounded-full px-6 py-5 font-black text-[10px] shadow-lg" asChild>
+              <Link to="/studio">Design Custom Tag</Link>
             </Button>
             <Button variant="outline" className="border-white/30 bg-white/10 hover:bg-white/20 text-white rounded-full px-6 py-5 font-black text-[10px]" asChild>
               <Link to="/shop">View Lookbook</Link>
