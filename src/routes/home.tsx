@@ -21,9 +21,7 @@ import { EmergencyModal } from "@/components/EmergencyModal";
 export const Route = createFileRoute("/home")({
   head: () => ({ meta: [{ title: "Home — PetPal" }] }),
   component: () => (
-    <RequireAuth>
-      <AppShell><HomePage /></AppShell>
-    </RequireAuth>
+    <AppShell><HomePage /></AppShell>
   ),
 });
 
